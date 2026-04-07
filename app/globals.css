@@ -60,15 +60,26 @@
 }
 
 @layer base {
+  html {
+    scrollbar-width: none;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 }
 
 .font-cal-sans {
   font-family: var(--font-calsans), ui-sans-serif, system-ui, sans-serif;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cal_Sans, Inter } from "next/font/google";
+import SmoothScroll from "./smooth-scroll";
 import "./globals.css";
 
 const inter = Inter({
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${calSans.variable} min-h-screen bg-background font-sans antialiased`}
       >
+        <SmoothScroll />
         {children}
       </body>
     </html>

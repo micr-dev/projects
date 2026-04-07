@@ -40,13 +40,9 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
           />
         </div>
         <ul className="ml-auto mr-[10%] flex w-fit flex-col gap-2 pt-[42vh] pb-[20vh]">
-          <li className="flex w-full items-center gap-3 text-sm uppercase opacity-50">
-            my Projects
-            <span className="bg-foreground h-px flex-1"></span>
-          </li>
           {sections.map((section) => (
             <React.Fragment key={section.heading}>
-              <li className="mt-8 flex w-full items-center gap-3 text-xs uppercase opacity-35">
+              <li className="mt-8 flex w-full items-center gap-3 text-sm uppercase opacity-50 first:mt-0">
                 {section.heading}
                 <span className="bg-foreground h-px flex-1"></span>
               </li>

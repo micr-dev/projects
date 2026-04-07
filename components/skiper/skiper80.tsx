@@ -23,49 +23,49 @@ const Skiper80 = ({ titles }: Skiper80Props) => {
   }));
 
   return (
-    <div className="w-full px-8 py-20 md:px-12 md:py-24">
-      <div className="mx-auto flex w-full max-w-[1440px] items-start gap-12 xl:gap-20">
-        <div className="sticky top-[10vh] hidden w-[42%] xl:block">
+    <div className="flex min-h-screen w-screen justify-center py-32">
+      <div className="w-full">
+        <div className="fixed left-[15%] top-[10%] -translate-x-1/2">
           <motion.img
             drag
             style={{
               borderRadius: "25px",
             }}
             layoutId="active-img"
-            className="h-auto w-full border border-foreground/10 object-cover"
+            className="h-50 aspect-video border border-foreground/10 object-cover"
             src={items[isHoveredIndex].img}
             alt=""
           />
         </div>
-        <ul className="ml-auto flex w-full max-w-[520px] flex-col gap-2 pb-20">
-            <li className="flex w-full items-center gap-3 text-sm uppercase opacity-50">
-              my Projects
-              <span className="bg-foreground h-px flex-1"></span>
-            </li>
-            {items.map((item, index) => (
-              <motion.li
-                layoutId={`text-header-${index}`}
-                key={item.title}
-                style={{
-                  opacity: isHoveredIndex == index ? 1 : 0.5,
-                }}
-                className="relative flex w-fit cursor-pointer items-center text-4xl tracking-tighter"
-                onMouseEnter={() => setIsHoveredIndex(index)}
-              >
-                {item.title}{" "}
-                {isHoveredIndex === index && (
-                  <motion.div
-                    initial={{ x: 10, width: "15px", height: "0px" }}
-                    animate={{ x: 10, width: "4px", height: "4px" }}
-                    transition={{
-                      duration: 0.2,
-                    }}
-                    className="bg-foreground absolute left-full rounded-full"
-                  ></motion.div>
-                )}
-              </motion.li>
-            ))}
-          </ul>
+        <ul className="ml-auto mr-[10%] flex w-fit flex-col gap-2 pt-[42vh] pb-[20vh]">
+          <li className="flex w-full items-center gap-3 text-sm uppercase opacity-50">
+            my Projects
+            <span className="bg-foreground h-px flex-1"></span>
+          </li>
+          {items.map((item, index) => (
+            <motion.li
+              layoutId={`text-header-${index}`}
+              key={item.title}
+              style={{
+                opacity: isHoveredIndex == index ? 1 : 0.5,
+              }}
+              className="relative flex w-fit cursor-pointer items-center text-4xl tracking-tighter"
+              onMouseEnter={() => setIsHoveredIndex(index)}
+            >
+              {item.title}{" "}
+              {isHoveredIndex === index && (
+                <motion.div
+                  initial={{ x: 10, width: "15px", height: "0px" }}
+                  animate={{ x: 10, width: "4px", height: "4px" }}
+                  transition={{
+                    duration: 0.2,
+                  }}
+                  className="bg-foreground absolute left-full rounded-full"
+                ></motion.div>
+              )}
+            </motion.li>
+          ))}
+        </ul>
       </div>
     </div>
   );

@@ -3,8 +3,13 @@
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 
-interface Skiper80Props {
+interface RepoSection {
+  heading: string;
   titles: string[];
+}
+
+interface Skiper80Props {
+  sections: RepoSection[];
 }
 
 const placeholderImages = [
@@ -14,13 +19,10 @@ const placeholderImages = [
   "/images/oct25Coll/skiperpro/shoreel-5.png",
 ];
 
-const Skiper80 = ({ titles }: Skiper80Props) => {
+const Skiper80 = ({ sections }: Skiper80Props) => {
   const [isHoveredIndex, setIsHoveredIndex] = useState(0);
 
-  const items = titles.map((title, index) => ({
-    title,
-    img: placeholderImages[index % placeholderImages.length],
-  }));
+  const items = sections.flatMap((section) => section.titles);
 
   return (
     <div className="flex min-h-screen w-screen justify-center py-32">
@@ -33,7 +35,7 @@ const Skiper80 = ({ titles }: Skiper80Props) => {
             }}
             layoutId="active-img"
             className="h-50 aspect-video border border-foreground/10 object-cover"
-            src={items[isHoveredIndex].img}
+            src={placeholderImages[isHoveredIndex % placeholderImages.length]}
             alt=""
           />
         </div>
@@ -42,28 +44,40 @@ const Skiper80 = ({ titles }: Skiper80Props) => {
             my Projects
             <span className="bg-foreground h-px flex-1"></span>
           </li>
-          {items.map((item, index) => (
-            <motion.li
-              layoutId={`text-header-${index}`}
-              key={item.title}
-              style={{
-                opacity: isHoveredIndex == index ? 1 : 0.5,
-              }}
-              className="relative flex w-fit cursor-pointer items-center text-4xl tracking-tighter"
-              onMouseEnter={() => setIsHoveredIndex(index)}
-            >
-              {item.title}{" "}
-              {isHoveredIndex === index && (
-                <motion.div
-                  initial={{ x: 10, width: "15px", height: "0px" }}
-                  animate={{ x: 10, width: "4px", height: "4px" }}
-                  transition={{
-                    duration: 0.2,
-                  }}
-                  className="bg-foreground absolute left-full rounded-full"
-                ></motion.div>
-              )}
-            </motion.li>
+          {sections.map((section) => (
+            <React.Fragment key={section.heading}>
+              <li className="mt-8 flex w-full items-center gap-3 text-xs uppercase opacity-35">
+                {section.heading}
+                <span className="bg-foreground h-px flex-1"></span>
+              </li>
+              {section.titles.map((title) => {
+                const index = items.indexOf(title);
+
+                return (
+                  <motion.li
+                    layoutId={`text-header-${index}`}
+                    key={title}
+                    style={{
+                      opacity: isHoveredIndex == index ? 1 : 0.5,
+                    }}
+                    className="relative flex w-fit cursor-pointer items-center text-4xl tracking-tighter"
+                    onMouseEnter={() => setIsHoveredIndex(index)}
+                  >
+                    {title}{" "}
+                    {isHoveredIndex === index && (
+                      <motion.div
+                        initial={{ x: 10, width: "15px", height: "0px" }}
+                        animate={{ x: 10, width: "4px", height: "4px" }}
+                        transition={{
+                          duration: 0.2,
+                        }}
+                        className="bg-foreground absolute left-full rounded-full"
+                      ></motion.div>
+                    )}
+                  </motion.li>
+                );
+              })}
+            </React.Fragment>
           ))}
         </ul>
       </div>

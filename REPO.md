@@ -1,7 +1,8 @@
+# Repo List
+
+## Software
 scudo
 kagi-cli
-ancla
-claude-skills
 mullgate
 opencode-studio
 sincronizado
@@ -11,39 +12,25 @@ delvn
 bansho
 spikehound
 elevenlabs-webui
-kagi-mcp
 tuneport
 indagine
-namecheap-mcp
-camofox-mcp
-chatgpt-webui-mcp
-catbox-mcp
 bolify
 UndyingTerminal
 glob
-anonQ
-RPi4toNAS-Guide
 hermes-nightshift
 onairo
 Celeste-QuartzSkin
-perplexity-mcp
-discord-self-mcp
-seedance-skills
-gsap-skills
 DXFtoIRL
 waterWAV
 nagrom
 cinco
 tupac
 dialogue-textbox
-YAWN60
-topre-ec-archive
 anydesk-legacy-bin
 t3-chat-zipper
 tiureel
 upstash-keepalive
 veyoff
-micr.dev
 supabase-keepalive
 vapora
 archie
@@ -51,3 +38,25 @@ SpainGPT
 chalcopyrite
 kefine-website
 bdss-club-website
+micr.dev
+anonQ
+
+## Hardware
+ancla
+RPi4toNAS-Guide
+YAWN60
+topre-ec-archive
+
+## MCPs
+kagi-mcp
+namecheap-mcp
+camofox-mcp
+chatgpt-webui-mcp
+catbox-mcp
+perplexity-mcp
+discord-self-mcp
+
+## Skills
+claude-skills
+seedance-skills
+gsap-skills

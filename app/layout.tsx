@@ -17,8 +17,29 @@ const calSans = Cal_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://proyectos.micr.dev"),
   title: "Projects",
   description: "Project showcase portfolio",
+  openGraph: {
+    title: "Projects",
+    description: "Project showcase portfolio",
+    siteName: "Projects",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Projects showcase portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Projects",
+    description: "Project showcase portfolio",
+    images: ["/twitter-image.jpg"],
+  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

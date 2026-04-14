@@ -3,9 +3,9 @@
 anonQ
 anydesk-legacy-bin
 archie
-bdss-club-website
-bolify
-Celeste-QuartzSkin
+bdss-website
+boilify
+Celeste-SkinMod
 chalcopyrite
 cinco
 dialogue-textbox

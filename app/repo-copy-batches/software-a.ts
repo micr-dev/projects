@@ -25,7 +25,7 @@ export const softwareBatchA = {
     ],
     languages: ["Python", "HTML", "JavaScript", "CSS"]
   },
-  "bdss-club-website": {
+  "bdss-website": {
     paragraphs: [
       "BDSS Club Archive is a React 19 + TypeScript + Vite showcase that mirrors Replica clothing drops while embedding manifesto, FAQ, and product detail pages that forward to Chinese marketplaces.",
       "This version keeps curated drops plus admin control by storing products and releases in a private GitHub Gist and protecting the management surface with JWT-authenticated admin flows and Imgur uploads.",
@@ -33,7 +33,7 @@ export const softwareBatchA = {
     ],
     languages: ["TypeScript", "HTML", "JavaScript"]
   },
-  "bolify": {
+  "boilify": {
     paragraphs: [
       "Boilify is an OpenFX plugin for DaVinci Resolve 20+ that simulates hand-drawn line boil jitter with configurable strength, size, speed, and complexity controls.",
       "The plugin is aimed at editors who want that hand-drawn boil effect without building a custom Resolve effect, with the setup centered on multi-threaded rendering, parameter tuning, and transparent alpha preservation.",
@@ -41,7 +41,7 @@ export const softwareBatchA = {
     ],
     languages: ["C++", "JavaScript", "CSS", "HTML"]
   },
-  "Celeste-QuartzSkin": {
+  "Celeste-SkinMod": {
     paragraphs: [
       "Quarzite is a Celeste OC skin mod that replaces Madeline with the original character, complete with dash-count hair color swaps and custom idle animations.",
       "The mod is about giving the run its own in-game identity, with Everest, Olympus, and Skin Mod Helper keeping the sprite work and dash-based color logic aligned with CelesteNet features.",

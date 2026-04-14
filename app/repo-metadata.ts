@@ -36,7 +36,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
-  "bdss-club-website": {
+  "bdss-website": {
     repo: "Microck/bdss-club-website",
     sourceUrl: "https://github.com/Microck/bdss-club-website",
     livePreviewUrl: "https://bdss-club-website.vercel.app",
@@ -48,13 +48,13 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://blog.micr.dev",
     isPrivate: false,
   },
-  bolify: {
+  boilify: {
     repo: "Microck/boilify",
     sourceUrl: "https://github.com/Microck/boilify",
     livePreviewUrl: null,
     isPrivate: false,
   },
-  "Celeste-QuartzSkin": {
+  "Celeste-SkinMod": {
     repo: "Microck/Celeste-QuarziteSkin",
     sourceUrl: "https://github.com/Microck/Celeste-QuarziteSkin",
     livePreviewUrl: "https://gamebanana.com/mods/486547",

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 interface Skiper10Props {
   children: React.ReactNode;
   durationMs?: number;
+  onComplete?: () => void;
   text?: string;
 }
 
@@ -16,6 +17,7 @@ interface Preloader004Props {
 const Skiper10 = ({
   children,
   durationMs = 1600,
+  onComplete,
   text = "Turning concepts into working systems.",
 }: Skiper10Props) => {
   const [showPreloader, setShowPreloader] = useState(true);
@@ -27,6 +29,14 @@ const Skiper10 = ({
 
     return () => window.clearTimeout(timer);
   }, [durationMs]);
+
+  useEffect(() => {
+    if (showPreloader) {
+      return;
+    }
+
+    onComplete?.();
+  }, [onComplete, showPreloader]);
 
   useEffect(() => {
     const { body, documentElement } = document;

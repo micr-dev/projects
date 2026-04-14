@@ -3,22 +3,21 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, CircleArrowOutUpRight, Lock } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  getRepoDisplayTitle,
+  getRepoSlugPath,
+  normalizeRepoSlugPath,
+} from "../../app/repo-paths";
 import { getRepoImage } from "../../app/repo-images";
 import type { RepoDescription } from "../../app/repo-description-types";
 import type { RepoMetadata } from "../../app/repo-metadata";
+import type { RepoSection } from "../../app/repo-sections";
 import ProgressiveBlur from "./progressive-blur";
+import { TextShimmer } from "./text-shimmer";
 
 interface Skiper80Props {
+  initialSlug: string | null;
   sections: RepoSection[];
-}
-
-interface RepoSection {
-  heading: string;
-  items: Array<{
-    description: RepoDescription;
-    metadata: RepoMetadata;
-    title: string;
-  }>;
 }
 
 interface RepoItem {
@@ -29,6 +28,7 @@ interface RepoItem {
   title: string;
   index: number;
   image: string;
+  slug: string;
 }
 
 interface TitleSnapshot {
@@ -88,13 +88,39 @@ function snapshotBox(element: HTMLElement): BoxSnapshot {
   };
 }
 
-function getDisplayTitle(title: string): string {
-  return title.replace(/^m-d\//, "micr/");
+function getInitialItemIndex(
+  sections: RepoSection[],
+  initialSlug: string | null,
+): number | null {
+  if (!initialSlug) {
+    return null;
+  }
+
+  const normalizedSlug = normalizeRepoSlugPath(initialSlug);
+
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  let index = 0;
+
+  for (const section of sections) {
+    for (const item of section.items) {
+      if (getRepoSlugPath(item.title) === normalizedSlug) {
+        return index;
+      }
+
+      index += 1;
+    }
+  }
+
+  return null;
 }
 
-const Skiper80 = ({ sections }: Skiper80Props) => {
-  const [isHoveredIndex, setIsHoveredIndex] = useState(0);
-  const [isItemActive, setIsItemActive] = useState<number | null>(null);
+const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
+  const initialItemIndex = getInitialItemIndex(sections, initialSlug);
+  const [isHoveredIndex, setIsHoveredIndex] = useState(initialItemIndex ?? 0);
+  const [isItemActive, setIsItemActive] = useState<number | null>(initialItemIndex);
   const [isClosing, setIsClosing] = useState(false);
   const [sourceTitleSnapshot, setSourceTitleSnapshot] =
     useState<TitleSnapshot | null>(null);
@@ -137,6 +163,7 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
             heading: section.heading,
             metadata,
             title,
+            slug: getRepoSlugPath(title),
           })),
         )
         .map((item, index) => ({
@@ -150,7 +177,7 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
   const activeIndex = isItemActive ?? isHoveredIndex;
   const activeItem = items[activeIndex];
   const activeCopy = activeItem?.description ?? null;
-  const activeDisplayTitle = activeItem ? getDisplayTitle(activeItem.title) : "";
+  const activeDisplayTitle = activeItem ? getRepoDisplayTitle(activeItem.title) : "";
   const isMicrosoftHackathonProject = activeItem?.title.startsWith("ms26/") ?? false;
   const isActiveImageLoaded = activeItem
     ? loadedImagesRef.current.has(activeItem.image)
@@ -209,6 +236,53 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
     setClosingTitleScrollOffset(0);
   }, []);
 
+  const syncRoute = useCallback(
+    (itemIndex: number | null, mode: "push" | "replace" = "replace") => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const nextPath = itemIndex == null ? "/" : `/${items[itemIndex].slug}`;
+      const currentPath = normalizeRepoSlugPath(window.location.pathname);
+      const targetPath = normalizeRepoSlugPath(nextPath);
+
+      if (currentPath === targetPath) {
+        return;
+      }
+
+      if (mode === "push") {
+        window.history.pushState({ repoSlug: targetPath }, "", nextPath);
+        return;
+      }
+
+      window.history.replaceState({ repoSlug: targetPath }, "", nextPath);
+    },
+    [items],
+  );
+
+  const syncStateFromPath = useCallback(
+    (pathname: string) => {
+      const normalizedPath = normalizeRepoSlugPath(pathname);
+      const matchedIndex =
+        normalizedPath == null
+          ? null
+          : items.findIndex((item) => item.slug === normalizedPath);
+
+      resetClosingAnimationState();
+      resetOpeningSnapshots();
+
+      if (matchedIndex == null || matchedIndex < 0) {
+        setIsItemActive(null);
+        return;
+      }
+
+      preloadImage(items[matchedIndex].image, "high");
+      setIsHoveredIndex(matchedIndex);
+      setIsItemActive(matchedIndex);
+    },
+    [items, preloadImage, resetClosingAnimationState, resetOpeningSnapshots],
+  );
+
   const openItem = useCallback(
     (itemIndex: number, titleElement: HTMLElement) => {
       if (isClosing) {
@@ -226,8 +300,9 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
       setTargetImageSnapshot(null);
       setIsHoveredIndex(itemIndex);
       setIsItemActive(itemIndex);
+      syncRoute(itemIndex, "push");
     },
-    [isClosing, resetClosingAnimationState],
+    [isClosing, resetClosingAnimationState, syncRoute],
   );
 
   useEffect(() => {
@@ -412,6 +487,18 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
     };
   }, [isClosing]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      syncStateFromPath(window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [syncStateFromPath]);
+
   const closeActiveItem = useCallback(() => {
     if (isItemActive == null || isClosing) {
       return;
@@ -427,6 +514,7 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
       : null;
 
     if (!currentTitleSource && !currentImageSource) {
+      syncRoute(null);
       setIsItemActive(null);
       resetOpeningSnapshots();
       return;
@@ -440,7 +528,80 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
     setTitleCloseDone(currentTitleSource == null);
     setImageCloseDone(currentImageSource == null);
     setIsClosing(true);
-  }, [isClosing, isItemActive, resetOpeningSnapshots]);
+    syncRoute(null);
+  }, [isClosing, isItemActive, resetOpeningSnapshots, syncRoute]);
+
+  const navigateActiveItem = useCallback(
+    (direction: -1 | 1) => {
+      if (
+        isItemActive == null ||
+        isClosing ||
+        sourceTitleSnapshot != null ||
+        sourceImageSnapshot != null
+      ) {
+        return;
+      }
+
+      const nextIndex = Math.min(
+        Math.max(isItemActive + direction, 0),
+        items.length - 1,
+      );
+
+      if (nextIndex === isItemActive) {
+        return;
+      }
+
+      const nextItem = items[nextIndex];
+      preloadImage(nextItem.image, "high");
+      setIsHoveredIndex(nextIndex);
+      setIsItemActive(nextIndex);
+      syncRoute(nextIndex);
+    },
+    [
+      isClosing,
+      isItemActive,
+      items,
+      preloadImage,
+      sourceImageSnapshot,
+      sourceTitleSnapshot,
+      syncRoute,
+    ],
+  );
+
+  useEffect(() => {
+    if (isItemActive == null) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.defaultPrevented ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey
+      ) {
+        return;
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+        event.preventDefault();
+        navigateActiveItem(-1);
+        return;
+      }
+
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+        event.preventDefault();
+        navigateActiveItem(1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isItemActive, navigateActiveItem]);
 
   if (!activeItem || !activeCopy) {
     return null;
@@ -535,7 +696,7 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
                 </li>
                 {section.items.map(({ title }) => {
                   const item = items[itemCursor++];
-                  const displayTitle = getDisplayTitle(title);
+                  const displayTitle = getRepoDisplayTitle(title);
 
                   return (
                     <motion.li
@@ -921,9 +1082,18 @@ const Skiper80 = ({ sections }: Skiper80Props) => {
                     {activeCopy.languages.map((language, index) => (
                       <React.Fragment key={language}>
                         {index > 0 ? ", " : null}
-                        <span className={index === 0 ? "font-medium" : undefined}>
-                          {language}
-                        </span>
+                        {index === 0 ? (
+                          <TextShimmer
+                            duration={1.05}
+                            repeatDelay={3.2}
+                            spread={1.75}
+                            className="inline-block font-semibold [--base-color:rgba(255,255,255,0.42)] [--base-gradient-color:rgba(255,255,255,0.62)]"
+                          >
+                            {language}
+                          </TextShimmer>
+                        ) : (
+                          <span>{language}</span>
+                        )}
                       </React.Fragment>
                     ))}
                   </p>

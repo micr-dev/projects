@@ -4,7 +4,7 @@ export const softwareBatchA = {
   "anonQ": {
     paragraphs: [
       "anonQ is a self-hostable anonymous Q&A platform built on Next.js and Tailwind that publishes visitor questions and answers in a public feed.",
-      "The project fills the gap left by communities that need anonymous submissions without IP logging or fingerprinting, so the README highlights rate limits, BYOK support, optional AI rewriting, and ntfy alerts before the admin answers.",
+      "Communities often want anonymous submissions without turning on invasive tracking, so anonQ pairs a public Q&A flow with rate limits, BYOK support, optional AI rewriting, and ntfy alerts for the admin side.",
       "Supabase stores the events, Auth0 guards the dashboard, and ntfy plus the rewriting pipeline keep the timeline anonymous yet responsive."
     ],
     languages: ["TypeScript", "CSS", "JavaScript"]
@@ -20,7 +20,7 @@ export const softwareBatchA = {
   "archie": {
     paragraphs: [
       "ArchieTok converts GitHub repos into bilingual TikTok and Instagram shorts by combining Gemini scripts, ElevenLabs TTS, PNGtuber renders, and media processing inside a reproducible pipeline.",
-      "The schedule grows from a need to deliver repo highlights without manual editing, so RSS polling triggers a heavy worker while optional n8n orchestration handles local runs and credential management.",
+      "The pipeline is built to ship repo highlight videos without hand-editing each one, so RSS polling triggers the heavy worker while optional n8n orchestration handles local runs and credential management.",
       "GitHub Actions coordinate the RSS poller with the heavy worker, while the optional n8n runner exposes an HTTP API that spawns pipeline_v2.py, posts to TikTok/Instagram, and pushes ntfy alerts."
     ],
     languages: ["Python", "HTML", "JavaScript", "CSS"]
@@ -36,7 +36,7 @@ export const softwareBatchA = {
   "bolify": {
     paragraphs: [
       "Boilify is an OpenFX plugin for DaVinci Resolve 20+ that simulates hand-drawn line boil jitter with configurable strength, size, speed, and complexity controls.",
-      "The plugin exists for editors chasing that stylized illustration look without building custom effects, so the README emphasizes multi-threaded rendering, parameter tuning, and transparent alpha preservation.",
+      "The plugin is aimed at editors who want that hand-drawn boil effect without building a custom Resolve effect, with the setup centered on multi-threaded rendering, parameter tuning, and transparent alpha preservation.",
       "The C++/CMake build links against the OpenFX SDK and exposes a browser-based tuner to preview slider adjustments before copying the JSON defaults into the bundle."
     ],
     languages: ["C++", "JavaScript", "CSS", "HTML"]
@@ -44,7 +44,7 @@ export const softwareBatchA = {
   "Celeste-QuartzSkin": {
     paragraphs: [
       "Quarzite is a Celeste OC skin mod that replaces Madeline with the original character, complete with dash-count hair color swaps and custom idle animations.",
-      "The project answers a desire for a bespoke in-game identity, so Everest, Olympus, and Skin Mod Helper dependencies keep the color logic and character sprites in sync with CelesteNet features.",
+      "The mod is about giving the run its own in-game identity, with Everest, Olympus, and Skin Mod Helper keeping the sprite work and dash-based color logic aligned with CelesteNet features.",
       "Installation flows through Olympus/Everest while Skin Mod Helper (Plus) unlocks the dash-driven hair colors stored in the Graphics and Dialog folders."
     ],
     languages: ["Python"]
@@ -52,7 +52,7 @@ export const softwareBatchA = {
   "chalcopyrite": {
     paragraphs: [
       "Chalcopyrite is a price-monitoring suite that bypasses Cloudflare, eBay Shield, and similar defenses with a hybrid scraping and solver stack.",
-      "Modern price trackers trip bot protections, so the README documents hCaptcha solving, TLS fingerprinting with curl_cffi, Playwright clusters, and FlareSolverr fallbacks before each store check.",
+      "It is built for stores protected by Cloudflare, eBay Shield, and hCaptcha, so the stack combines TLS fingerprinting with curl_cffi, Playwright clusters, solver clients, and FlareSolverr fallbacks before each store check.",
       "The Python orchestrator coordinates the solver clients, headless browsers, retry strategies, and Discord alerts while SQLite WAL stores audit trails for every run."
     ],
     languages: ["Python", "Shell", "Dockerfile"]
@@ -67,7 +67,7 @@ export const softwareBatchA = {
   },
   "dialogue-textbox": {
     paragraphs: [
-      "Dialogue Textbox Generator builds Undertale/Deltarune-style dialogue videos with typing animation, and the README now recommends the React-based web version for live previews, custom fonts, and GIF/MP4 exports.",
+      "Dialogue Textbox Generator builds Undertale/Deltarune-style dialogue videos with typing animation, and the newer React-based web version adds live previews, custom fonts, and GIF/MP4 exports.",
       "The newer interface replaced the legacy Python GUI/TUI/CLI because those tools could not deliver modern previews, so the web UI takes over the experience while preserving offline scripts for edge cases.",
       "The repository keeps the Python scripts for offline rendering while the hosted web client orchestrates the typing animation renderer and export pipeline."
     ],
@@ -84,7 +84,7 @@ export const softwareBatchA = {
   "elevenlabs-webui": {
     paragraphs: [
       "elevenlabs-webui-client is a lean Python package that reuses the ElevenLabs WebUI auth flow to expose refresh-token based TTS operations outside the browser.",
-      "Teams that need WebUI-style credentials instead of the public API rely on this repo, so the README details Firebase refresh tokens, optional browser profile extraction, and CLI helpers.",
+      "The package is built for setups that rely on WebUI-style credentials instead of the public API, with support for Firebase refresh tokens, optional browser profile extraction, and CLI helpers.",
       "The CLI wraps the auth dance, streams MP3 output with timestamp alignment, and rotates credentials while keeping the optional xi-api-key fallback dormant."
     ],
     languages: ["Python"]
@@ -92,7 +92,7 @@ export const softwareBatchA = {
   "glob": {
     paragraphs: [
       "Glob is a self-hosted glb/gltf optimizer built on React/Vite with Express/Node that shrinks 3D assets and shares them with interactive previews.",
-      "The stack exists because the author refused to rely on spammy compressors, so mesh decimation, Draco compression, texture resizing, and bulk queues live alongside polar-backed vaults and Supabase/R2 storage.",
+      "The app keeps 3D compression local and deliberate, with mesh decimation, Draco compression, texture resizing, and bulk queues instead of the usual spammy web compressors.",
       "Uploads flow through weld, decimation, quantization, and Draco stages inside the Node pipeline while the frontend refreshes stats and share links."
     ],
     languages: ["TypeScript", "CSS", "HTML", "JavaScript"]

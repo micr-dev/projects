@@ -60,7 +60,7 @@ export const mcpsSkillsBatch = {
   "claude-skills": {
     paragraphs: [
       "ordinary-claude-skills aggregates hundreds of Claude prompt packages and scripts into categorized folders with supporting documentation.",
-      "Claude workflows need these skills so you do not keep repeating context, yet the community files were scattered and inconsistent without a local catalog.",
+      "Claude workflows benefit from reusable skills, but the useful community material was scattered and inconsistent until it was pulled into one local catalog.",
       "The repo keeps `skills_all` and `skills_categorized`, provides MCP filesystem config snippets, and links every slash-command workflow back to the documentation site.",
     ],
     languages: ["Python", "PowerShell", "Shell", "JavaScript"],

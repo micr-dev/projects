@@ -92,7 +92,7 @@ export const softwareBatchC = {
   waterWAV: {
     paragraphs: [
       "WaterWAV is a Python script that embeds an image into an audio file's spectrogram via STFT so the watermark appears when you load it into a spectrogram viewer.",
-      "It exists to make the Aphex Twin-style watermarking process approachable without building bespoke signal-processing pipelines.",
+      "WaterWAV makes the Aphex Twin-style spectrogram trick usable without forcing you to build the signal-processing workflow from scratch.",
       "The tool flips the mask, attenuates frequencies between 200 Hz and 10,700 Hz, and outputs a new WAV plus comparison plots so you can inspect the hidden image.",
     ],
     languages: ["Python"],

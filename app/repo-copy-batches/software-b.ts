@@ -4,7 +4,7 @@ export const softwareBatchB = {
   "goofish-watcher": {
     paragraphs: [
       "Goofish-watcher is a Discord-side helper that automates the Goofish QR login, exports the Playwright storage_state, and forwards ai-goofish-monitor events as Discord DMs.",
-      "The repo keeps those flows aligned because coordinating QR login, state export, and webhook alerts on a headless server is fragile without a dedicated orchestrator.",
+      "QR login, state export, and webhook alerts are brittle to coordinate on a headless box, so the repo keeps those flows under one small orchestrator.",
       "Slash commands like `/login qr`, `/login export_state`, and `/login status` run Playwright headless, save `storage_state.json`, and relay ai-goofish-monitor hooks into Discord.",
     ],
     languages: ["Python", "Dockerfile"],
@@ -12,7 +12,7 @@ export const softwareBatchB = {
   "hermes-nightshift": {
     paragraphs: [
       "Hermes-nightshift is a cron-driven GLM 5.1 assistant that picks your public repos, clones them, and either opens PRs or writes structured issues while the burn window is open.",
-      "The bot only runs during the quota burn window so the leftover GLM budget executes disciplined code-quality work instead of drifting unused.",
+      "The burn window is the whole point: leftover GLM budget gets spent on disciplined repo work instead of expiring unused.",
       "Every run checks the brake-gate quota, spins the plan -> implement -> review loop, pushes a PR or issue, and tears down the clone while logging the state.",
     ],
     languages: ["Python"],
@@ -20,7 +20,7 @@ export const softwareBatchB = {
   "kagi-cli": {
     paragraphs: [
       "Kagi-cli is the terminal gateway that surfaces every Kagi feature, from search and quick answers to assistant, translation, summarization, feeds, and paid API commands, inside a single binary.",
-      "People need scriptable shell access to those services without starting from the paid API flow, and the CLI keeps one credential surface for session links, API tokens, and automation.",
+      "The CLI keeps Kagi scriptable from the shell without splitting credentials across separate tools, so search, session-backed features, and paid API commands all share one interface.",
       "The `kagi auth` flow sets up credentials once, JSON stays the default output for tooling, and commands like `kagi search`, `kagi assistant`, and `kagi fastgpt` all live behind the same binary.",
     ],
     languages: ["Rust", "Shell", "JavaScript", "MDX"],
@@ -28,7 +28,7 @@ export const softwareBatchB = {
   "kefine-website": {
     paragraphs: [
       "Kefine-website is the Vite and React storefront for curated replica drops, upcoming pipeline statuses, and a GitHub Gist-powered CMS with a Three.js logo and sound cues.",
-      "Maintaining a polished archive of high-end replicas, production previews, and admin data required a curated experience instead of scattering image skeletons and CMS edits across grab-bag tooling.",
+      "The storefront needs a curated presentation for drops, production previews, and admin-managed data rather than scattering media handling and CMS edits across disconnected tools.",
       "Tailwind, shadcn/ui, Framer Motion, GSAP, and the Gist-backed admin keep products and pipeline metadata editable without touching raw JSON.",
     ],
     languages: ["TypeScript", "CSS", "HTML", "JavaScript"],
@@ -68,7 +68,7 @@ export const softwareBatchB = {
   openslate: {
     paragraphs: [
       "Openslate reroutes Slate traffic through a local CLIProxyAPI instance so your Slate sessions stay on your own credits instead of forcing Random Labs charges.",
-      "Forcing users to burn Random Labs credits kills flexibility, so the project keeps Slate usable by rewriting the route to the CLIProxyAPI proxy.",
+      "Slate users still need the workflow, but not the forced Random Labs billing, so the project rewrites the route to a local CLIProxyAPI proxy instead.",
       "A simple `node install.mjs` drop-in rewrites `/v3/stream` traffic and logs the rewrites for verification.",
     ],
     languages: ["JavaScript", "Shell"],

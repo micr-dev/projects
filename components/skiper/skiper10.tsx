@@ -61,7 +61,7 @@ const Preloader004 = ({ text }: Preloader004Props) => {
     <motion.div className="fixed inset-0 z-[100]">
       <div className="absolute z-10 flex h-full w-full items-center justify-center px-6 text-center text-white">
         <motion.h1
-          className="text-3xl font-semibold tracking-tighter"
+          className="font-cal-sans text-3xl font-medium tracking-normal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.75 } }}
           exit={{ opacity: 0, transition: { duration: 0.35 } }}

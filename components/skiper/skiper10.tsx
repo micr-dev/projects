@@ -15,7 +15,7 @@ interface Preloader004Props {
 
 const Skiper10 = ({
   children,
-  durationMs = 2500,
+  durationMs = 1600,
   text = "Turning concepts into working systems.",
 }: Skiper10Props) => {
   const [showPreloader, setShowPreloader] = useState(true);
@@ -63,8 +63,8 @@ const Preloader004 = ({ text }: Preloader004Props) => {
         <motion.h1
           className="text-3xl font-semibold tracking-tighter"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 4 } }}
-          exit={{ opacity: 0, transition: { duration: 0.6 } }}
+          animate={{ opacity: 1, transition: { duration: 0.75 } }}
+          exit={{ opacity: 0, transition: { duration: 0.35 } }}
         >
           {words.map((word, index) => (
             <motion.span
@@ -72,7 +72,7 @@ const Preloader004 = ({ text }: Preloader004Props) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1, delay: 0.2 * index }}
+              transition={{ duration: 0.45, delay: 0.08 * index }}
               className="mr-2 inline-block"
             >
               {word}
@@ -89,8 +89,8 @@ const Preloader004 = ({ text }: Preloader004Props) => {
             animate={{ height: "100%" }}
             exit={{ height: 0 }}
             transition={{
-              duration: 0.5,
-              delay: 0.4 + 0.05 * index,
+              duration: 0.42,
+              delay: 0.14 + 0.04 * index,
               ease: [0.455, 0.03, 0.515, 0.955],
             }}
             className="h-full w-[10vw] bg-black"
@@ -106,8 +106,8 @@ const Preloader004 = ({ text }: Preloader004Props) => {
             animate={{ height: "100%" }}
             exit={{ height: 0 }}
             transition={{
-              duration: 0.5,
-              delay: 0.4 + 0.05 * index,
+              duration: 0.42,
+              delay: 0.14 + 0.04 * index,
               ease: [0.455, 0.03, 0.515, 0.955],
             }}
             className="h-full w-[10vw] bg-black"

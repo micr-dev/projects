@@ -4,6 +4,8 @@ node_modules
 !.env.example
 dist
 coverage
+backups
+tsconfig.tsbuildinfo
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*

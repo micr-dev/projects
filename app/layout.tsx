@@ -19,6 +19,10 @@ const calSans = Cal_Sans({
 export const metadata: Metadata = {
   title: "Projects",
   description: "Project showcase portfolio",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

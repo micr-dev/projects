@@ -1,10 +1,19 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import Skiper80 from "../components/skiper/skiper80";
+import PortfolioShell from "./portfolio-shell";
+import { repoDescriptions } from "./repo-descriptions";
+import type { RepoDescription } from "./repo-description-types";
+import { repoMetadata, type RepoMetadata } from "./repo-metadata";
+
+interface RepoItem {
+  description: RepoDescription;
+  metadata: RepoMetadata;
+  title: string;
+}
 
 interface RepoSection {
   heading: string;
-  titles: string[];
+  items: RepoItem[];
 }
 
 async function getRepoSections(): Promise<RepoSection[]> {
@@ -23,14 +32,29 @@ async function getRepoSections(): Promise<RepoSection[]> {
     if (line.startsWith("## ")) {
       currentSection = {
         heading: line.replace(/^##\s+/, ""),
-        titles: [],
+        items: [],
       };
       sections.push(currentSection);
       continue;
     }
 
     if (currentSection) {
-      currentSection.titles.push(line);
+      const description = repoDescriptions[line];
+      const metadata = repoMetadata[line];
+
+      if (!description) {
+        throw new Error(`Missing repo description for "${line}"`);
+      }
+
+      if (!metadata) {
+        throw new Error(`Missing repo metadata for "${line}"`);
+      }
+
+      currentSection.items.push({
+        description,
+        metadata,
+        title: line,
+      });
     }
   }
 
@@ -41,8 +65,9 @@ export default async function HomePage() {
   const sections = await getRepoSections();
 
   return (
-    <main className="min-h-screen bg-[#121212]">
-      <Skiper80 sections={sections} />
-    </main>
+    <PortfolioShell
+      sections={sections}
+      preloaderText="Turning concepts into working systems."
+    />
   );
 }

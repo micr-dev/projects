@@ -83,3 +83,12 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
 }
+
+.overlay-scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.overlay-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

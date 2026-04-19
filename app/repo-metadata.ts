@@ -247,6 +247,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
       "https://github.com/Microck/t3-chat-zipper/raw/main/t3-chat-zipper.user.js",
     isPrivate: false,
   },
+  traccia: {
+    repo: "Microck/traccia",
+    sourceUrl: "https://github.com/Microck/traccia",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   tailstick: {
     repo: "Microck/tailstick",
     sourceUrl: "https://github.com/Microck/tailstick",

@@ -42,6 +42,7 @@ squircle
 supabase-keepalive
 t3-chat-zipper
 tailstick
+traccia
 tuneport
 tupac
 tuireel

@@ -57,6 +57,7 @@ const repoImages: Record<string, string> = {
   squircle: "squircle.webp",
   "supabase-keepalive": "supabase-keepalive.webp",
   "t3-chat-zipper": "t3-chat-zipper.webp",
+  traccia: "traccia.webp",
   tailstick: "tailstick.webp",
   "m-d/thinko": "thinko.webp",
   "m-d/tokens": "tokens.webp",

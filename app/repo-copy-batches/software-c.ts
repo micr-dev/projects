@@ -25,6 +25,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript"],
   },
+  traccia: {
+    paragraphs: [
+      "Traccia turns personal archives into a skill graph that explains where a skill came from, how deep it goes, how current it is, and how central it is to the broader archive.",
+      "Most archive tools are good at storing material but bad at telling the skill story, while profile tools flatten everything into a pitch and throw away the evidence trail.",
+      "The CLI ingests notes, code, docs, AI chats, and exported platform data without touching source files, then renders a timestamped graph with explain, review, and export commands.",
+    ],
+    languages: ["Python"],
+  },
   tailstick: {
     paragraphs: [
       "Tailstick ships as a USB-launched Tailscale enrollment CLI and GUI that lets operators enroll field machines, issue bounded leases, and control cleanup without building a backend.",

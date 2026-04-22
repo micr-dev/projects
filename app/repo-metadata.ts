@@ -105,7 +105,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   gitquarry: {
     repo: "Microck/gitquarry",
     sourceUrl: "https://github.com/Microck/gitquarry",
-    livePreviewUrl: "https://www.npmjs.com/package/gitquarry",
+    livePreviewUrl: "http://gitquarry.micr.dev/",
     isPrivate: false,
   },
   "goofish-watcher": {

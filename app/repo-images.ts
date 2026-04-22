@@ -28,6 +28,7 @@ const repoImages: Record<string, string> = {
   DXFtoIRL: "DXFtoIRL.webp",
   "elevenlabs-webui": "elevenlabs-webui.webp",
   glob: "glob.webp",
+  gitquarry: "gitquarry.webp",
   "goofish-watcher": "goofish-watcher.webp",
   "gsap-skills": "gsap-skills.webp",
   "hermes-nightshift": "hermes-nightshift.webp",

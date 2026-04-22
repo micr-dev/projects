@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchB = {
+  gitquarry: {
+    paragraphs: [
+      "Gitquarry is a terminal CLI for advanced GitHub repository search that preserves native GitHub search behavior by default and only enables broader discovery, reranking, and README-aware enrichment on explicit request.",
+      "Most search CLIs silently rewrite queries or force ranking heuristics, so gitquarry keeps native semantics intact and makes enhanced modes opt-in for both interactive and scripted workflows.",
+      "Built in Rust with cross-platform binaries, npm wrapper, Homebrew, Scoop, and Nix support, it uses host-scoped token storage, structured output modes, and README enrichment to bridge interactive use with shell pipelines.",
+    ],
+    languages: ["Rust", "JavaScript", "Ruby", "Nix", "Shell"],
+  },
   "goofish-watcher": {
     paragraphs: [
       "Goofish-watcher is a Discord-side helper that automates the Goofish QR login, exports the Playwright storage_state, and forwards ai-goofish-monitor events as Discord DMs.",

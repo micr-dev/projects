@@ -12,6 +12,7 @@ dialogue-textbox
 DXFtoIRL
 elevenlabs-webui
 glob
+gitquarry
 goofish-watcher
 hermes-nightshift
 kagi-cli

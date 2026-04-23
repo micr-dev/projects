@@ -7,7 +7,7 @@ export const softwareBatchB = {
       "Most search CLIs silently rewrite queries or force ranking heuristics, so gitquarry keeps native semantics intact and makes enhanced modes opt-in for both interactive and scripted workflows.",
       "Built in Rust with cross-platform binaries, npm wrapper, Homebrew, Scoop, and Nix support, it uses host-scoped token storage, structured output modes, and README enrichment to bridge interactive use with shell pipelines.",
     ],
-    languages: ["Rust", "JavaScript", "Ruby", "Nix", "Shell"],
+    languages: ["Rust", "Python", "JavaScript", "Ruby", "Nix", "Shell"],
   },
   "goofish-watcher": {
     paragraphs: [

@@ -3,9 +3,9 @@ import type { RepoDescription } from "../repo-description-types";
 export const softwareBatchB = {
   gitquarry: {
     paragraphs: [
-      "Gitquarry is a terminal CLI for advanced GitHub repository search that preserves native GitHub search behavior by default and only enables broader discovery, reranking, and README-aware enrichment on explicit request.",
-      "Most search CLIs silently rewrite queries or force ranking heuristics, so gitquarry keeps native semantics intact and makes enhanced modes opt-in for both interactive and scripted workflows.",
-      "Built in Rust with cross-platform binaries, npm wrapper, Homebrew, Scoop, and Nix support, it uses host-scoped token storage, structured output modes, and README enrichment to bridge interactive use with shell pipelines.",
+      "Gitquarry is a terminal CLI for GitHub repository search that keeps native search behavior intact by default and only enables broader discovery, reranking, and README-aware enrichment on explicit request.",
+      "Most search CLIs silently rewrite queries or force ranking heuristics, so gitquarry keeps native semantics intact and makes enhanced modes opt-in for interactive use, scripted workflows, and GitHub Enterprise instances.",
+      "Built in Rust with cross-platform binaries and an npm wrapper, it exposes search and inspect commands with structured output modes that keep stdout clean for pipelines and host-scoped auth backed by secure storage.",
     ],
     languages: ["Rust", "Python", "JavaScript", "Ruby", "Nix", "Shell"],
   },

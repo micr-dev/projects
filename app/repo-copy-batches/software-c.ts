@@ -27,9 +27,9 @@ export const softwareBatchC = {
   },
   traccia: {
     paragraphs: [
-      "Traccia turns personal archives into a skill graph that explains where a skill came from, how deep it goes, how current it is, and how central it is to the broader archive.",
-      "Most archive tools are good at storing material but bad at telling the skill story, while profile tools flatten everything into a pitch and throw away the evidence trail.",
-      "The CLI ingests notes, code, docs, AI chats, and exported platform data without touching source files, then renders a timestamped graph with explain, review, and export commands. It ships a Python CLI and an npm wrapper for Node-first environments.",
+      "Traccia turns personal archives into a self-explaining skill graph that tracks where a skill came from, how deep it is, how current it is, and how central it is to the broader archive.",
+      "Most archive tools store material well but cannot tell the skill story, while profile tools compress everything into a pitch, flatten uncertainty, and discard the evidence trail needed to verify claims later.",
+      "The Python CLI ingests mixed sources through specific adapters for Google Takeout, Twitter, Reddit, and Meta exports, with local PDF and DOCX normalization via marker and docling and optional OCR backends.",
     ],
     languages: ["Python", "JavaScript"],
   },

@@ -15,6 +15,7 @@ glob
 gitquarry
 goofish-watcher
 hermes-nightshift
+hermes-dayshift-glm
 kagi-cli
 kefine-website
 m-d/about

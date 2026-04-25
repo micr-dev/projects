@@ -25,6 +25,14 @@ export const softwareBatchB = {
     ],
     languages: ["Python"],
   },
+  "hermes-dayshift-glm": {
+    paragraphs: [
+      "Hermes-dayshift-glm is the human-approved implementer companion to hermes-nightshift-glm, scanning its output for actionable issues and PRs then placing them on a local kanban board for manual triage.",
+      "Nightshift runs on autopilot and produces noise alongside signal, so dayshift adds a human gatekeeper step where cards must be moved into explicit execution lanes before any agent runs.",
+      "It uses a local jKanban board backed by a JSON state file, classifies items by fixability and effort, then dispatches to Codex or Hermes/GLM with lane-specific model, reasoning, and merge policies.",
+    ],
+    languages: ["Python"],
+  },
   "kagi-cli": {
     paragraphs: [
       "Kagi-cli is the terminal gateway that surfaces every Kagi feature, from search and quick answers to assistant, translation, summarization, feeds, and paid API commands, inside a single binary.",

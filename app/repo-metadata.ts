@@ -120,6 +120,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "hermes-dayshift-glm": {
+    repo: "Microck/hermes-dayshift-glm",
+    sourceUrl: "https://github.com/Microck/hermes-dayshift-glm",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "ms26/indagine": {
     repo: "Microck/indagine",
     sourceUrl: "https://github.com/Microck/indagine",

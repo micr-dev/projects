@@ -25,7 +25,7 @@ export const softwareBatchB = {
     ],
     languages: ["Python"],
   },
-  "hermes-dayshift-glm": {
+  "hermes-dayshift": {
     paragraphs: [
       "Hermes-dayshift-glm is the human-approved implementer companion to hermes-nightshift-glm, scanning its output for actionable issues and PRs then placing them on a local kanban board for manual triage.",
       "Nightshift runs on autopilot and produces noise alongside signal, so dayshift adds a human gatekeeper step where cards must be moved into explicit execution lanes before any agent runs.",

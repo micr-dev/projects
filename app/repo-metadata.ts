@@ -120,7 +120,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
-  "hermes-dayshift-glm": {
+  "hermes-dayshift": {
     repo: "Microck/hermes-dayshift-glm",
     sourceUrl: "https://github.com/Microck/hermes-dayshift-glm",
     livePreviewUrl: null,

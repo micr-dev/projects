@@ -14,8 +14,8 @@ elevenlabs-webui
 glob
 gitquarry
 goofish-watcher
+hermes-dayshift
 hermes-nightshift
-hermes-dayshift-glm
 kagi-cli
 kefine-website
 m-d/about

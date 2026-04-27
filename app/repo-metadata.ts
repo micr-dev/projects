@@ -168,6 +168,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://mullgate.micr.dev",
     isPrivate: false,
   },
+  micromail: {
+    repo: "Microck/micromail",
+    sourceUrl: "https://github.com/Microck/micromail",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   nagrom: {
     repo: "Microck/nagrom",
     sourceUrl: "https://github.com/Microck/nagrom",

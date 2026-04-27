@@ -57,6 +57,14 @@ export const softwareBatchB = {
     ],
     languages: ["TypeScript", "Shell", "PowerShell", "JavaScript"],
   },
+  micromail: {
+    paragraphs: [
+      "Micromail is a self-hosted temporary email service built with Next.js that turns a single Gmail inbox into unlimited disposable addresses by reading catch-all domain mail through the Gmail API.",
+      "Existing temp-mail providers require giving a third party access to your domains or force you into their infrastructure, so micromail keeps everything on your own domain with a Google Workspace catch-all you already control.",
+      "The frontend polls every 5 seconds for real-time inbox updates, supports multi-domain setups via environment variables, authenticates API access with configurable keys, and ships an interactive Scalar docs page at `/docs` alongside an OpenAPI 3.1 spec.",
+    ],
+    languages: ["TypeScript", "CSS", "JavaScript"],
+  },
   nagrom: {
     paragraphs: [
       "Nagrom is a self-hostable Discord bot that routes claims through a tiered fact-checking pipeline, forces JSON outputs, and keeps every verdict stored in SQLite.",

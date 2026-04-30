@@ -41,6 +41,7 @@ const repoImages: Record<string, string> = {
   "m-d/micr.dev": "micr.dev.webp",
   "m-d/microkeebs": "microkeebs.webp",
   mullgate: "mullgate.webp",
+  md2pkt: "md2pkt.webp",
   micromail: "micromail.webp",
   nagrom: "nagrom.webp",
   "namecheap-mcp": "namecheap-mcp.webp",

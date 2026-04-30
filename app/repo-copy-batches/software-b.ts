@@ -49,6 +49,14 @@ export const softwareBatchB = {
     ],
     languages: ["TypeScript", "CSS", "HTML", "JavaScript"],
   },
+  md2pkt: {
+    paragraphs: [
+      "md2pkt is a Windows-first CLI that converts Markdown or text-based PDF network assignments into Cisco Packet Tracer .pkt files by normalizing topology descriptions into PTBuilder JavaScript and per-device IOS configs.",
+      "Network labs often start as plain text rubrics or PDF assignments that require manual redraws in Packet Tracer, so md2pkt gives those instructions a direct path into a runnable topology without intermediate editing.",
+      "It reads .md, .txt, and text-based .pdf inputs, applies deterministic defaults for missing details, optionally uses Codex for one-turn planning, and sends builds through a local Packet Tracer bridge endpoint.",
+    ],
+    languages: ["TypeScript", "JavaScript"],
+  },
   mullgate: {
     paragraphs: [
       "Mullgate is a CLI that turns one Mullvad subscription into a managed set of authenticated SOCKS5, HTTP, and HTTPS listeners tied to explicit route aliases.",

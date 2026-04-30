@@ -403,6 +403,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  md2pkt: {
+    repo: "Microck/md2pkt",
+    sourceUrl: "https://github.com/Microck/md2pkt",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "claude-skills": {
     repo: "Microck/ordinary-claude-skills",
     sourceUrl: "https://github.com/Microck/ordinary-claude-skills",

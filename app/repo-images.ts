@@ -56,6 +56,7 @@ const repoImages: Record<string, string> = {
   scudo: "scudo.webp",
   "seedance-skills": "seedance-skills.webp",
   sincronizado: "sincronizado.webp",
+  solecist: "solecist.webp",
   SpainGPT: "SpainGPT.webp",
   "ms26/spikehound": "spikehound.webp",
   squircle: "squircle.webp",

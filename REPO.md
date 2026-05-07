@@ -41,6 +41,7 @@ openslate
 protoncode
 scudo
 sincronizado
+solecist
 SpainGPT
 squircle
 supabase-keepalive

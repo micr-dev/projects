@@ -113,6 +113,14 @@ export const softwareBatchB = {
     ],
     languages: ["Rust"],
   },
+  solecist: {
+    paragraphs: [
+      "Solecist is a Discord bot that watches configured debate channels and flags likely logical fallacies as they happen, replying with compact embeds that name the fallacy, quote the claim, and explain why the reasoning looks weak.",
+      "Debates often drift because bad reasoning is easier to miss than bad facts — a false dilemma, appeal to popularity, or ad hominem can derail a thread without looking like obvious spam or abuse.",
+      "Built on discord.js with SQLite persistence, it supports OpenAI-compatible endpoints like NVIDIA NIM, Ollama, and vLLM, caches debate classification per channel, and stays quiet during casual chat until it detects argument-shaped context.",
+    ],
+    languages: ["TypeScript", "Dockerfile"],
+  },
   scudo: {
     paragraphs: [
       "Scudo is a Windows 11 hardening menu that groups each control with visible rationale, presets, and rollback snapshots instead of a pile of scripts.",

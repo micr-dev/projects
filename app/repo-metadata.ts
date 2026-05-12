@@ -331,6 +331,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  veskforge: {
+    repo: "Microck/veskforge",
+    sourceUrl: "https://github.com/Microck/veskforge",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   veyoff: {
     repo: "Microck/veyoff",
     sourceUrl: "https://github.com/Microck/veyoff",

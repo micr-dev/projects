@@ -73,6 +73,7 @@ const repoImages: Record<string, string> = {
   UndyingTerminal: "UndyingTerminal.webp",
   "upstash-keepalive": "upstash-keepalive.webp",
   vapora: "vapora.webp",
+  veskforge: "veskforge.webp",
   veyoff: "veyoff.webp",
   waterWAV: "waterWAV.webp",
   YAWN60: "YAWN60.webp",

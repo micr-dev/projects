@@ -9,6 +9,7 @@ const repoImages: Record<string, string> = {
   "m-d/about": "about.webp",
   ancla: "ancla.webp",
   anonQ: "anonQ.webp",
+  amigazo: "amigazo.webp",
   "anydesk-legacy-bin": "anydesk-legacy-bin.webp",
   archie: "archie.webp",
   "ms26/bansho": "bansho.webp",

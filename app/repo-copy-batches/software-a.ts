@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchA = {
+  "amigazo": {
+    paragraphs: [
+      "amigazo is a Discord bot written in Haskell that counts exact configured words in a server, ranks users by combined and per-word totals, and randomly drops words throughout the day.",
+      "Most word-counting bots are either bloated with unrelated features or limited to a single metric, so amigazo keeps a tight scope: configurable wordlists, per-user breakdowns, and scheduled random drops via slash commands.",
+      "It uses discord-haskell for gateway and slash-command handling with SQLite for persistence, and runs as a single Docker container behind docker compose."
+    ],
+    languages: ["Haskell", "Dockerfile"]
+  },
   "anonQ": {
     paragraphs: [
       "anonQ is a self-hostable anonymous Q&A platform built on Next.js and Tailwind that publishes visitor questions and answers in a public feed.",

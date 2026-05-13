@@ -24,6 +24,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://aur.archlinux.org/packages/anydesk-legacy-bin",
     isPrivate: false,
   },
+  amigazo: {
+    repo: "Microck/amigazo",
+    sourceUrl: "https://github.com/Microck/amigazo",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   archie: {
     repo: "Microck/archie",
     sourceUrl: "https://github.com/Microck/archie",

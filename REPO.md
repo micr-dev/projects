@@ -1,6 +1,7 @@
 # Repo List
 ## Software
 anonQ
+amigazo
 anydesk-legacy-bin
 archie
 bdss-website

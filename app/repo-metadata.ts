@@ -228,6 +228,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  revisor: {
+    repo: "Microck/revisor",
+    sourceUrl: "https://github.com/Microck/revisor",
+    livePreviewUrl: "https://www.npmjs.com/package/@microck/revisor",
+    isPrivate: false,
+  },
   scudo: {
     repo: "Microck/scudo",
     sourceUrl: "https://github.com/Microck/scudo",

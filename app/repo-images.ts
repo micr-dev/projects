@@ -53,6 +53,7 @@ const repoImages: Record<string, string> = {
   protoncode: "protoncode.webp",
   "m-d/quarzite": "quarzite.webp",
   "ms26/repatrol": "repatrol.webp",
+  revisor: "revisor.webp",
   "RPi4toNAS-Guide": "RPi4toNAS-Guide.webp",
   scudo: "scudo.webp",
   "seedance-skills": "seedance-skills.webp",

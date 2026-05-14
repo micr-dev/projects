@@ -32,6 +32,7 @@ ms26/delvn
 ms26/indagine
 ms26/jarspect
 ms26/repatrol
+revisor
 ms26/spikehound
 mullgate
 micromail

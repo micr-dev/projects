@@ -12,6 +12,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "akron-discord": {
+    repo: "Microck/akron-discord",
+    sourceUrl: "https://github.com/Microck/akron-discord",
+    livePreviewUrl: null,
+    isPrivate: true,
+  },
   anonQ: {
     repo: "Microck/anonQ",
     sourceUrl: "https://github.com/Microck/anonQ",

@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchA = {
+  "akron-discord": {
+    paragraphs: [
+      "akron-discord is the official Discord bot for Akron's single community server, managing server setup, user verification, .akr submission scanning, and R2 catalog publishing.",
+      "Generic multi-server bots don't fit Akron's community submission workflow, so akron-discord targets one server with deterministic validation, NVIDIA NIM AI review, and one-way Discord forum to GitHub issue sync.",
+      "It's built with TypeScript and discord.js v14, uses SQLite with Drizzle ORM for persistence, Cloudflare R2 for the public catalog, and Octokit REST for GitHub sync, packaged as a Docker container."
+    ],
+    languages: ["TypeScript", "Dockerfile"]
+  },
   "amigazo": {
     paragraphs: [
       "amigazo is a Discord bot written in Haskell that counts exact configured words in a server, ranks users by combined and per-word totals, and randomly drops words throughout the day.",

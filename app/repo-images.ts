@@ -8,6 +8,7 @@ const placeholderImages = [
 const repoImages: Record<string, string> = {
   "m-d/about": "about.webp",
   ancla: "ancla.webp",
+  "akron-discord": "akron-discord.webp",
   anonQ: "anonQ.webp",
   amigazo: "amigazo.webp",
   "anydesk-legacy-bin": "anydesk-legacy-bin.webp",

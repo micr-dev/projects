@@ -9,6 +9,14 @@ export const softwareBatchA = {
     ],
     languages: ["TypeScript", "Dockerfile"]
   },
+  "akron-website": {
+    paragraphs: [
+      "Akron Website is a single-page landing site for Akron.",
+      "The project serves as Akron's visual entry point, so the page stays lightweight with no heavy framework dependencies.",
+      "It uses plain HTML, TypeScript, and CSS served directly via the Bun runtime."
+    ],
+    languages: ["CSS", "TypeScript", "HTML"]
+  },
   "amigazo": {
     paragraphs: [
       "amigazo is a Discord bot written in Haskell that counts exact configured words in a server, ranks users by combined and per-word totals, and randomly drops words throughout the day.",

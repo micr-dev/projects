@@ -2,6 +2,7 @@
 ## Software
 anonQ
 akron-discord
+akron-website
 amigazo
 anydesk-legacy-bin
 archie

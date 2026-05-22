@@ -7,6 +7,7 @@ const placeholderImages = [
 
 const repoImages: Record<string, string> = {
   "m-d/about": "about.webp",
+  "akron-website": "akron-website.png",
   ancla: "ancla.webp",
   "akron-discord": "akron-discord.webp",
   anonQ: "anonQ.webp",

@@ -391,6 +391,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://microck.github.io/DeskthorityWiki-TopreECArchive/",
     isPrivate: false,
   },
+  "tgr03-prototype-plate": {
+    repo: "Microck/tgr03-prototype-plate",
+    sourceUrl: "https://github.com/Microck/tgr03-prototype-plate",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   YAWN60: {
     repo: "Microck/YAWN60",
     sourceUrl: "https://github.com/Microck/YAWN60",

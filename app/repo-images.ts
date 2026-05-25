@@ -81,6 +81,7 @@ const repoImages: Record<string, string> = {
   veyoff: "veyoff.webp",
   waterWAV: "waterWAV.webp",
   YAWN60: "YAWN60.webp",
+  "tgr03-prototype-plate": "tgr03-prototype-plate.webp",
 };
 
 function getImagePath(filename: string) {

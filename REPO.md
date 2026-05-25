@@ -66,6 +66,7 @@ waterWAV
 ancla
 RPi4toNAS-Guide
 topre-ec-archive
+tgr03-prototype-plate
 YAWN60
 
 ## MCPs

@@ -32,5 +32,13 @@ export const hardwareBatch = {
       "The project ships the case, backplate, and plate sources alongside the BOM, prototype notes, and sound tests so anyone can fabricate or tweak the build with the same practical trade-offs in mind."
     ],
     languages: ["CAD", "STEP", "DXF"]
+  },
+  "tgr03-prototype-plate": {
+    paragraphs: [
+      "TGR-03 PROTOTYPE Plate is a replacement aluminium plate file for the TGR-03 PROTOTYPE keyboard, distributed as a CNC-ready DXF.",
+      "The original TGR-03 PROTOTYPE was produced in limited numbers and replacement parts are not available from the manufacturer, leaving owners with no way to swap mounting styles.",
+      "The plate is drawn as a single DXF file suitable for CNC routing or laser cutting and may require minor sanding to fit, as noted in the repo documentation."
+    ],
+    languages: ["DXF"]
   }
 } as const satisfies Record<string, RepoDescription>;

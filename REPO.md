@@ -23,6 +23,7 @@ kagi-cli
 kefine-website
 md2pkt
 m-d/about
+m-d/ai
 m-d/blog
 m-d/micr.dev
 m-d/microkeebs

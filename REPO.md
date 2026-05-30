@@ -82,4 +82,5 @@ perplexity-mcp
 ## Skills
 claude-skills
 gsap-skills
+minecraft-server-skill
 seedance-skills

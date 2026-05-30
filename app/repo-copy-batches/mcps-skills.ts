@@ -57,6 +57,14 @@ export const mcpsSkillsBatch = {
     ],
     languages: ["TypeScript", "JavaScript"],
   },
+  "minecraft-server-skill": {
+    paragraphs: [
+      "minecraft-server-skill is a Codex skill for deploying, hardening, and operating Minecraft Java servers on Linux, covering Vanilla, Fabric, Paper, Forge, and Folia setups.",
+      "Most server guides treat Minecraft as a disposable jar launch, leaving operators to figure out systemd integration, firewall scoping, JVM tuning, and backup routines on their own.",
+      "It discovers host facts before asking questions, verifies downloads through official metadata APIs, runs under a dedicated user with systemd, and validates the finished server through service state, ports, whitelist, and mod-load results.",
+    ],
+    languages: ["Python", "Markdown"],
+  },
   "claude-skills": {
     paragraphs: [
       "ordinary-claude-skills aggregates hundreds of Claude prompt packages and scripts into categorized folders with supporting documentation.",

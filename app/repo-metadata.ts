@@ -457,6 +457,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "minecraft-server-skill": {
+    repo: "Microck/minecraft-server-skill",
+    sourceUrl: "https://github.com/Microck/minecraft-server-skill",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "claude-skills": {
     repo: "Microck/ordinary-claude-skills",
     sourceUrl: "https://github.com/Microck/ordinary-claude-skills",

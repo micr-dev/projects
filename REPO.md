@@ -11,6 +11,7 @@ boilify
 Celeste-SkinMod
 chalcopyrite
 cinco
+codexport
 dialogue-textbox
 DXFtoIRL
 elevenlabs-webui
@@ -75,6 +76,7 @@ camofox-mcp
 catbox-mcp
 chatgpt-webui-mcp
 discord-self-mcp
+gitquarry-mcp
 kagi-mcp
 namecheap-mcp
 perplexity-mcp

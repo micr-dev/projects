@@ -81,13 +81,21 @@ export const softwareBatchA = {
     ],
     languages: ["Python", "Shell", "Dockerfile"]
   },
-  "cinco": {
+  cinco: {
     paragraphs: [
       "Cinco turns Discord into a CMS for static shop sites by pairing slash commands with GitHub Gists, encrypted tokens, interactive menus, and catbox image uploads.",
       "Shop operators need a secure, button-driven admin surface, so role-based permissions, AI helpers, and real-time gist syncing keep the workflow away from custom dashboards.",
-      "Each command decrypts tokens, updates the gist JSON, and the dockerized Discord bot keeps the buttons, permissions, and sync handlers coupled with the deployed site."
+      "Each command decrypts tokens, updates the gist JSON, and the dockerized Discord bot keeps the buttons, permissions, and sync handlers coupled with the deployed site.",
     ],
-    languages: ["TypeScript", "Dockerfile"]
+    languages: ["TypeScript", "Dockerfile"],
+  },
+  codexport: {
+    paragraphs: [
+      "codexport replicates a canonical Codex setup from a master machine to followers over a Tailscale-reachable HTTP service, keeping one source of truth without committing secrets to GitHub.",
+      "Operators who maintain tuned configurations on one machine need the same defaults elsewhere, but copying plaintext auth files or keeping multiple repos in sync manually does not scale.",
+      "The master serves a content-hashed bundle including config, hooks, MCP definitions, and skills; followers pin the fingerprint, pull updates at session start, and let the managed launcher repair MCP paths automatically.",
+    ],
+    languages: ["JavaScript", "TypeScript"],
   },
   "dialogue-textbox": {
     paragraphs: [

@@ -96,6 +96,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  codexport: {
+    repo: "Microck/codexport",
+    sourceUrl: "https://github.com/Microck/codexport",
+    livePreviewUrl: "https://www.npmjs.com/package/codexport",
+    isPrivate: false,
+  },
   "ms26/delvn": {
     repo: "Microck/delvn",
     sourceUrl: "https://github.com/Microck/delvn",
@@ -431,6 +437,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     repo: "Microck/discord.py-self-mcp",
     sourceUrl: "https://github.com/Microck/discord.py-self-mcp",
     livePreviewUrl: "https://www.npmjs.com/package/discord-selfbot-mcp",
+    isPrivate: false,
+  },
+  "gitquarry-mcp": {
+    repo: "Microck/gitquarry-mcp",
+    sourceUrl: "https://github.com/Microck/gitquarry-mcp",
+    livePreviewUrl: null,
     isPrivate: false,
   },
   "kagi-mcp": {

@@ -216,6 +216,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "old-f3": {
+    repo: "Microck/old-f3",
+    sourceUrl: "https://github.com/Microck/old-f3",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "opencode-studio": {
     repo: "Microck/opencode-studio",
     sourceUrl: "https://github.com/Microck/opencode-studio",

@@ -89,6 +89,14 @@ export const softwareBatchB = {
     ],
     languages: ["TypeScript", "JavaScript", "CSS", "HTML"],
   },
+  "old-f3": {
+    paragraphs: [
+      "old f3 is a Fabric client mod for Minecraft 1.21.10 that restores the pre-1.21.9 F3 debug overlay, bringing back coordinates, chunk data, frame rates, and targeted block details in the classic layout.",
+      "The newer debug screen replaced the familiar overlay with a customization surface that many players found harder to read at a glance during gameplay.",
+      "It works through a DebugHudMixin and KeyboardMixin that intercept the new screen and render the original text lines instead, with an optional config file for separate GUI scaling.",
+    ],
+    languages: ["Java"],
+  },
   "opencode-studio": {
     paragraphs: [
       "Opencode-studio is the Next.js and Express GUI that lets you toggle MCP servers, edit skills and plugins, manage auth, and watch usage without hand-editing OpenCode JSON.",

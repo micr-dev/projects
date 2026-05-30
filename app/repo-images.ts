@@ -53,7 +53,7 @@ const repoImages: Record<string, string> = {
   nagrom: "nagrom.webp",
   "namecheap-mcp": "namecheap-mcp.webp",
   onairo: "onairo.webp",
-  "old-f3": "old-f3.webp",
+  "old-f3": "old-f3.png",
   "opencode-studio": "opencode-studio.webp",
   openslate: "openslate.webp",
   "perplexity-mcp": "perplexity-mcp.webp",

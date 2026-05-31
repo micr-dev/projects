@@ -138,6 +138,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "http://gitquarry.micr.dev/",
     isPrivate: false,
   },
+  "glm-quota-widget": {
+    repo: "Microck/glm-quota-widget",
+    sourceUrl: "https://github.com/Microck/glm-quota-widget",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "goofish-watcher": {
     repo: "Microck/goofish-watcher",
     sourceUrl: "https://github.com/Microck/goofish-watcher",

@@ -35,6 +35,7 @@ const repoImages: Record<string, string> = {
   "elevenlabs-webui": "elevenlabs-webui.webp",
   glob: "glob.webp",
   gitquarry: "gitquarry.webp",
+  "glm-quota-widget": "glm-quota-widget.webp",
   "goofish-watcher": "goofish-watcher.webp",
   "gsap-skills": "gsap-skills.webp",
   "hermes-nightshift": "hermes-nightshift.webp",

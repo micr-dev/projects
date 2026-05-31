@@ -17,6 +17,7 @@ DXFtoIRL
 elevenlabs-webui
 glob
 gitquarry
+glm-quota-widget
 goofish-watcher
 hermes-dayshift
 hermes-nightshift

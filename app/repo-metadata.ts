@@ -391,6 +391,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  vss: {
+    repo: "Microck/vss",
+    sourceUrl: "https://github.com/Microck/vss",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   waterWAV: {
     repo: "Microck/waterWAV",
     sourceUrl: "https://github.com/Microck/waterWAV",

@@ -30,6 +30,7 @@ const repoImages: Record<string, string> = {
   "ms26/delvn": "delvn.webp",
   "dialogue-textbox": "dialogue-textbox.webp",
   "discord-self-mcp": "discord-self-mcp.webp",
+  gitbanana: "gitbanana.webp",
   "gitquarry-mcp": "gitquarry-mcp.webp",
   DXFtoIRL: "DXFtoIRL.webp",
   "elevenlabs-webui": "elevenlabs-webui.webp",

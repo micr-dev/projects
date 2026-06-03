@@ -132,6 +132,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://glob.micr.dev",
     isPrivate: false,
   },
+  gitbanana: {
+    repo: "Microck/gitbanana",
+    sourceUrl: "https://github.com/Microck/gitbanana",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   gitquarry: {
     repo: "Microck/gitquarry",
     sourceUrl: "https://github.com/Microck/gitquarry",

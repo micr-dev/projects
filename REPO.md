@@ -16,6 +16,7 @@ dialogue-textbox
 DXFtoIRL
 elevenlabs-webui
 glob
+gitbanana
 gitquarry
 glm-quota-widget
 goofish-watcher

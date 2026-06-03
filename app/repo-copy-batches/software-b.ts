@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchB = {
+  gitbanana: {
+    paragraphs: [
+      "Gitbanana is a GitHub Action that publishes a release asset directly to a GameBanana mod submission, handling file upload, update creation, and verification in a single workflow step.",
+      "GameBanana blocks automated login from CI runners through anti-bot protections, so gitbanana bypasses this by consuming a Playwright storage state captured from a local browser session and reusing those cookies during the upload.",
+      "Written in TypeScript with Playwright for browser automation, it validates edit access before performing writes and exposes stable outputs like the GameBanana file URL for linking back from GitHub releases.",
+    ],
+    languages: ["TypeScript", "JavaScript"],
+  },
   gitquarry: {
     paragraphs: [
       "Gitquarry is a terminal CLI for GitHub repository search that keeps native search behavior intact by default and only enables broader discovery, reranking, and README-aware enrichment on explicit request.",

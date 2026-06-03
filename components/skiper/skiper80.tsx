@@ -624,12 +624,12 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const currentClosingAnimationToken = closingAnimationTokenRef.current;
 
   return (
-    <div className="relative flex min-h-screen w-screen justify-center py-32">
+    <div className="relative flex min-h-screen w-full justify-center overflow-x-hidden px-4 py-20 lg:w-screen lg:px-0 lg:py-32">
       <ProgressiveBlur
         position="top"
         positioning="fixed"
         backgroundColor="#121212"
-        className="-top-16 z-10"
+        className="-top-16 z-10 hidden lg:block"
         style={{
           left: "calc(15% + 12rem)",
           width: "calc(85% - 12rem)",
@@ -643,11 +643,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       />
       {isItemActive != null ? (
         <motion.div
-          className="pointer-events-none fixed inset-y-0 right-0 z-[15] bg-[#121212]"
+          className="pointer-events-none fixed inset-y-0 right-0 z-[15] w-full bg-[#121212] lg:w-[calc(85%_-_12rem)]"
           initial={{ opacity: 0 }}
           animate={{ opacity: isClosing ? 0 : 1 }}
           transition={{ duration: 0.22, ease: "easeOut" }}
-          style={{ width: "calc(85% - 12rem)" }}
         />
       ) : null}
       <AnimatePresence mode="wait" initial={false}>
@@ -661,7 +660,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             {!isActiveImageLoaded && !isClosing && shouldShowPreviewThumbnail ? (
               <div
                 aria-hidden="true"
-                className="bg-foreground/5 fixed left-[15%] top-[10%] z-20 h-50 aspect-video -translate-x-1/2 animate-pulse rounded-[25px]"
+                className="bg-foreground/5 fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 animate-pulse rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
               />
             ) : null}
 
@@ -677,20 +676,20 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               visibility: shouldShowPreviewThumbnail ? "visible" : "hidden",
               opacity: isActiveImageLoaded && shouldShowPreviewThumbnail ? 1 : 0,
             }}
-            className="fixed left-[15%] top-[10%] z-20 h-50 aspect-video -translate-x-1/2 border border-foreground/10 object-cover"
+            className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 border border-foreground/10 object-cover lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
             src={activeItem.image}
             alt=""
             onLoad={() => markImageLoaded(activeItem.image)}
             onError={() => markImageLoaded(activeItem.image)}
           />
 
-          <ul className="ml-auto mr-[10%] flex w-fit flex-col gap-2 pb-[20vh] pt-[42vh]">
+          <ul className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-[46vh] lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
             {(() => {
               let itemCursor = 0;
 
               return sections.map((section) => (
               <React.Fragment key={section.heading}>
-                <li className="mt-8 flex w-full items-center gap-3 text-sm uppercase opacity-50 first:mt-0">
+                <li className="mt-8 flex w-full items-center gap-3 text-xs uppercase opacity-50 first:mt-0 lg:text-sm">
                   {section.heading}
                   <span className="bg-foreground h-px flex-1"></span>
                 </li>
@@ -713,7 +712,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                               ? 1
                               : 0.5,
                       }}
-                      className="relative flex w-fit cursor-pointer items-center text-4xl tracking-tighter"
+                      className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight lg:w-fit lg:text-4xl lg:tracking-tighter"
                       onMouseEnter={() => {
                         preloadImage(item.image, "high");
                         setIsHoveredIndex(item.index);
@@ -749,7 +748,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           >
             {hasPendingTitleAnimation ? (
               <motion.div
-                className="pointer-events-none fixed z-30 whitespace-nowrap"
+                className="pointer-events-none fixed z-30 whitespace-normal lg:whitespace-nowrap"
                 initial={{
                   top: sourceTitleSnapshot.top,
                   left: sourceTitleSnapshot.left,
@@ -860,7 +859,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
             {closingTitleSource ? (
               <motion.div
-                className="pointer-events-none fixed z-30 whitespace-nowrap"
+                className="pointer-events-none fixed z-30 whitespace-normal lg:whitespace-nowrap"
                 initial={{
                   top: closingTitleSource.top,
                   left: closingTitleSource.left,
@@ -968,19 +967,19 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               />
             ) : null}
 
-            <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12 px-6 pt-[78px] pb-32">
+            <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 px-4 pt-16 pb-28 sm:px-6 lg:gap-12 lg:pt-[78px] lg:pb-32">
               <div className="w-full max-w-xl space-y-12">
-                <div className="font-cal-sans relative text-7xl font-medium">
+                <div className="font-cal-sans relative text-[clamp(2.4rem,15vw,4.5rem)] leading-[0.95] font-medium lg:text-7xl lg:leading-none">
                   <div
                     ref={detailTitleMeasureRef}
                     aria-hidden="true"
-                    className="invisible inline-block whitespace-nowrap"
+                    className="invisible inline-block max-w-full break-words lg:whitespace-nowrap"
                   >
                     {activeDisplayTitle}
                   </div>
                   <motion.h1
                     ref={detailTitleRef}
-                    className="absolute inset-0 inline-block whitespace-nowrap"
+                    className="absolute inset-0 inline-block max-w-full break-words lg:whitespace-nowrap"
                     style={{
                       opacity:
                         hasPendingTitleAnimation || isClosing ? 0 : 1,
@@ -990,7 +989,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   </motion.h1>
                 </div>
 
-                <div className="relative h-84 w-full">
+                <div className="relative aspect-video w-full lg:h-84 lg:aspect-auto">
                   {!isActiveImageLoaded && !hasPendingImageAnimation && !isClosing ? (
                     <div
                       aria-hidden="true"
@@ -1098,7 +1097,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     ))}
                   </p>
 
-                  <div className="mt-10 flex items-center gap-2.5">
+                  <div className="mt-10 flex flex-wrap items-center gap-2.5">
                     {activeItem.metadata.livePreviewUrl ? (
                       <a
                         href={activeItem.metadata.livePreviewUrl}

@@ -27,6 +27,7 @@ const repoImages: Record<string, string> = {
   cinco: "cinco.webp",
   codexport: "codexport.webp",
   "claude-skills": "claude-skills.webp",
+  "grill-with-facts": "grill-with-facts.webp",
   "ms26/delvn": "delvn.webp",
   "dialogue-textbox": "dialogue-textbox.webp",
   "discord-self-mcp": "discord-self-mcp.webp",

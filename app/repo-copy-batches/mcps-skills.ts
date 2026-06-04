@@ -81,6 +81,14 @@ export const mcpsSkillsBatch = {
     ],
     languages: ["Python", "PowerShell", "Shell", "JavaScript"],
   },
+  "grill-with-facts": {
+    paragraphs: [
+      "grill-with-facts is an agent skill for stress-testing plans one question at a time and saving resolved decisions as atomic, verifiable facts in a .facts file.",
+      "Loose proposals tend to carry hidden assumptions that get lost in chat history, so the skill pressure-tests each branch and writes durable outcomes that future agents can refine.",
+      "It wraps the facts CLI, reads the current fact sheet, asks high-leverage questions, and immediately persists each answer as a spec or draft fact via facts add.",
+    ],
+    languages: ["Markdown"],
+  },
   "gsap-skills": {
     paragraphs: [
       "gsap-skills packs Opencode reference skills for GSAP animation patterns: timelines, ScrollTrigger, text, SVG, FLIP, draggable, observer, easing, React helpers, and performance notes.",

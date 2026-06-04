@@ -505,6 +505,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://microck.github.io/ordinary-claude-skills/",
     isPrivate: false,
   },
+  "grill-with-facts": {
+    repo: "Microck/grill-with-facts",
+    sourceUrl: "https://github.com/Microck/grill-with-facts",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "gsap-skills": {
     repo: "Microck/gsap-skills",
     sourceUrl: "https://github.com/Microck/gsap-skills",

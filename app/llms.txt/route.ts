@@ -52,6 +52,7 @@ export async function GET(request: Request) {
   const { baseUrl, title } = getSite(request);
   const sections = await getRepoSections();
   const entries = sections.flatMap((section) => section.items);
+  const projectEntries = entries.map((item) => formatProjectEntry(item, baseUrl));
   const body = [
     `# ${title}`,
     "",
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
     "",
     "This file is generated from the same project data used by the regular portfolio page.",
     "",
-    ...entries.map((item) => formatProjectEntry(item, baseUrl)),
+    projectEntries.join("\n\n"),
     "",
   ].join("\n");
 

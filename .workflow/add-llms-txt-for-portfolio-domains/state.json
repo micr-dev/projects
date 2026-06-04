@@ -1,0 +1,30 @@
+{
+  "title": "Add llms txt for portfolio domains",
+  "slug": "add-llms-txt-for-portfolio-domains",
+  "created_at": "2026-06-04T20:09:11+00:00",
+  "status": "complete",
+  "approval": {
+    "required": false,
+    "granted": true,
+    "notes": "No risky, external, destructive, credential, or production-data steps were needed."
+  },
+  "packets": [
+    {
+      "id": "discovery",
+      "status": "complete"
+    },
+    {
+      "id": "implementation",
+      "status": "complete"
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "checks": [
+      "pnpm lint",
+      "pnpm build",
+      "curl host smoke tests",
+      "workflow verification"
+    ]
+  }
+}

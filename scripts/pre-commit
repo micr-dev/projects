@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Pre-commit hook: auto-generate LQIP placeholders for new/modified repo thumbnails.
+# Resolve REPO_ROOT from the symlink target, not the hook location.
+HOOK_SOURCE="$(readlink -f "${BASH_SOURCE[0]}")"
+REPO_ROOT="$(cd "$(dirname "$HOOK_SOURCE")/.." && pwd)"
+LQIP_SCRIPT="$REPO_ROOT/scripts/generate-lqip.py"
+
+if [ -f "$LQIP_SCRIPT" ] && command -v python3 >/dev/null 2>&1; then
+    python3 "$LQIP_SCRIPT" || true
+    git add "$REPO_ROOT/public/images/repo-thumbnails/lqip/" 2>/dev/null || true
+    git add "$REPO_ROOT/public/images/oct25Coll/skiperpro/" 2>/dev/null || true
+fi

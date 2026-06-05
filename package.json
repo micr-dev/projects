@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lqip": "python3 scripts/generate-lqip.py",
+    "lqip:check": "python3 scripts/generate-lqip.py --check"
   },
   "dependencies": {
     "framer-motion": "^12.29.2",

@@ -26,6 +26,9 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
+      super-hover:
+        specifier: ^0.1.0
+        version: 0.1.0(react@19.2.3)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4
@@ -1869,6 +1872,17 @@ packages:
       '@babel/core':
         optional: true
       babel-plugin-macros:
+        optional: true
+
+  super-hover@0.1.0:
+    resolution: {integrity: sha512-p8yTNGe1ndhCcqsNjDonLLLh2jLiP4i29r/c8jbb7Eret5ixcBgdcCmXUnjLie6/5D2GzOqN0ljuFnPSt9Yb6A==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+      vue: ^3.4.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      vue:
         optional: true
 
   supports-color@7.2.0:
@@ -3950,6 +3964,10 @@ snapshots:
       react: 19.2.3
     optionalDependencies:
       '@babel/core': 7.29.0
+
+  super-hover@0.1.0(react@19.2.3):
+    optionalDependencies:
+      react: 19.2.3
 
   supports-color@7.2.0:
     dependencies:

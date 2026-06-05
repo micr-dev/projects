@@ -8,7 +8,7 @@ import {
   getRepoSlugPath,
   normalizeRepoSlugPath,
 } from "../../app/repo-paths";
-import { getRepoImage } from "../../app/repo-images";
+import { getRepoImage, getRepoLqip } from "../../app/repo-images";
 import type { RepoDescription } from "../../app/repo-description-types";
 import type { RepoMetadata } from "../../app/repo-metadata";
 import type { RepoSection } from "../../app/repo-sections";
@@ -28,6 +28,7 @@ interface RepoItem {
   title: string;
   index: number;
   image: string;
+  lqip: string;
   slug: string;
 }
 
@@ -170,6 +171,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           ...item,
           index,
           image: getRepoImage(item.title, index),
+          lqip: getRepoLqip(item.title, index),
         })),
     [sections],
   );
@@ -657,10 +659,18 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
         >
-            {!isActiveImageLoaded && !isClosing && shouldShowPreviewThumbnail ? (
+            {shouldShowPreviewThumbnail ? (
               <div
                 aria-hidden="true"
-                className="bg-foreground/5 fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 animate-pulse rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
+                className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
+                style={{
+                  backgroundImage: `url(${activeItem.lqip})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  imageRendering: "pixelated",
+                  opacity: isActiveImageLoaded ? 0 : 1,
+                  transition: "opacity 0.3s ease",
+                }}
               />
             ) : null}
 
@@ -990,12 +1000,18 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                 </div>
 
                 <div className="relative aspect-video w-full lg:h-84 lg:aspect-auto">
-                  {!isActiveImageLoaded && !hasPendingImageAnimation && !isClosing ? (
-                    <div
-                      aria-hidden="true"
-                      className="bg-foreground/5 absolute inset-0 animate-pulse rounded-[25px]"
-                    />
-                  ) : null}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 overflow-hidden rounded-[25px]"
+                    style={{
+                      backgroundImage: `url(${activeItem.lqip})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      imageRendering: "pixelated",
+                      opacity: isActiveImageLoaded ? 0 : 1,
+                      transition: "opacity 0.3s ease",
+                    }}
+                  />
 
                   <motion.img
                     ref={detailImageRef}

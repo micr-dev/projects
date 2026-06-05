@@ -104,3 +104,20 @@ export function getRepoImage(title: string, index: number) {
     ? getImagePath(filename)
     : placeholderImages[index % placeholderImages.length];
 }
+
+/**
+ * Returns the LQIP (20px-wide pixelated PNG) for a repo thumbnail.
+ * Used as a background-image placeholder that renders with image-rendering: pixelated.
+ */
+export function getRepoLqip(title: string, index: number) {
+  const filename = repoImages[title];
+
+  if (!filename) {
+    const placeholder = placeholderImages[index % placeholderImages.length];
+    const base = placeholder.split("/").pop()!.replace(/\.\w+$/, "");
+    return encodeURI(`/images/oct25Coll/skiperpro/${base}-lqip.png`);
+  }
+
+  const base = filename.replace(/\.\w+$/, "");
+  return encodeURI(`/images/repo-thumbnails/lqip/${base}-lqip.png`);
+}

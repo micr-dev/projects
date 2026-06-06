@@ -30,6 +30,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  altman: {
+    repo: "Microck/altman",
+    sourceUrl: "https://github.com/Microck/altman",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   anonQ: {
     repo: "Microck/anonQ",
     sourceUrl: "https://github.com/Microck/anonQ",

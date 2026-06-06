@@ -9,6 +9,7 @@ const repoImages: Record<string, string> = {
   "m-d/about": "about.webp",
   "m-d/ai": "ai.webp",
   "akron-website": "akron-website.png",
+  altman: "altman.webp",
   ancla: "ancla.webp",
   "akron-discord": "akron-discord.webp",
   anonQ: "anonQ.webp",

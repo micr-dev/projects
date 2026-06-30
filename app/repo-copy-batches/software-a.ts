@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchA = {
+  akron: {
+    paragraphs: [
+      "Akron is a practice and utility mod menu for Celeste, running inside Everest with an in-game overlay for routing, HUD visibility, capture, setup sharing, and attempt status.",
+      "Player tools are normally scattered across separate menus and external utilities, so Akron consolidates startpos tools, retry helpers, frame and timescale controls, and room-lab utilities into one overlay accessible with Tab.",
+      "It's built in C# as a .NET Everest mod, integrates with external mods like Speedrun Tool, CelesteTAS, and Extended Variant Mode, and supports shareable .akr setup packs for personal and community configurations."
+    ],
+    languages: ["C#", "JavaScript", "Shell", "PowerShell"]
+  },
   "akron-discord": {
     paragraphs: [
       "akron-discord is the official Discord bot for Akron's single community server, managing server setup, user verification, .akr submission scanning, and R2 catalog publishing.",

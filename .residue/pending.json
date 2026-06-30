@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "4a977dc3-6fbe-b039-b281-9cf18c2e8f67",
+    "agent": "codex",
+    "agent_version": "codex-cli 0.141.0",
+    "status": "open",
+    "data_path": "/home/ubuntu/.codex/sessions/2026/06/18/rollout-2026-06-18T20-27-41-019edc6b-040e-7663-9f9a-c4c0e8c1ecce.jsonl",
+    "commits": []
+  }
+]

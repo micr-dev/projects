@@ -15,7 +15,13 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "m-d/ai": {
     repo: "micr-dev/ai",
     sourceUrl: "https://github.com/micr-dev/ai",
-    livePreviewUrl: "https://ai.micr.dev",
+    livePreviewUrl: "https://github.com/micr-dev/ai",
+    isPrivate: false,
+  },
+  akron: {
+    repo: "Microck/Akron",
+    sourceUrl: "https://github.com/Microck/Akron",
+    livePreviewUrl: "https://akron.micr.dev/docs",
     isPrivate: false,
   },
   "akron-discord": {
@@ -39,7 +45,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   anonQ: {
     repo: "Microck/anonQ",
     sourceUrl: "https://github.com/Microck/anonQ",
-    livePreviewUrl: "https://micr.dev/anonq",
+    livePreviewUrl: "https://github.com/Microck/anonQ",
     isPrivate: false,
   },
   "anydesk-legacy-bin": {
@@ -75,7 +81,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "m-d/blog": {
     repo: "micr-dev/blog",
     sourceUrl: "https://github.com/micr-dev/blog",
-    livePreviewUrl: "https://blog.micr.dev",
+    livePreviewUrl: "https://github.com/micr-dev/blog",
     isPrivate: false,
   },
   boilify: {
@@ -117,7 +123,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "dialogue-textbox": {
     repo: "Microck/DialogueTextbox-Generator",
     sourceUrl: "https://github.com/Microck/DialogueTextbox-Generator",
-    livePreviewUrl: "https://dialogue.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/DialogueTextbox-Generator",
     isPrivate: false,
   },
   DXFtoIRL: {
@@ -135,7 +141,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   glob: {
     repo: "Microck/glob",
     sourceUrl: "https://github.com/Microck/glob",
-    livePreviewUrl: "https://glob.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/glob",
     isPrivate: false,
   },
   gitbanana: {
@@ -147,7 +153,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   gitquarry: {
     repo: "Microck/gitquarry",
     sourceUrl: "https://github.com/Microck/gitquarry",
-    livePreviewUrl: "http://gitquarry.micr.dev/",
+    livePreviewUrl: "https://github.com/Microck/gitquarry",
     isPrivate: false,
   },
   "glm-quota-widget": {
@@ -189,7 +195,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "kagi-cli": {
     repo: "Microck/kagi-cli",
     sourceUrl: "https://github.com/Microck/kagi-cli",
-    livePreviewUrl: "https://kagi.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/kagi-cli",
     isPrivate: false,
   },
   "kefine-website": {
@@ -201,7 +207,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "m-d/micr.dev": {
     repo: "micr-dev/micr.dev",
     sourceUrl: "https://github.com/micr-dev/micr.dev",
-    livePreviewUrl: "https://micr.dev",
+    livePreviewUrl: "https://github.com/micr-dev/micr.dev",
     isPrivate: false,
   },
   "m-d/microkeebs": {
@@ -213,7 +219,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   mullgate: {
     repo: "Microck/mullgate",
     sourceUrl: "https://github.com/Microck/mullgate",
-    livePreviewUrl: "https://mullgate.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/mullgate",
     isPrivate: false,
   },
   micromail: {
@@ -243,7 +249,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "opencode-studio": {
     repo: "Microck/opencode-studio",
     sourceUrl: "https://github.com/Microck/opencode-studio",
-    livePreviewUrl: "https://opencode-studio.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/opencode-studio",
     isPrivate: false,
   },
   openslate: {
@@ -297,7 +303,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   sincronizado: {
     repo: "Microck/sincronizado",
     sourceUrl: "https://github.com/Microck/sincronizado",
-    livePreviewUrl: "https://sincronizado.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/sincronizado",
     isPrivate: false,
   },
   SpainGPT: {
@@ -315,7 +321,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   squircle: {
     repo: "Microck/squircle",
     sourceUrl: "https://github.com/Microck/squircle",
-    livePreviewUrl: "https://squircle.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/squircle",
     isPrivate: false,
   },
   "supabase-keepalive": {
@@ -340,31 +346,31 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   tailstick: {
     repo: "Microck/tailstick",
     sourceUrl: "https://github.com/Microck/tailstick",
-    livePreviewUrl: "https://tailstick.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/tailstick",
     isPrivate: false,
   },
   "m-d/thinko": {
     repo: "micr-dev/thinko",
     sourceUrl: "https://github.com/micr-dev/thinko",
-    livePreviewUrl: "https://thinko.micr.dev",
+    livePreviewUrl: "https://github.com/micr-dev/thinko",
     isPrivate: false,
   },
   tuireel: {
     repo: "Microck/tuireel",
     sourceUrl: "https://github.com/Microck/tuireel",
-    livePreviewUrl: "https://tuireel.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/tuireel",
     isPrivate: false,
   },
   "m-d/tokens": {
     repo: "micr-dev/tokens",
     sourceUrl: "https://github.com/micr-dev/tokens",
-    livePreviewUrl: "https://tokens.micr.dev",
+    livePreviewUrl: "https://github.com/micr-dev/tokens",
     isPrivate: false,
   },
   tuneport: {
     repo: "Microck/tuneport",
     sourceUrl: "https://github.com/Microck/tuneport",
-    livePreviewUrl: "https://tuneport.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/tuneport",
     isPrivate: false,
   },
   tupac: {
@@ -478,7 +484,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "kagi-mcp": {
     repo: "Microck/kagi-mcp",
     sourceUrl: "https://github.com/Microck/kagi-mcp",
-    livePreviewUrl: "https://kagi.micr.dev",
+    livePreviewUrl: "https://github.com/Microck/kagi-mcp",
     isPrivate: false,
   },
   "namecheap-mcp": {

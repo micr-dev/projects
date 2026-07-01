@@ -81,6 +81,14 @@ export const softwareBatchA = {
     ],
     languages: ["C++", "JavaScript", "CSS", "HTML"]
   },
+  "bettersaves": {
+    paragraphs: [
+      "BetterSaves is a Celeste/Everest mod that replaces the native save file menu with a compact save deck for players who keep more than three saves.",
+      "The default Celeste menu does not scale once saves become a collection, so BetterSaves keeps the common path fast with a first-class continue action before adding dense browsing, pinned saves, archives, duplicates, and restore affordances.",
+      "The .NET 8 mod groups saves into recent, pinned, in-progress, complete, modded, and archived sections with controller-first navigation, keyboard filtering, and multiple sort modes."
+    ],
+    languages: ["C#"]
+  },
   "Celeste-SkinMod": {
     paragraphs: [
       "Quarzite is a Celeste OC skin mod that replaces Madeline with the original character, complete with dash-count hair color swaps and custom idle animations.",

@@ -20,6 +20,7 @@ const repoImages: Record<string, string> = {
   "ms26/bansho": "bansho.webp",
   "bdss-website": "bdss-club-website.webp",
   "m-d/blog": "blog.webp",
+  bettersaves: "bettersaves.webp",
   boilify: "bolify.webp",
   "camofox-mcp": "camofox-mcp.webp",
   "catbox-mcp": "catbox-mcp.webp",

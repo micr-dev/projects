@@ -9,6 +9,7 @@ anonQ
 anydesk-legacy-bin
 archie
 bdss-website
+bettersaves
 boilify
 Celeste-SkinMod
 chalcopyrite

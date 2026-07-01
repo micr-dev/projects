@@ -84,6 +84,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://github.com/micr-dev/blog",
     isPrivate: false,
   },
+  bettersaves: {
+    repo: "Microck/bettersaves",
+    sourceUrl: "https://github.com/Microck/bettersaves",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   boilify: {
     repo: "Microck/boilify",
     sourceUrl: "https://github.com/Microck/boilify",

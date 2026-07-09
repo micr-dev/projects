@@ -9,6 +9,14 @@ export const softwareBatchC = {
     ],
     languages: ["TypeScript", "CSS", "JavaScript"],
   },
+  syntaxis: {
+    paragraphs: [
+      "Syntaxis is a closed-source backend for an AI resume builder that ingests GitHub and LinkedIn profiles, generates LaTeX resumes via AI, and compiles them to PDF.",
+      "Most resume tools lock you into rigid templates and offer no data import, so the backend ingests real profiles and feeds structured data into AI-driven LaTeX generation across multiple industry templates.",
+      "Built on Hono with Drizzle ORM on PostgreSQL, it routes AI generation through DeepSeek with OpenAI fallback, compiles LaTeX server-side, manages credits and subscriptions via Polar and Stripe, and supports 10 languages with localized prompts.",
+    ],
+    languages: ["TypeScript", "TeX", "Dockerfile"],
+  },
   "supabase-keepalive": {
     paragraphs: [
       "Supabase-keepalive is a Python script that repeatedly calls a lightweight RPC on your Supabase database to keep the free tier from pausing.",

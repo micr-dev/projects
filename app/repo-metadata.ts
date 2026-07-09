@@ -330,6 +330,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://github.com/Microck/squircle",
     isPrivate: false,
   },
+  syntaxis: {
+    repo: "Microck/syntaxis-backend",
+    sourceUrl: "https://github.com/Microck/syntaxis-backend",
+    livePreviewUrl: null,
+    isPrivate: true,
+  },
   "supabase-keepalive": {
     repo: "Microck/supabase-keep-alive",
     sourceUrl: "https://github.com/Microck/supabase-keep-alive",

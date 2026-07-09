@@ -56,6 +56,7 @@ sincronizado
 solecist
 SpainGPT
 squircle
+syntaxis
 supabase-keepalive
 t3-chat-zipper
 tailstick

@@ -75,6 +75,7 @@ const repoImages: Record<string, string> = {
   SpainGPT: "SpainGPT.webp",
   "ms26/spikehound": "spikehound.webp",
   squircle: "squircle.webp",
+  syntaxis: "syntaxis.webp",
   "supabase-keepalive": "supabase-keepalive.webp",
   "t3-chat-zipper": "t3-chat-zipper.webp",
   traccia: "traccia.webp",

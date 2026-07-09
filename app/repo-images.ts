@@ -29,6 +29,7 @@ const repoImages: Record<string, string> = {
   "chatgpt-webui-mcp": "chatgpt-webui-mcp.webp",
   cinco: "cinco.webp",
   codexport: "codexport.webp",
+  "crabbox-template-boxes": "crabbox-template-boxes.webp",
   "claude-skills": "claude-skills.webp",
   "grill-with-facts": "grill-with-facts.webp",
   "ms26/delvn": "delvn.webp",

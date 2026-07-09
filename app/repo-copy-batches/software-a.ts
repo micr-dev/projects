@@ -121,6 +121,14 @@ export const softwareBatchA = {
     ],
     languages: ["JavaScript", "TypeScript"],
   },
+  "crabbox-template-boxes": {
+    paragraphs: [
+      "crabbox-template-boxes provides portable template configs and host scripts for spinning up Crabbox boxes across Linux and Windows ARM64 environments.",
+      "Building and maintaining disposable VMs across mixed-platform infrastructure requires repeatable provisioning, and manual setup per box does not scale across Oracle Cloud, QEMU, and Hyper-V backends.",
+      "The repo ships YAML template configs for six box profiles, PowerShell host scripts for Win10 QEMU and Win11 Hyper-V base image creation and sealing, and provider shell scripts for SSH-tunneled lease management.",
+    ],
+    languages: ["PowerShell", "Shell"],
+  },
   "dialogue-textbox": {
     paragraphs: [
       "Dialogue Textbox Generator builds Undertale/Deltarune-style dialogue videos with typing animation, and the newer React-based web version adds live previews, custom fonts, and GIF/MP4 exports.",

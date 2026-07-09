@@ -120,6 +120,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://www.npmjs.com/package/codexport",
     isPrivate: false,
   },
+  "crabbox-template-boxes": {
+    repo: "Microck/crabbox-template-boxes",
+    sourceUrl: "https://github.com/Microck/crabbox-template-boxes",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "ms26/delvn": {
     repo: "Microck/delvn",
     sourceUrl: "https://github.com/Microck/delvn",

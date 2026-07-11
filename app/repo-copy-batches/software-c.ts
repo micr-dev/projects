@@ -129,6 +129,14 @@ export const softwareBatchC = {
     ],
     languages: ["Python"],
   },
+  "rental-search": {
+    paragraphs: [
+      "Rental-search is a local CLI that captures rental listings from Spanish property portals, feeds photos and text to a vision-capable LLM, and produces evidence-backed JSON evaluations against a configurable criteria set.",
+      "Manual rental browsing leaves you re-reading the same listings and forgetting which flats failed which requirements, while existing portals offer no structured filtering for the kind of hard constraints that actually matter.",
+      "Built in TypeScript with Bun, it clones a pinned property-scraper via Playwright for listing extraction, validates every LLM analysis against a Zod schema, and supports both Codex and OpenAI providers for multimodal photo evaluation.",
+    ],
+    languages: ["TypeScript"],
+  },
   revisor: {
     paragraphs: [
       "Revisor is a CLI that clones GitHub pull requests and issues into temporary workspaces, runs codex with bundled workflows, and then reports, patches, or opens a pull request depending on the command.",

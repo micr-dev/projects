@@ -294,6 +294,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "rental-search": {
+    repo: "Microck/rental-search",
+    sourceUrl: "https://github.com/Microck/rental-search",
+    livePreviewUrl: null,
+    isPrivate: true,
+  },
   revisor: {
     repo: "Microck/revisor",
     sourceUrl: "https://github.com/Microck/revisor",

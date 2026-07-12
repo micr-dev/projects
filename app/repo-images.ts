@@ -63,7 +63,6 @@ const repoImages: Record<string, string> = {
   onairo: "onairo.webp",
   "old-f3": "old-f3.png",
   "opencode-studio": "opencode-studio.webp",
-  openslate: "openslate.webp",
   "perplexity-mcp": "perplexity-mcp.webp",
   protoncode: "protoncode.webp",
   "m-d/quarzite": "quarzite.webp",

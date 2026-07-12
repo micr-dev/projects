@@ -50,7 +50,6 @@ nagrom
 old-f3
 onairo
 opencode-studio
-openslate
 protoncode
 rental-search
 revisor

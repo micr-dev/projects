@@ -270,12 +270,6 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://github.com/Microck/opencode-studio",
     isPrivate: false,
   },
-  openslate: {
-    repo: "Microck/openslate",
-    sourceUrl: "https://github.com/Microck/openslate",
-    livePreviewUrl: null,
-    isPrivate: false,
-  },
   "m-d/projects": {
     repo: "micr-dev/projects",
     sourceUrl: "https://github.com/micr-dev/projects",

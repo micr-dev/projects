@@ -38,6 +38,7 @@ m-d/thinko
 m-d/tokens
 md2pkt
 micromail
+moji
 ms26/bansho
 ms26/delvn
 ms26/indagine

@@ -57,6 +57,7 @@ const repoImages: Record<string, string> = {
   "md2pkt": "md2pkt.webp",
   "minecraft-server-skill": "minecraft-server-skill.webp",
   micromail: "micromail.webp",
+  moji: "moji.webp",
   nagrom: "nagrom.webp",
   "namecheap-mcp": "namecheap-mcp.webp",
   onairo: "onairo.webp",

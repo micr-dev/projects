@@ -89,6 +89,14 @@ export const softwareBatchB = {
     ],
     languages: ["TypeScript", "CSS", "JavaScript"],
   },
+  moji: {
+    paragraphs: [
+      "moji is a Go CLI font finder that searches across multiple font sources, ranks candidates by family and filename, and downloads the best match through a Bubble Tea TUI, stable table output, or JSON for scripting.",
+      "Font discovery is fragmented across scattered websites, GitHub repos, and registries with no unified ranking or download validation, so moji aggregates them into a single ranked pipeline with format filtering and family-wide downloads.",
+      "The Go binary ships as an npm wrapper for global install, uses GetFonts, GitHub (repository/tree/release search with optional auth), registry, and websearch providers (Kagi CLI or SearXNG), validates font magic bytes with SHA-256 dedup and atomic rename, and supports configurable source plugins.",
+    ],
+    languages: ["Go", "TypeScript", "JavaScript", "Makefile"],
+  },
   nagrom: {
     paragraphs: [
       "Nagrom is a self-hostable Discord bot that routes claims through a tiered fact-checking pipeline, forces JSON outputs, and keeps every verdict stored in SQLite.",

@@ -240,6 +240,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  moji: {
+    repo: "Microck/moji",
+    sourceUrl: "https://github.com/Microck/moji",
+    livePreviewUrl: "https://moji.micr.dev/docs",
+    isPrivate: false,
+  },
   nagrom: {
     repo: "Microck/nagrom",
     sourceUrl: "https://github.com/Microck/nagrom",

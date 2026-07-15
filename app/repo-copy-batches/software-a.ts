@@ -19,11 +19,11 @@ export const softwareBatchA = {
   },
   "akron-website": {
     paragraphs: [
-      "Akron Website is a single-page landing site for Akron.",
-      "The project serves as Akron's visual entry point, so the page stays lightweight with no heavy framework dependencies.",
-      "It uses plain HTML, TypeScript, and CSS served directly via the Bun runtime."
+      "Akron Website is the landing site and infrastructure gateway for Akron, a Celeste mod, serving downloads, docs, a community pack catalog, and a live service status dashboard.",
+      "Beyond the landing page, it acts as a routing layer that proxies Mintlify docs, GameBanana download redirects, Cloudflare R2 pack assets, and a Gatus status API.",
+      "Built with Vite and React, deployed on Vercel with serverless API routes, strict CSP headers, and a self-hosted Gatus instance for uptime monitoring.",
     ],
-    languages: ["CSS", "TypeScript", "HTML"]
+    languages: ["TypeScript", "CSS", "JavaScript", "HTML"]
   },
   altman: {
     paragraphs: [

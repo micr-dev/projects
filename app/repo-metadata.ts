@@ -33,7 +33,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
   "akron-website": {
     repo: "Microck/akron-website",
     sourceUrl: "https://github.com/Microck/akron-website",
-    livePreviewUrl: null,
+    livePreviewUrl: "https://akron.micr.dev",
     isPrivate: false,
   },
   altman: {

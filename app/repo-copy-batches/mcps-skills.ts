@@ -105,4 +105,12 @@ export const mcpsSkillsBatch = {
     ],
     languages: ["Markdown", "JavaScript"],
   },
+  "tailor-coderabbit-config": {
+    paragraphs: [
+      "tailor-coderabbit-config is a Codex skill that builds and calibrates a repository's .coderabbit.yaml for CodeRabbit review.",
+      "Manual configuration often leads to noisy or irrelevant review comments, so the skill treats the config as an engineering artifact to be tuned against real-world review data.",
+      "It maps the repository's trust boundaries and CI, fetches the live schema, and iterates over representative reviews to classify results as signal, noise, or misses.",
+    ],
+    languages: ["Markdown"],
+  },
 } as const satisfies Record<string, RepoDescription>;

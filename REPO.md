@@ -97,4 +97,5 @@ grill-with-facts
 gsap-skills
 minecraft-server-skill
 seedance-skills
+tailor-coderabbit-config
 

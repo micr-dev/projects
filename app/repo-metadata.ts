@@ -499,6 +499,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://www.npmjs.com/package/discord-selfbot-mcp",
     isPrivate: false,
   },
+  "tailor-coderabbit-config": {
+    repo: "Microck/tailor-coderabbit-config",
+    sourceUrl: "https://github.com/Microck/tailor-coderabbit-config",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "gitquarry-mcp": {
     repo: "Microck/gitquarry-mcp",
     sourceUrl: "https://github.com/Microck/gitquarry-mcp",

@@ -252,6 +252,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://microck.github.io/nagrom/",
     isPrivate: false,
   },
+  "ollama-quota-bench": {
+    repo: "Microck/ollama-quota-bench",
+    sourceUrl: "https://github.com/Microck/ollama-quota-bench",
+    livePreviewUrl: "https://github.com/Microck/ollama-quota-bench",
+    isPrivate: false,
+  },
   onairo: {
     repo: "Microck/onairo",
     sourceUrl: "https://github.com/Microck/onairo",

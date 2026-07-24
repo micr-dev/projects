@@ -105,6 +105,14 @@ export const softwareBatchB = {
     ],
     languages: ["Python", "HTML", "TeX", "Mermaid"],
   },
+  "ollama-quota-bench": {
+    paragraphs: [
+      "ollama-quota-bench is a dependency-free Python harness that measures relative Ollama Cloud quota consumption across models by running controlled request workloads and tracking quota deltas from the authenticated settings page.",
+      "Ollama Cloud does not publish per-model quota costs, so users have no way to predict how many calls a given model will consume or compare models by efficiency without running their own benchmarks.",
+      "The CLI interleaves baseline anchor models to account for rate-limit noise, reads quota percentages from the authenticated session page, and outputs CSV, JSON, Markdown, and HTML reports with per-model multipliers and intelligence-index comparisons.",
+    ],
+    languages: ["Python", "HTML"],
+  },
   onairo: {
     paragraphs: [
       "Onairo is a Chromium extension that captures selections, clipboard text and images, and right-click content, sends it to hosted providers or the Codex native bridge, and returns answers for copy, paste, typing, or tooltip overlays.",

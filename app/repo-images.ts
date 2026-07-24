@@ -60,6 +60,7 @@ const repoImages: Record<string, string> = {
   moji: "moji.webp",
   nagrom: "nagrom.webp",
   "namecheap-mcp": "namecheap-mcp.webp",
+  "ollama-quota-bench": "ollama-quota-bench.webp",
   onairo: "onairo.webp",
   "old-f3": "old-f3.png",
   "opencode-studio": "opencode-studio.webp",

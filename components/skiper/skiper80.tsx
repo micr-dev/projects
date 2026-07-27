@@ -9,7 +9,12 @@ import {
   getRepoSlugPath,
   normalizeRepoSlugPath,
 } from "../../app/repo-paths";
-import { getRepoImage, getRepoLqip } from "../../app/repo-images";
+import {
+  getRepoImage,
+  getRepoImageSizes,
+  getRepoImageSrcSet,
+  getRepoLqip,
+} from "../../app/repo-images";
 import type { RepoDescription } from "../../app/repo-description-types";
 import type { RepoMetadata } from "../../app/repo-metadata";
 import type { RepoSection } from "../../app/repo-sections";
@@ -29,6 +34,7 @@ interface RepoItem {
   title: string;
   index: number;
   image: string;
+  imageSrcSet: string;
   lqip: string;
   slug: string;
 }
@@ -156,8 +162,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const closingTitleScrollOriginRef = useRef(0);
 
   const superHoverRef = useSuperHoverRef({
-    moveEventType: false,
-    onEnter(event) {
+    sweptHitTest: true,
+    onEnter(event: CustomEvent) {
       const el = event.detail.current as HTMLElement | null;
       if (!el) return;
       const indexAttr = el.getAttribute("data-super-hover");
@@ -188,6 +194,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           ...item,
           index,
           image: getRepoImage(item.title, index),
+          imageSrcSet: getRepoImageSrcSet(item.title, index),
           lqip: getRepoLqip(item.title, index),
         })),
     [sections],
@@ -705,6 +712,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             }}
             className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 border border-foreground/10 object-cover lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
             src={activeItem.image}
+            srcSet={activeItem.imageSrcSet}
+            sizes={getRepoImageSizes()}
             alt=""
             onLoad={() => markImageLoaded(activeItem.image)}
             onError={() => markImageLoaded(activeItem.image)}
@@ -1046,6 +1055,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       opacity: isActiveImageLoaded ? 1 : 0,
                     }}
                     src={activeItem.image}
+                    srcSet={activeItem.imageSrcSet}
+                    sizes={getRepoImageSizes()}
                     alt=""
                     className="h-full w-full object-cover"
                     onLoad={() => markImageLoaded(activeItem.image)}

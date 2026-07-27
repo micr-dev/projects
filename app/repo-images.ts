@@ -101,8 +101,20 @@ const repoImages: Record<string, string> = {
   "tgr03-prototype-plate": "tgr03-prototype-plate.webp",
 };
 
+const WIDTHS = [300, 1000, 2000] as const;
+
 function getImagePath(filename: string) {
   return encodeURI(`/images/repo-thumbnails/${filename}`);
+}
+
+function getResponsivePath(filename: string, width: number) {
+  const base = filename.replace(/\.\w+$/, "");
+  return encodeURI(`/images/repo-thumbnails/responsive/${base}-${width}w.webp`);
+}
+
+function getSrcSet(pathOrFilename: string) {
+  const filename = pathOrFilename.split("/").pop() ?? pathOrFilename;
+  return WIDTHS.map((width) => `${getResponsivePath(filename, width)} ${width}w`).join(", ");
 }
 
 export function getRepoImage(title: string, index: number) {
@@ -111,6 +123,14 @@ export function getRepoImage(title: string, index: number) {
   return filename
     ? getImagePath(filename)
     : placeholderImages[index % placeholderImages.length];
+}
+
+export function getRepoImageSrcSet(title: string, index: number) {
+  const filename = repoImages[title];
+
+  return filename
+    ? getSrcSet(filename)
+    : getSrcSet(placeholderImages[index % placeholderImages.length]);
 }
 
 /**
@@ -128,4 +148,9 @@ export function getRepoLqip(title: string, index: number) {
 
   const base = filename.replace(/\.\w+$/, "");
   return encodeURI(`/images/repo-thumbnails/lqip/${base}-lqip.png`);
+}
+
+/** Responsive image sizes for the preview + detail thumbnails. */
+export function getRepoImageSizes() {
+  return "(max-width: 1024px) 90vw, 30vw";
 }

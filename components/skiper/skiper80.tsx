@@ -11,6 +11,7 @@ import {
 } from "../../app/repo-paths";
 import {
   getRepoImage,
+  getRepoImageResponsiveUrls,
   getRepoImageSizes,
   getRepoImageSrcSet,
   getRepoLqip,
@@ -35,6 +36,7 @@ interface RepoItem {
   index: number;
   image: string;
   imageSrcSet: string;
+  responsiveUrls: string[];
   lqip: string;
   slug: string;
 }
@@ -163,14 +165,17 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
   const superHoverRef = useSuperHoverRef({
     sweptHitTest: true,
+    events: ["enter"],
     onEnter(event: CustomEvent) {
-      const el = event.detail.current as HTMLElement | null;
+      const detail = event.detail as { current?: HTMLElement } | undefined;
+      const el = detail?.current;
       if (!el) return;
       const indexAttr = el.getAttribute("data-super-hover");
       if (indexAttr != null) {
         const index = Number(indexAttr);
         if (!Number.isNaN(index) && index >= 0 && index < items.length) {
-          preloadImage(items[index].image, "high");
+          const item = items[index];
+          preloadImage([item.image, ...item.responsiveUrls], "high");
           setIsHoveredIndex(index);
         }
       }
@@ -195,6 +200,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           index,
           image: getRepoImage(item.title, index),
           imageSrcSet: getRepoImageSrcSet(item.title, index),
+          responsiveUrls: getRepoImageResponsiveUrls(item.title, index),
           lqip: getRepoLqip(item.title, index),
         })),
     [sections],
@@ -206,11 +212,17 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const activeDisplayTitle = activeItem ? getRepoDisplayTitle(activeItem.title) : "";
   const isMicrosoftHackathonProject = activeItem?.title.startsWith("ms26/") ?? false;
   const isActiveImageLoaded = activeItem
-    ? loadedImagesRef.current.has(activeItem.image)
+    ? loadedImagesRef.current.has(activeItem.image) ||
+      activeItem.responsiveUrls.some((url) => loadedImagesRef.current.has(url))
     : false;
 
-  const markImageLoaded = useCallback((src: string) => {
-    if (loadedImagesRef.current.has(src)) {
+  const markImageLoaded = useCallback((source: string | HTMLImageElement) => {
+    const src =
+      typeof source === "string"
+        ? source
+        : source.currentSrc || source.src;
+
+    if (!src || loadedImagesRef.current.has(src)) {
       return;
     }
 
@@ -218,30 +230,41 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setLoadedImageVersion((version) => version + 1);
   }, []);
 
-  const preloadImage = useCallback((src: string, priority: "high" | "low" = "low") => {
-    if (
-      typeof window === "undefined" ||
-      warmedImagesRef.current.has(src) ||
-      loadedImagesRef.current.has(src)
-    ) {
-      return;
-    }
+  const preloadImage = useCallback(
+    (source: string | string[], priority: "high" | "low" = "low") => {
+      if (typeof window === "undefined") {
+        return;
+      }
 
-    warmedImagesRef.current.add(src);
-    const image = new window.Image();
-    image.decoding = "async";
-    image.fetchPriority = priority;
-    image.onload = () => markImageLoaded(src);
-    image.onerror = () => markImageLoaded(src);
-    image.src = src;
+      const urls = Array.isArray(source) ? source : [source];
 
-    if (image.complete) {
-      markImageLoaded(src);
-      return;
-    }
+      for (const src of urls) {
+        if (
+          !src ||
+          warmedImagesRef.current.has(src) ||
+          loadedImagesRef.current.has(src)
+        ) {
+          continue;
+        }
 
-    image.decode?.().then(() => markImageLoaded(src)).catch(() => {});
-  }, [markImageLoaded]);
+        warmedImagesRef.current.add(src);
+        const image = new window.Image();
+        image.decoding = "async";
+        image.fetchPriority = priority;
+        image.onload = () => markImageLoaded(image);
+        image.onerror = () => markImageLoaded(src);
+        image.src = src;
+
+        if (image.complete) {
+          markImageLoaded(src);
+          continue;
+        }
+
+        image.decode?.().then(() => markImageLoaded(src)).catch(() => {});
+      }
+    },
+    [markImageLoaded],
+  );
 
   const resetOpeningSnapshots = useCallback(() => {
     setSourceTitleSnapshot(null);
@@ -302,7 +325,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         return;
       }
 
-      preloadImage(items[matchedIndex].image, "high");
+      preloadImage([items[matchedIndex].image, ...items[matchedIndex].responsiveUrls], "high");
       setIsHoveredIndex(matchedIndex);
       setIsItemActive(matchedIndex);
     },
@@ -336,7 +359,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       return;
     }
 
-    preloadImage(activeItem.image, "high");
+    preloadImage([activeItem.image, ...activeItem.responsiveUrls], "high");
   }, [activeItem, preloadImage]);
 
   useEffect(() => {
@@ -344,7 +367,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       return;
     }
 
-    const queue = [...new Set(items.map((item) => item.image))].filter(
+    const queue = [...new Set(items.flatMap((item) => [item.image, ...item.responsiveUrls]))].filter(
       (src) =>
         !warmedImagesRef.current.has(src) && !loadedImagesRef.current.has(src),
     );
@@ -578,7 +601,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       }
 
       const nextItem = items[nextIndex];
-      preloadImage(nextItem.image, "high");
+      preloadImage([nextItem.image, ...nextItem.responsiveUrls], "high");
       setIsHoveredIndex(nextIndex);
       setIsItemActive(nextIndex);
       syncRoute(nextIndex);
@@ -715,8 +738,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             srcSet={activeItem.imageSrcSet}
             sizes={getRepoImageSizes()}
             alt=""
-            onLoad={() => markImageLoaded(activeItem.image)}
-            onError={() => markImageLoaded(activeItem.image)}
+            onLoad={(event) => markImageLoaded(event.currentTarget)}
+            onError={(event) => markImageLoaded(event.currentTarget)}
           />
 
           <ul ref={superHoverRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-[46vh] lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
@@ -751,7 +774,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       }}
                       className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight lg:w-fit lg:text-4xl lg:tracking-tighter"
                       onMouseEnter={() => {
-                        preloadImage(item.image, "high");
+                        preloadImage([item.image, ...item.responsiveUrls], "high");
                         setIsHoveredIndex(item.index);
                       }}
                       onClick={(event) => {
@@ -1059,8 +1082,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     sizes={getRepoImageSizes()}
                     alt=""
                     className="h-full w-full object-cover"
-                    onLoad={() => markImageLoaded(activeItem.image)}
-                    onError={() => markImageLoaded(activeItem.image)}
+                    onLoad={(event) => markImageLoaded(event.currentTarget)}
+                    onError={(event) => markImageLoaded(event.currentTarget)}
                   />
                 </div>
               </div>

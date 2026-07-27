@@ -13,8 +13,12 @@ public/images/repo-thumbnails/responsive/{basename}-{width}.webp.
 
 Also processes any placeholder images referenced in app/repo-images.ts that live
 outside the repo-thumbnails directory.
+
+Writes a responsive-manifest.json in public/images/repo-thumbnails/ so the app
+can build accurate srcSet strings at runtime without guessing which widths exist.
 """
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -27,13 +31,14 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parent.parent
 THUMBS_DIR = REPO_ROOT / "public" / "images" / "repo-thumbnails"
 RESPONSIVE_DIR = THUMBS_DIR / "responsive"
+MANIFEST_PATH = THUMBS_DIR / "responsive-manifest.json"
 IMAGE_EXTENSIONS = {".webp", ".png", ".jpg", ".jpeg", ".avif"}
 WIDTHS = [300, 1000, 2000]
 QUALITY = 85
 
 
-def generate_responsive(src: Path, dst_dir: Path) -> list[Path]:
-    """Generate responsive WebP variants from src image."""
+def generate_responsive(src: Path, dst_dir: Path) -> tuple[list[Path], list[int]]:
+    """Generate responsive WebP variants from src image. Returns generated paths and widths."""
     dst_dir.mkdir(parents=True, exist_ok=True)
     img = Image.open(src)
     if img.mode in ("RGBA", "P"):
@@ -42,6 +47,7 @@ def generate_responsive(src: Path, dst_dir: Path) -> list[Path]:
         img = img.convert("RGB")
 
     generated: list[Path] = []
+    generated_widths: list[int] = []
     src_w, src_h = img.size
 
     for width in WIDTHS:
@@ -59,8 +65,9 @@ def generate_responsive(src: Path, dst_dir: Path) -> list[Path]:
 
         resized.save(dst, "WEBP", quality=QUALITY, method=6)
         generated.append(dst)
+        generated_widths.append(width)
 
-    return generated
+    return generated, generated_widths
 
 
 def extract_placeholder_paths(ts_path: Path) -> list[Path]:
@@ -75,40 +82,51 @@ def extract_placeholder_paths(ts_path: Path) -> list[Path]:
     return result
 
 
-def variants_up_to_date(src: Path, dst_dir: Path) -> bool:
-    """Check if all expected variants exist and are newer than the source."""
+def variants_up_to_date(src: Path, dst_dir: Path) -> tuple[bool, list[int]]:
+    """Check if all expected variants exist and are newer than the source. Returns widths that should exist."""
     if not src.is_file():
-        return False
+        return False, []
     src_mtime = src.stat().st_mtime
     src_w = Image.open(src).width
+    expected_widths: list[int] = []
     for width in WIDTHS:
-        dst = dst_dir / f"{src.stem}-{width}w.webp"
         if width > src_w:
-            # For sources narrower than this width, only the largest width is required.
             if width != WIDTHS[-1]:
                 continue
+        expected_widths.append(width)
+        dst = dst_dir / f"{src.stem}-{width}w.webp"
         if not dst.is_file() or dst.stat().st_mtime < src_mtime:
-            return False
-    return True
+            return False, expected_widths
+    return True, expected_widths
+
+
+def write_manifest(manifest: dict[str, list[int]]) -> None:
+    MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
 
 
 def main() -> int:
     check_only = "--check" in sys.argv
     missing: list[Path] = []
     generated_count = 0
+    manifest: dict[str, list[int]] = {}
 
     # --- repo-thumbnails ---
     for img_file in sorted(THUMBS_DIR.iterdir()):
         if not img_file.is_file() or img_file.suffix.lower() not in IMAGE_EXTENSIONS:
             continue
 
+        up_to_date, expected_widths = variants_up_to_date(img_file, RESPONSIVE_DIR)
+        manifest[img_file.stem] = expected_widths
+
         if check_only:
-            if not variants_up_to_date(img_file, RESPONSIVE_DIR):
+            if not up_to_date:
                 missing.append(img_file)
         else:
-            if variants_up_to_date(img_file, RESPONSIVE_DIR):
+            if up_to_date:
                 continue
-            for dst in generate_responsive(img_file, RESPONSIVE_DIR):
+            generated, widths = generate_responsive(img_file, RESPONSIVE_DIR)
+            manifest[img_file.stem] = widths
+            for dst in generated:
                 print(f"  {img_file.name} -> responsive/{dst.name}")
             generated_count += 1
 
@@ -123,13 +141,18 @@ def main() -> int:
                 pass
 
             dst_dir = placeholder.parent / "responsive"
+            up_to_date, expected_widths = variants_up_to_date(placeholder, dst_dir)
+            manifest[placeholder.stem] = expected_widths
+
             if check_only:
-                if not variants_up_to_date(placeholder, dst_dir):
+                if not up_to_date:
                     missing.append(placeholder)
             else:
-                if variants_up_to_date(placeholder, dst_dir):
+                if up_to_date:
                     continue
-                for dst in generate_responsive(placeholder, dst_dir):
+                generated, widths = generate_responsive(placeholder, dst_dir)
+                manifest[placeholder.stem] = widths
+                for dst in generated:
                     print(f"  {placeholder} -> responsive/{dst.name}")
                 generated_count += 1
 
@@ -141,7 +164,9 @@ def main() -> int:
         print("All responsive thumbnails up to date.")
         return 0
 
+    write_manifest(manifest)
     print(f"\n{generated_count} source image(s) processed for responsive variants.")
+    print(f"Wrote {MANIFEST_PATH}")
     return 0
 
 

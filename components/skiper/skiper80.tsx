@@ -22,6 +22,44 @@ import type { RepoSection } from "../../app/repo-sections";
 import ProgressiveBlur from "./progressive-blur";
 import { TextShimmer } from "./text-shimmer";
 
+/* Lazy cuelume audio -- only runs client-side */
+let _cuelumePlay: ((sound: string) => void) | null = null;
+let _cuelumeReady = false;
+
+async function ensureCuelume() {
+  if (_cuelumeReady) return;
+  try {
+    const cuelume = await import("cuelume");
+    _cuelumePlay = (cuelume.play as any);
+    _cuelumeReady = true;
+  } catch {
+    // silently fail if cuelume is unavailable
+  }
+}
+
+function cuelumePlay(sound: string) {
+  if (!sfxEnabled) return;
+  ensureCuelume().then(() => _cuelumePlay?.(sound)).catch(() => {});
+}
+
+function maybePlayHover() {
+  if (!sfxEnabled) return;
+  _cuelumePlay?.("tick");
+}
+
+function maybePlayNav() {
+  if (!sfxEnabled) return;
+  _cuelumePlay?.("droplet");
+}
+
+let sfxEnabled = false;
+function toggleSfx() {
+  sfxEnabled = !sfxEnabled;
+  if (_cuelumeReady) {
+    import("cuelume").then((c) => c.setEnabled?.(sfxEnabled)).catch(() => {});
+  }
+}
+
 interface Skiper80Props {
   initialSlug: string | null;
   sections: RepoSection[];
@@ -177,6 +215,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           const item = items[index];
           preloadImage([item.image, ...item.responsiveUrls], "high");
           setIsHoveredIndex(index);
+          if (sfxEnabled) {
+            _cuelumePlay?.("tick");
+          }
         }
       }
     },
@@ -577,6 +618,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setTitleCloseDone(currentTitleSource == null);
     setImageCloseDone(currentImageSource == null);
     setIsClosing(true);
+    cuelumePlay("release");
     syncRoute(null);
   }, [isClosing, isItemActive, resetOpeningSnapshots, syncRoute]);
 
@@ -605,6 +647,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       setIsHoveredIndex(nextIndex);
       setIsItemActive(nextIndex);
       syncRoute(nextIndex);
+      maybePlayNav();
     },
     [
       isClosing,
@@ -651,6 +694,16 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isItemActive, navigateActiveItem]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "m" || event.key === "M") {
+        toggleSfx();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   if (!activeItem || !activeCopy) {
     return null;
@@ -778,6 +831,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                         setIsHoveredIndex(item.index);
                       }}
                       onClick={(event) => {
+                        cuelumePlay("press");
                         openItem(item.index, event.currentTarget);
                       }}
                     >

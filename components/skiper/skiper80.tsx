@@ -770,18 +770,20 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           exit={{ opacity: 1 }}
         >
             {shouldShowPreviewThumbnail ? (
-              <div
-                aria-hidden="true"
-                className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
-                style={{
-                  backgroundImage: `url(${activeItem.lqip})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  imageRendering: "pixelated",
-                  opacity: isActiveImageLoaded ? 0 : 1,
-                  transition: "opacity 0.3s ease",
-                }}
-              />
+              <>
+                <img
+                  aria-hidden="true"
+                  alt=""
+                  src={activeItem.lqip}
+                  className="fixed left-1/2 top-20 z-[19] aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
+                  style={{
+                    imageRendering: "pixelated",
+                    objectFit: "cover",
+                    opacity: isActiveImageLoaded ? 0 : 1,
+                    transition: "opacity 0.3s ease",
+                  }}
+                />
+              </>
             ) : null}
 
           <motion.img
@@ -1114,14 +1116,16 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                 </div>
 
                 <div className="relative aspect-video w-full lg:h-84 lg:aspect-auto">
-                  <div
+                  <img
                     aria-hidden="true"
+                    alt=""
+                    src={activeItem.lqip}
                     className="absolute inset-0 overflow-hidden rounded-[25px]"
                     style={{
-                      backgroundImage: `url(${activeItem.lqip})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
                       imageRendering: "pixelated",
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
                       opacity: isActiveImageLoaded ? 0 : 1,
                       transition: "opacity 0.3s ease",
                     }}

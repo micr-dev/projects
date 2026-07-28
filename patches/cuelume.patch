@@ -1,0 +1,39 @@
+diff --git a/dist/sounds/recipes.d.ts b/dist/sounds/recipes.d.ts
+index a07a55295fa8756aa784cccaabebb355462b1192..292e417c8013c44f783064eadcc2e19de8fc2410 100644
+--- a/dist/sounds/recipes.d.ts
++++ b/dist/sounds/recipes.d.ts
+@@ -205,7 +205,7 @@ export declare const RECIPES: {
+             readonly filterQ: 1.4;
+             readonly attack: 0.001;
+             readonly decay: 0.02;
+-            readonly peak: 0.13;
++            readonly peak: 0.22;
+         }];
+     };
+     /** A brighter, springier tick — the "up" half of a press/release pair, like a key returning. */
+@@ -295,7 +295,7 @@ export declare const RECIPES: {
+             readonly filterQ: 1.1;
+             readonly attack: 0.001;
+             readonly decay: 0.035;
+-            readonly peak: 0.13;
++            readonly peak: 0.22;
+         }, {
+             readonly kind: "tone";
+             readonly waveform: "triangle";
+diff --git a/dist/sounds/recipes.js b/dist/sounds/recipes.js
+index b6eb1dc2dfba76cb91c07f825c92690b7b6c568c..3c6665c70017aa5768fd596dc2b8ea80ce133298 100644
+--- a/dist/sounds/recipes.js
++++ b/dist/sounds/recipes.js
+@@ -59,9 +59,10 @@ export const RECIPES = {
+     },
+     /** A dull, muted knock — the "down" half of a press/release pair, like a key bottoming out. */
+     press: {
+-        masterGain: 0.4,
++        masterGain: 0.65,
+         layers: [
+-            { kind: "noise", filterType: "bandpass", filterFrequency: 1700, filterQ: 1.4, attack: 0.001, decay: 0.02, peak: 0.13 },
++            { kind: "noise", filterType: "bandpass", filterFrequency: 1700, filterQ: 1.4, attack: 0.001, decay: 0.02, peak: 0.22 },
++            { kind: "tone", waveform: "sine", frequency: 2400, offset: 0.003, attack: 0.001, decay: 0.03, peak: 0.04 },
+         ],
+     },
+     /** A brighter, springier tick — the "up" half of a press/release pair, like a key returning. */

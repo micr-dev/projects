@@ -258,10 +258,20 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     : false;
 
   const markImageLoaded = useCallback((source: string | HTMLImageElement) => {
-    const src =
+    let src =
       typeof source === "string"
         ? source
         : source.currentSrc || source.src;
+
+    // Normalize absolute URLs back to relative paths so they match
+    // the keys used by isActiveImageLoaded.
+    try {
+      if (src.startsWith("http")) {
+        src = new URL(src).pathname;
+      }
+    } catch {
+      // leave src as-is
+    }
 
     if (!src || loadedImagesRef.current.has(src)) {
       return;

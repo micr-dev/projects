@@ -167,7 +167,6 @@ function getInitialItemIndex(
 
 const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const initialItemIndex = getInitialItemIndex(sections, initialSlug);
-  const [isHoveredIndex, setIsHoveredIndexState] = useState(initialItemIndex ?? 0);
   const [isItemActive, setIsItemActive] = useState<number | null>(initialItemIndex);
   const [isClosing, setIsClosing] = useState(false);
   const [sourceTitleSnapshot, setSourceTitleSnapshot] =
@@ -193,7 +192,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const [imageCloseDone, setImageCloseDone] = useState(false);
   const [closingTitleScrollOffset, setClosingTitleScrollOffset] = useState(0);
   const [, setLoadedImageVersion] = useState(0);
-  const previewImageRef = useRef<HTMLImageElement | null>(null);
+  const previewFrameRef = useRef<HTMLDivElement | null>(null);
+  const previewImageRefs = useRef(new Map<number, HTMLImageElement>());
   const projectListRef = useRef<HTMLUListElement | null>(null);
   const detailTitleMeasureRef = useRef<HTMLDivElement | null>(null);
   const detailTitleRef = useRef<HTMLHeadingElement | null>(null);
@@ -201,6 +201,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const enterAnimationTokenRef = useRef(0);
   const closingAnimationTokenRef = useRef(0);
   const hoveredIndexRef = useRef(initialItemIndex ?? 0);
+  const sampledHoverIndexRef = useRef(initialItemIndex ?? 0);
+  const pendingHoverIndicesRef = useRef<number[]>([]);
+  const traversalDirectionRef = useRef<-1 | 0 | 1>(0);
   const itemTitleRefs = useRef(new Map<number, HTMLLIElement | null>());
   const warmedImagesRef = useRef(new Set<string>());
   const loadedImagesRef = useRef(new Set<string>());
@@ -230,7 +233,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     [sections],
   );
 
-  const activeIndex = isItemActive ?? isHoveredIndex;
+  const activeIndex = isItemActive ?? initialItemIndex ?? 0;
   const activeItem = items[activeIndex];
   const activeCopy = activeItem?.description ?? null;
   const activeDisplayTitle = activeItem ? getRepoDisplayTitle(activeItem.title) : "";
@@ -244,29 +247,108 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       activeItem.responsiveUrls.some((url) => loadedImagesRef.current.has(url))
     : false;
 
-  const markImageLoaded = useCallback((source: string | HTMLImageElement) => {
-    let src =
-      typeof source === "string"
-        ? source
-        : source.currentSrc || source.src;
+  const markImageLoaded = useCallback(
+    (source: string | HTMLImageElement, notify = true) => {
+      let src =
+        typeof source === "string"
+          ? source
+          : source.currentSrc || source.src;
 
-    // Normalize absolute URLs back to relative paths so they match
-    // the keys used by isActiveImageLoaded.
-    try {
-      if (src.startsWith("http")) {
-        src = new URL(src).pathname;
+      // Normalize absolute URLs back to relative paths so they match
+      // the keys used by isActiveImageLoaded.
+      try {
+        if (src.startsWith("http")) {
+          src = new URL(src).pathname;
+        }
+      } catch {
+        // leave src as-is
       }
-    } catch {
-      // leave src as-is
-    }
 
-    if (!src || loadedImagesRef.current.has(src)) {
-      return;
-    }
+      if (!src || loadedImagesRef.current.has(src)) {
+        return;
+      }
 
-    loadedImagesRef.current.add(src);
-    setLoadedImageVersion((version) => version + 1);
-  }, []);
+      loadedImagesRef.current.add(src);
+      if (notify) {
+        setLoadedImageVersion((version) => version + 1);
+      }
+    },
+    [],
+  );
+
+  const registerPreviewImage = useCallback(
+    (element: HTMLImageElement | null) => {
+      if (!element) {
+        return;
+      }
+
+      const index = Number(element.dataset.previewImage);
+      previewImageRefs.current.set(index, element);
+      element.style.display =
+        index === hoveredIndexRef.current ? "block" : "none";
+    },
+    [],
+  );
+
+  const handlePreviewImageLoad = useCallback(
+    (event: React.SyntheticEvent<HTMLImageElement>) => {
+      const image = event.currentTarget;
+      const index = Number(image.dataset.previewImage);
+
+      void image.decode().then(
+        () => {
+          image.setAttribute("data-preview-decoded", "");
+          markImageLoaded(image, index === hoveredIndexRef.current);
+        },
+        () => markImageLoaded(image, index === hoveredIndexRef.current),
+      );
+    },
+    [markImageLoaded],
+  );
+
+  const handlePreviewImageError = useCallback(
+    (event: React.SyntheticEvent<HTMLImageElement>) => {
+      const index = Number(event.currentTarget.dataset.previewImage);
+      markImageLoaded(
+        event.currentTarget,
+        index === hoveredIndexRef.current,
+      );
+    },
+    [markImageLoaded],
+  );
+
+  const previewImageLayers = useMemo(
+    () =>
+      items.map((item) => {
+        const src = item.responsiveUrls[0] ?? item.image;
+
+        return (
+          <img
+            ref={registerPreviewImage}
+            key={item.key}
+            data-preview-image={String(item.index)}
+            aria-hidden="true"
+            alt=""
+            src={src}
+            loading="eager"
+            decoding="async"
+            fetchPriority={
+              item.index === hoveredIndexRef.current ? "high" : "low"
+            }
+            className="pointer-events-none absolute inset-0 size-full object-cover"
+            style={{ display: "none" }}
+            onLoad={handlePreviewImageLoad}
+            onError={handlePreviewImageError}
+          />
+        );
+      }),
+    [
+      handlePreviewImageError,
+      handlePreviewImageLoad,
+      items,
+      registerPreviewImage,
+    ],
+  );
 
   const preloadImage = useCallback(
     (source: string | string[], priority: "high" | "low" = "low") => {
@@ -310,26 +392,91 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         .get(index)
         ?.setAttribute("data-super-hover-active", "");
 
-      const nextItem = items[index];
-      const nextPreviewSrc =
-        nextItem.responsiveUrls[0] ?? nextItem.image;
-
-      if (
-        previewImageRef.current &&
-        previewImageRef.current.getAttribute("src") !== nextPreviewSrc
-      ) {
-        previewImageRef.current.src = nextPreviewSrc;
+      // Every small preview remains mounted and decoded. Switching layers here
+      // keeps network and decode work out of the per-frame hover path.
+      const previousPreview = previewImageRefs.current.get(
+        hoveredIndexRef.current,
+      );
+      const nextPreview = previewImageRefs.current.get(index);
+      if (previousPreview) {
+        previousPreview.style.display = "none";
+      }
+      if (nextPreview) {
+        nextPreview.style.display = "block";
       }
 
       hoveredIndexRef.current = index;
-      setIsHoveredIndexState(index);
 
       if (playSound) {
         maybePlayHover();
       }
     },
-    [items],
+    [],
   );
+
+  const setHoveredIndexImmediately = useCallback(
+    (index: number) => {
+      pendingHoverIndicesRef.current = [];
+      sampledHoverIndexRef.current = index;
+      traversalDirectionRef.current = 0;
+      selectHoveredIndex(index);
+    },
+    [selectHoveredIndex],
+  );
+
+  const enqueueHoveredIndex = useCallback((index: number) => {
+    const sampledIndex = sampledHoverIndexRef.current;
+    if (sampledIndex === index) {
+      return;
+    }
+
+    const movementDirection = index > sampledIndex ? 1 : -1;
+    const pendingIndices = pendingHoverIndicesRef.current;
+    const reversedDirection =
+      traversalDirectionRef.current !== 0 &&
+      traversalDirectionRef.current !== movementDirection;
+
+    // A direction reversal invalidates previews queued for the old path.
+    if (reversedDirection) {
+      pendingIndices.length = 0;
+    }
+
+    const pathStart = reversedDirection
+      ? hoveredIndexRef.current
+      : pendingIndices[pendingIndices.length - 1] ?? hoveredIndexRef.current;
+    const pathDirection = index > pathStart ? 1 : -1;
+
+    for (
+      let crossedIndex = pathStart + pathDirection;
+      pathDirection > 0 ? crossedIndex <= index : crossedIndex >= index;
+      crossedIndex += pathDirection
+    ) {
+      pendingIndices.push(crossedIndex);
+    }
+
+    sampledHoverIndexRef.current = index;
+    traversalDirectionRef.current = movementDirection;
+  }, []);
+
+  const advanceHoveredQueue = useCallback(() => {
+    const nextIndex = pendingHoverIndicesRef.current[0];
+    if (nextIndex == null) {
+      traversalDirectionRef.current = 0;
+      return;
+    }
+
+    const nextPreview = previewImageRefs.current.get(nextIndex);
+    if (!nextPreview?.hasAttribute("data-preview-decoded")) {
+      return;
+    }
+
+    pendingHoverIndicesRef.current.shift();
+    selectHoveredIndex(nextIndex, true);
+
+    if (pendingHoverIndicesRef.current.length === 0) {
+      traversalDirectionRef.current = 0;
+    }
+  }, [selectHoveredIndex]);
 
   useEffect(() => {
     const projectList = projectListRef.current;
@@ -365,11 +512,12 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           const index = Number(projectTitle.dataset.superHover);
 
           if (!Number.isNaN(index) && index >= 0 && index < items.length) {
-            selectHoveredIndex(index, true);
+            enqueueHoveredIndex(index);
           }
         }
       }
 
+      advanceHoveredQueue();
       frameId = window.requestAnimationFrame(hitTestCurrentFrame);
     };
 
@@ -384,7 +532,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       document.removeEventListener("pointerleave", clearPointer);
       window.cancelAnimationFrame(frameId);
     };
-  }, [items.length, selectHoveredIndex]);
+  }, [advanceHoveredQueue, enqueueHoveredIndex, items.length]);
 
   const resetOpeningSnapshots = useCallback(() => {
     setSourceTitleSnapshot(null);
@@ -448,7 +596,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       }
 
       preloadImage([items[matchedIndex].image, ...items[matchedIndex].responsiveUrls], "high");
-      selectHoveredIndex(matchedIndex);
+      setHoveredIndexImmediately(matchedIndex);
       setIsItemActive(matchedIndex);
     },
     [
@@ -456,7 +604,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       preloadImage,
       resetClosingAnimationState,
       resetOpeningSnapshots,
-      selectHoveredIndex,
+      setHoveredIndexImmediately,
     ],
   );
 
@@ -472,28 +620,30 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       setSourceTitleSnapshot(snapshotTitle(titleElement));
       setTargetTitleSnapshot(null);
 
-      if (previewImageRef.current) {
-        setSourceImageSnapshot(snapshotBox(previewImageRef.current));
+      const previewImage = previewImageRefs.current.get(itemIndex);
+      if (previewFrameRef.current && previewImage) {
+        const isItemImageLoaded =
+          loadedImagesRef.current.has(item.image) ||
+          item.responsiveUrls.some((url) => loadedImagesRef.current.has(url));
+        setSourceImageSnapshot(snapshotBox(previewFrameRef.current));
         setSourceImageSrcSnapshot(
-          isActiveImageLoaded
-            ? previewImageRef.current.currentSrc || previewImageRef.current.src
-            : activeItem.lqip,
+          isItemImageLoaded
+            ? previewImage.currentSrc || previewImage.src
+            : item.lqip,
         );
       }
 
       setTargetImageSnapshot(null);
-      selectHoveredIndex(itemIndex);
+      setHoveredIndexImmediately(itemIndex);
       setIsItemActive(itemIndex);
       syncRoute(itemIndex, "push");
     },
     [
-      activeItem.lqip,
-      isActiveImageLoaded,
       isClosing,
       items,
       preloadImage,
       resetClosingAnimationState,
-      selectHoveredIndex,
+      setHoveredIndexImmediately,
       syncRoute,
     ],
   );
@@ -531,8 +681,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         setClosingTitleTarget(snapshotTitle(titleTarget));
       }
 
-      if (previewImageRef.current) {
-        setClosingImageTarget(snapshotBox(previewImageRef.current));
+      if (previewFrameRef.current) {
+        setClosingImageTarget(snapshotBox(previewFrameRef.current));
       }
     });
 
@@ -625,7 +775,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       return;
     }
 
-    selectHoveredIndex(isItemActive);
+    setHoveredIndexImmediately(isItemActive);
 
     const currentTitleSource = detailTitleRef.current
       ? snapshotTitle(detailTitleRef.current)
@@ -663,7 +813,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     isClosing,
     isItemActive,
     resetOpeningSnapshots,
-    selectHoveredIndex,
+    setHoveredIndexImmediately,
     syncRoute,
   ]);
 
@@ -689,7 +839,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
       const nextItem = items[nextIndex];
       preloadImage([nextItem.image, ...nextItem.responsiveUrls], "high");
-      selectHoveredIndex(nextIndex);
+      setHoveredIndexImmediately(nextIndex);
       setIsItemActive(nextIndex);
       syncRoute(nextIndex);
       maybePlayNav();
@@ -701,7 +851,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       preloadImage,
       sourceImageSnapshot,
       sourceTitleSnapshot,
-      selectHoveredIndex,
+      setHoveredIndexImmediately,
       syncRoute,
     ],
   );
@@ -823,24 +973,18 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               </>
             ) : null}
 
-          <motion.img
-            ref={previewImageRef}
+          <motion.div
+            ref={previewFrameRef}
             drag
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
             transition={sharedSpring}
             style={{
               borderRadius: "25px",
               visibility: shouldShowPreviewThumbnail ? "visible" : "hidden",
-              opacity: isPreviewImageLoaded && shouldShowPreviewThumbnail ? 1 : 0,
             }}
-            className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 border border-foreground/10 object-cover lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
-            src={previewImageSrc}
-            alt=""
-            onLoad={(event) => markImageLoaded(event.currentTarget)}
-            onError={(event) => markImageLoaded(event.currentTarget)}
-          />
+            className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden border border-foreground/10 lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-[22.222rem]"
+          >
+            {previewImageLayers}
+          </motion.div>
 
           <ul ref={projectListRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-[46vh] lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
             {(() => {
@@ -873,7 +1017,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       }}
                       className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight opacity-50 data-[super-hover-active]:opacity-100 [&[data-super-hover-active]_.hover-indicator]:opacity-100 lg:w-fit lg:text-4xl lg:tracking-tighter"
                       onPointerEnter={() => {
-                        selectHoveredIndex(item.index, true);
+                        enqueueHoveredIndex(item.index);
                       }}
                       onClick={(event) => {
                         cuelumePlay("press");

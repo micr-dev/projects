@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { SoundName } from "cuelume";
 import { BookOpen, CircleArrowOutUpRight, Lock } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useSuperHoverRef } from "super-hover/react";
 import {
   getRepoDisplayTitle,
   getRepoSlugPath,
@@ -195,6 +194,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const [closingTitleScrollOffset, setClosingTitleScrollOffset] = useState(0);
   const [, setLoadedImageVersion] = useState(0);
   const previewImageRef = useRef<HTMLImageElement | null>(null);
+  const projectListRef = useRef<HTMLUListElement | null>(null);
   const detailTitleMeasureRef = useRef<HTMLDivElement | null>(null);
   const detailTitleRef = useRef<HTMLHeadingElement | null>(null);
   const detailImageRef = useRef<HTMLImageElement | null>(null);
@@ -205,39 +205,6 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const warmedImagesRef = useRef(new Set<string>());
   const loadedImagesRef = useRef(new Set<string>());
   const closingTitleScrollOriginRef = useRef(0);
-
-  const selectHoveredIndex = useCallback(
-    (index: number, playSound = false) => {
-      if (hoveredIndexRef.current === index) {
-        return;
-      }
-
-      hoveredIndexRef.current = index;
-      setIsHoveredIndexState(index);
-
-      if (playSound) {
-        maybePlayHover();
-      }
-    },
-    [],
-  );
-
-  const superHoverRef = useSuperHoverRef({
-    sweptHitTest: true,
-    events: ["enter"],
-    onEnter(event: CustomEvent) {
-      const detail = event.detail as { current?: HTMLElement } | undefined;
-      const el = detail?.current;
-      if (!el) return;
-      const indexAttr = el.getAttribute("data-super-hover");
-      if (indexAttr != null) {
-        const index = Number(indexAttr);
-        if (!Number.isNaN(index) && index >= 0 && index < items.length) {
-          selectHoveredIndex(index, true);
-        }
-      }
-    },
-  });
 
   const items = useMemo<RepoItem[]>(
     () =>
@@ -268,6 +235,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const activeCopy = activeItem?.description ?? null;
   const activeDisplayTitle = activeItem ? getRepoDisplayTitle(activeItem.title) : "";
   const isMicrosoftHackathonProject = activeItem?.title.startsWith("ms26/") ?? false;
+  const previewImageSrc =
+    activeItem?.responsiveUrls[0] ?? activeItem?.image ?? "";
+  const isPreviewImageLoaded =
+    previewImageSrc !== "" && loadedImagesRef.current.has(previewImageSrc);
   const isActiveImageLoaded = activeItem
     ? loadedImagesRef.current.has(activeItem.image) ||
       activeItem.responsiveUrls.some((url) => loadedImagesRef.current.has(url))
@@ -318,11 +289,102 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         const image = new window.Image();
         image.decoding = "async";
         image.fetchPriority = priority;
+        image.onload = () => markImageLoaded(image);
+        image.onerror = () => markImageLoaded(src);
         image.src = src;
       }
     },
-    [],
+    [markImageLoaded],
   );
+
+  const selectHoveredIndex = useCallback(
+    (index: number, playSound = false) => {
+      if (hoveredIndexRef.current === index) {
+        return;
+      }
+
+      itemTitleRefs.current
+        .get(hoveredIndexRef.current)
+        ?.removeAttribute("data-super-hover-active");
+      itemTitleRefs.current
+        .get(index)
+        ?.setAttribute("data-super-hover-active", "");
+
+      const nextItem = items[index];
+      const nextPreviewSrc =
+        nextItem.responsiveUrls[0] ?? nextItem.image;
+
+      if (
+        previewImageRef.current &&
+        previewImageRef.current.getAttribute("src") !== nextPreviewSrc
+      ) {
+        previewImageRef.current.src = nextPreviewSrc;
+      }
+
+      hoveredIndexRef.current = index;
+      setIsHoveredIndexState(index);
+
+      if (playSound) {
+        maybePlayHover();
+      }
+    },
+    [items],
+  );
+
+  useEffect(() => {
+    const projectList = projectListRef.current;
+
+    if (!projectList) {
+      return;
+    }
+
+    let pointerPosition: { x: number; y: number } | null = null;
+    let frameId = 0;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") {
+        return;
+      }
+
+      pointerPosition = { x: event.clientX, y: event.clientY };
+    };
+
+    const clearPointer = () => {
+      pointerPosition = null;
+    };
+
+    const hitTestCurrentFrame = () => {
+      if (pointerPosition) {
+        const hit = document.elementFromPoint(
+          pointerPosition.x,
+          pointerPosition.y,
+        );
+        const projectTitle = hit?.closest<HTMLElement>("[data-super-hover]");
+
+        if (projectTitle && projectList.contains(projectTitle)) {
+          const index = Number(projectTitle.dataset.superHover);
+
+          if (!Number.isNaN(index) && index >= 0 && index < items.length) {
+            selectHoveredIndex(index, true);
+          }
+        }
+      }
+
+      frameId = window.requestAnimationFrame(hitTestCurrentFrame);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("blur", clearPointer);
+    document.addEventListener("pointerleave", clearPointer);
+    frameId = window.requestAnimationFrame(hitTestCurrentFrame);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("blur", clearPointer);
+      document.removeEventListener("pointerleave", clearPointer);
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [items.length, selectHoveredIndex]);
 
   const resetOpeningSnapshots = useCallback(() => {
     setSourceTitleSnapshot(null);
@@ -404,6 +466,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         resetClosingAnimationState();
       }
 
+      const item = items[itemIndex];
+      preloadImage([item.image, ...item.responsiveUrls.slice(1)], "high");
       enterAnimationTokenRef.current += 1;
       setSourceTitleSnapshot(snapshotTitle(titleElement));
       setTargetTitleSnapshot(null);
@@ -426,6 +490,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       activeItem.lqip,
       isActiveImageLoaded,
       isClosing,
+      items,
+      preloadImage,
       resetClosingAnimationState,
       selectHoveredIndex,
       syncRoute,
@@ -751,8 +817,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   style={{
                     imageRendering: "pixelated",
                     objectFit: "cover",
-                    opacity: isActiveImageLoaded ? 0 : 1,
-                    transition: "opacity 0.3s ease",
+                    opacity: isPreviewImageLoaded ? 0 : 1,
                   }}
                 />
               </>
@@ -768,18 +833,16 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             style={{
               borderRadius: "25px",
               visibility: shouldShowPreviewThumbnail ? "visible" : "hidden",
-              opacity: isActiveImageLoaded && shouldShowPreviewThumbnail ? 1 : 0,
+              opacity: isPreviewImageLoaded && shouldShowPreviewThumbnail ? 1 : 0,
             }}
             className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 border border-foreground/10 object-cover lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
-            src={activeItem.image}
-            srcSet={activeItem.imageSrcSet}
-            sizes={getRepoImageSizes()}
+            src={previewImageSrc}
             alt=""
             onLoad={(event) => markImageLoaded(event.currentTarget)}
             onError={(event) => markImageLoaded(event.currentTarget)}
           />
 
-          <ul ref={superHoverRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-[46vh] lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
+          <ul ref={projectListRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-[46vh] lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
             {(() => {
               let itemCursor = 0;
 
@@ -794,23 +857,22 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   const displayTitle = getRepoDisplayTitle(title);
 
                   return (
-                    <motion.li
+                    <li
                       ref={(element) => {
                         itemTitleRefs.current.set(item.index, element);
+
+                        if (element && item.index === hoveredIndexRef.current) {
+                          element.setAttribute("data-super-hover-active", "");
+                        }
                       }}
-                      transition={sharedSpring}
                       key={item.key}
                       data-super-hover={String(item.index)}
                       style={{
                         opacity:
-                          isClosing && isItemActive === item.index
-                            ? 0
-                            : isHoveredIndex === item.index
-                              ? 1
-                              : 0.5,
+                          isClosing && isItemActive === item.index ? 0 : undefined,
                       }}
-                      className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight lg:w-fit lg:text-4xl lg:tracking-tighter"
-                      onMouseEnter={() => {
+                      className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight opacity-50 data-[super-hover-active]:opacity-100 [&[data-super-hover-active]_.hover-indicator]:opacity-100 lg:w-fit lg:text-4xl lg:tracking-tighter"
+                      onPointerEnter={() => {
                         selectHoveredIndex(item.index, true);
                       }}
                       onClick={(event) => {
@@ -819,10 +881,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       }}
                     >
                       {displayTitle}
-                      {isHoveredIndex === item.index && (
-                        <div className="bg-foreground absolute left-full ml-2.5 size-1 rounded-full" />
-                      )}
-                    </motion.li>
+                      <div className="hover-indicator bg-foreground absolute left-full ml-2.5 size-1 rounded-full opacity-0" />
+                    </li>
                   );
                 })}
               </React.Fragment>
@@ -1096,7 +1156,6 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       visibility:
                         hasPendingImageAnimation || isClosing ? "hidden" : "visible",
                       opacity: isActiveImageLoaded ? 0 : 1,
-                      transition: "opacity 0.3s ease",
                     }}
                   />
 

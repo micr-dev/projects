@@ -197,10 +197,23 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const detailImageRef = useRef<HTMLImageElement | null>(null);
   const enterAnimationTokenRef = useRef(0);
   const closingAnimationTokenRef = useRef(0);
+  const hoverIntentTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const itemTitleRefs = useRef(new Map<number, HTMLLIElement | null>());
   const warmedImagesRef = useRef(new Set<string>());
   const loadedImagesRef = useRef(new Set<string>());
   const closingTitleScrollOriginRef = useRef(0);
+
+  const queueHoveredIndex = useCallback((index: number) => {
+    if (hoverIntentTimeoutRef.current != null) {
+      globalThis.clearTimeout(hoverIntentTimeoutRef.current);
+    }
+
+    hoverIntentTimeoutRef.current = globalThis.setTimeout(() => {
+      setIsHoveredIndex(index);
+      maybePlayHover();
+      hoverIntentTimeoutRef.current = null;
+    }, 40);
+  }, []);
 
   const superHoverRef = useSuperHoverRef({
     sweptHitTest: true,
@@ -213,10 +226,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       if (indexAttr != null) {
         const index = Number(indexAttr);
         if (!Number.isNaN(index) && index >= 0 && index < items.length) {
-          const item = items[index];
-          preloadImage([item.image, ...item.responsiveUrls], "high");
-          setIsHoveredIndex(index);
-          maybePlayHover();
+          queueHoveredIndex(index);
         }
       }
     },
@@ -375,6 +385,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
   const openItem = useCallback(
     (itemIndex: number, titleElement: HTMLElement) => {
+      if (hoverIntentTimeoutRef.current != null) {
+        globalThis.clearTimeout(hoverIntentTimeoutRef.current);
+        hoverIntentTimeoutRef.current = null;
+      }
+
       if (isClosing) {
         resetClosingAnimationState();
       }
@@ -394,78 +409,6 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     },
     [isClosing, resetClosingAnimationState, syncRoute],
   );
-
-  useEffect(() => {
-    if (!activeItem) {
-      return;
-    }
-
-    preloadImage([activeItem.image, ...activeItem.responsiveUrls], "high");
-  }, [activeItem, preloadImage]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const queue = [...new Set(items.flatMap((item) => [item.image, ...item.responsiveUrls]))].filter(
-      (src) =>
-        !warmedImagesRef.current.has(src) && !loadedImagesRef.current.has(src),
-    );
-
-    if (!queue.length) {
-      return;
-    }
-
-    let cancelled = false;
-    let queueIndex = 0;
-    let idleHandle: number | null = null;
-    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
-    const requestIdle = window.requestIdleCallback?.bind(window);
-    const cancelIdle = window.cancelIdleCallback?.bind(window);
-
-    const pumpQueue = (deadline?: IdleDeadline) => {
-      if (cancelled) {
-        return;
-      }
-
-      while (queueIndex < queue.length) {
-        preloadImage(queue[queueIndex]);
-        queueIndex += 1;
-
-        if (!deadline || deadline.timeRemaining() <= 4) {
-          break;
-        }
-      }
-
-      if (queueIndex < queue.length) {
-        scheduleQueue();
-      }
-    };
-
-    const scheduleQueue = () => {
-      if (requestIdle) {
-        idleHandle = requestIdle(pumpQueue, { timeout: 1200 });
-        return;
-      }
-
-      timeoutHandle = globalThis.setTimeout(() => pumpQueue(), 120);
-    };
-
-    scheduleQueue();
-
-    return () => {
-      cancelled = true;
-
-      if (idleHandle != null && cancelIdle) {
-        cancelIdle(idleHandle);
-      }
-
-      if (timeoutHandle != null) {
-        globalThis.clearTimeout(timeoutHandle);
-      }
-    };
-  }, [items, preloadImage]);
 
   useLayoutEffect(() => {
     if (isItemActive == null) {
@@ -829,8 +772,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       }}
                       className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight lg:w-fit lg:text-4xl lg:tracking-tighter"
                       onMouseEnter={() => {
-                        preloadImage([item.image, ...item.responsiveUrls], "high");
-                        setIsHoveredIndex(item.index);
+                        queueHoveredIndex(item.index);
                       }}
                       onClick={(event) => {
                         cuelumePlay("press");
@@ -839,12 +781,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     >
                       {displayTitle}
                       {isHoveredIndex === item.index && (
-                        <motion.div
-                          initial={{ x: 10, width: "15px", height: "0px" }}
-                          animate={{ x: 10, width: "4px", height: "4px" }}
-                          transition={{ duration: 0.18, ease: "easeOut" }}
-                          className="bg-foreground absolute left-full rounded-full"
-                        />
+                        <div className="bg-foreground absolute left-full ml-2.5 size-1 rounded-full" />
                       )}
                     </motion.li>
                   );
@@ -1116,7 +1053,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       objectFit: "cover",
                       width: "100%",
                       height: "100%",
-                      opacity: isActiveImageLoaded && !hasPendingImageAnimation ? 0 : 1,
+                      visibility:
+                        hasPendingImageAnimation || isClosing ? "hidden" : "visible",
+                      opacity: isActiveImageLoaded ? 0 : 1,
                       transition: "opacity 0.3s ease",
                     }}
                   />

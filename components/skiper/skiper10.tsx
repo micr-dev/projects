@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
 interface Skiper10Props {
@@ -11,25 +11,17 @@ interface Skiper10Props {
 }
 
 interface Preloader004Props {
-  isExiting: boolean;
   text: string;
 }
 
-const SMALL_IMAGE_PRELOAD_CONCURRENCY = 16;
-const LARGE_IMAGE_PRELOAD_CONCURRENCY = 1;
+const PRELOAD_CONCURRENCY = 8;
 const LOADER_DURATION_MS = 1600;
-const LOADER_EXIT_START_MS = 1100;
-const CURTAIN_CLOSE_DURATION_SECONDS = 0.22;
-const CURTAIN_STAGGER_SECONDS = 0.015;
-const CURTAIN_INITIAL_DELAY_SECONDS = 0.01;
-const CURTAIN_EASING = [0.455, 0.03, 0.515, 0.955] as const;
 const EMPTY_PRELOAD_TIERS: readonly (readonly string[])[] = [];
 
 function preloadImage(src: string) {
   return new Promise<void>((resolve) => {
     const image = new window.Image();
     image.decoding = "async";
-    image.fetchPriority = "low";
     image.onload = () => resolve();
     image.onerror = () => resolve();
     image.src = src;
@@ -39,7 +31,6 @@ function preloadImage(src: string) {
 async function preloadTier(
   urls: readonly string[],
   isCancelled: () => boolean,
-  concurrency: number,
 ) {
   let nextIndex = 0;
 
@@ -58,7 +49,7 @@ async function preloadTier(
 
   await Promise.all(
     Array.from(
-      { length: Math.min(concurrency, urls.length) },
+      { length: Math.min(PRELOAD_CONCURRENCY, urls.length) },
       worker,
     ),
   );
@@ -71,40 +62,20 @@ const Skiper10 = ({
   text = "Turning concepts into working systems.",
 }: Skiper10Props) => {
   const [showPreloader, setShowPreloader] = useState(true);
-  const [isPreloaderExiting, setIsPreloaderExiting] = useState(false);
   const [canRenderChildren, setCanRenderChildren] = useState(
     preloadTiers.length === 0,
   );
 
   useEffect(() => {
     let cancelled = false;
-    // The loader is visible before hydration, so count from navigation start
-    // instead of adding 1600ms after this effect eventually runs.
-    const remainingLoaderTime = Math.max(
-      0,
-      LOADER_DURATION_MS - window.performance.now(),
-    );
-    const remainingExitDelay = Math.max(
-      0,
-      LOADER_EXIT_START_MS - window.performance.now(),
-    );
-    const exitTimer = window.setTimeout(() => {
-      setIsPreloaderExiting(true);
-    }, remainingExitDelay);
     const loaderTimer = window.setTimeout(() => {
       setCanRenderChildren(true);
       setShowPreloader(false);
-    }, remainingLoaderTime);
+    }, LOADER_DURATION_MS);
 
     const preloadAllTiers = async () => {
       for (const [tierIndex, tier] of preloadTiers.entries()) {
-        await preloadTier(
-          tier,
-          () => cancelled,
-          tierIndex === 0
-            ? SMALL_IMAGE_PRELOAD_CONCURRENCY
-            : LARGE_IMAGE_PRELOAD_CONCURRENCY,
-        );
+        await preloadTier(tier, () => cancelled);
 
         if (cancelled) {
           return;
@@ -121,7 +92,6 @@ const Skiper10 = ({
 
     return () => {
       cancelled = true;
-      window.clearTimeout(exitTimer);
       window.clearTimeout(loaderTimer);
     };
   }, [preloadTiers]);
@@ -152,15 +122,15 @@ const Skiper10 = ({
 
   return (
     <main className="relative min-h-screen bg-[#121212]">
-      {showPreloader ? (
-        <Preloader004 isExiting={isPreloaderExiting} text={text} />
-      ) : null}
+      <AnimatePresence mode="wait">
+        {showPreloader ? <Preloader004 key="preloader" text={text} /> : null}
+      </AnimatePresence>
       {canRenderChildren ? children : null}
     </main>
   );
 };
 
-const Preloader004 = ({ isExiting, text }: Preloader004Props) => {
+const Preloader004 = ({ text }: Preloader004Props) => {
   const words = text.trim().split(/\s+/);
 
   return (
@@ -169,17 +139,15 @@ const Preloader004 = ({ isExiting, text }: Preloader004Props) => {
         <motion.h1
           className="font-cal-sans text-3xl font-medium tracking-normal"
           initial={{ opacity: 0 }}
-          animate={{ opacity: isExiting ? 0 : 1 }}
-          transition={{
-            duration: isExiting ? 0.15 : 0.75,
-            ease: CURTAIN_EASING,
-          }}
+          animate={{ opacity: 1, transition: { duration: 0.75 } }}
+          exit={{ opacity: 0, transition: { duration: 0.35 } }}
         >
           {words.map((word, index) => (
             <motion.span
               key={`${word}-${index}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.45, delay: 0.08 * index }}
               className="mr-2 inline-block"
             >
@@ -189,39 +157,39 @@ const Preloader004 = ({ isExiting, text }: Preloader004Props) => {
         </motion.h1>
       </div>
 
-      <div className="pointer-events-none fixed left-0 top-0 z-[2] flex h-[50vh]">
+      <motion.div className="pointer-events-none fixed left-0 top-0 z-[2] flex h-[50vh]">
         {[...Array(10)].map((_, index) => (
           <motion.div
             key={`top-${index}`}
-            animate={{ height: isExiting ? 0 : "100%" }}
+            initial={{ height: "100%" }}
+            animate={{ height: "100%" }}
+            exit={{ height: 0 }}
             transition={{
-              duration: CURTAIN_CLOSE_DURATION_SECONDS,
-              delay:
-                CURTAIN_INITIAL_DELAY_SECONDS +
-                CURTAIN_STAGGER_SECONDS * index,
-              ease: CURTAIN_EASING,
+              duration: 0.42,
+              delay: 0.14 + 0.04 * index,
+              ease: [0.455, 0.03, 0.515, 0.955],
             }}
             className="h-full w-[10vw] bg-black"
           />
         ))}
-      </div>
+      </motion.div>
 
-      <div className="pointer-events-none fixed bottom-0 left-0 z-[2] flex h-[50vh] items-end">
+      <motion.div className="pointer-events-none fixed bottom-0 left-0 z-[2] flex h-[50vh] items-end">
         {[...Array(10)].map((_, index) => (
           <motion.div
             key={`bottom-${index}`}
-            animate={{ height: isExiting ? 0 : "100%" }}
+            initial={{ height: "100%" }}
+            animate={{ height: "100%" }}
+            exit={{ height: 0 }}
             transition={{
-              duration: CURTAIN_CLOSE_DURATION_SECONDS,
-              delay:
-                CURTAIN_INITIAL_DELAY_SECONDS +
-                CURTAIN_STAGGER_SECONDS * index,
-              ease: CURTAIN_EASING,
+              duration: 0.42,
+              delay: 0.14 + 0.04 * index,
+              ease: [0.455, 0.03, 0.515, 0.955],
             }}
             className="h-full w-[10vw] bg-black"
           />
         ))}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

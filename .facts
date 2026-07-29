@@ -5,7 +5,6 @@
 - the initial portfolio loader closes after 1600 milliseconds regardless of image preload completion @implemented
 - portfolio images preload from the smallest responsive tier to larger tiers and unfinished work continues after the loader closes @implemented
 - the fixed loader window prioritizes smallest thumbnails while larger preload tiers use limited background concurrency to avoid blocking hover frames @implemented
-- the preloader curtain begins closing before the 1600 millisecond cutoff and is fully removed at the cutoff @implemented
 
 ## interaction
 - portfolio hover selection matches the project title under the pointer on every animation frame, including while scrolling @implemented

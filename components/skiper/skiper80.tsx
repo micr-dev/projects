@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import type { SoundName } from "cuelume";
 import { BookOpen, CircleArrowOutUpRight, Lock } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSuperHoverRef } from "super-hover/react";
@@ -23,21 +24,21 @@ import ProgressiveBlur from "./progressive-blur";
 import { TextShimmer } from "./text-shimmer";
 
 /* Lazy cuelume audio -- only runs client-side */
-let _cuelumePlay: ((sound: string) => void) | null = null;
+let _cuelumePlay: ((sound?: SoundName) => void) | null = null;
 let _cuelumeReady = false;
 
 async function ensureCuelume() {
   if (_cuelumeReady) return;
   try {
     const cuelume = await import("cuelume");
-    _cuelumePlay = (cuelume.play as any);
+    _cuelumePlay = cuelume.play;
     _cuelumeReady = true;
   } catch {
     // silently fail if cuelume is unavailable
   }
 }
 
-function cuelumePlay(sound: string) {
+function cuelumePlay(sound: SoundName) {
   if (!sfxEnabled) return;
   ensureCuelume().then(() => _cuelumePlay?.(sound)).catch(() => {});
 }
@@ -215,9 +216,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           const item = items[index];
           preloadImage([item.image, ...item.responsiveUrls], "high");
           setIsHoveredIndex(index);
-          if (sfxEnabled) {
-            _cuelumePlay?.("tick");
-          }
+          maybePlayHover();
         }
       }
     },
@@ -302,19 +301,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         const image = new window.Image();
         image.decoding = "async";
         image.fetchPriority = priority;
-        image.onload = () => markImageLoaded(image);
-        image.onerror = () => markImageLoaded(src);
         image.src = src;
-
-        if (image.complete) {
-          markImageLoaded(src);
-          continue;
-        }
-
-        image.decode?.().then(() => markImageLoaded(src)).catch(() => {});
       }
     },
-    [markImageLoaded],
+    [],
   );
 
   const resetOpeningSnapshots = useCallback(() => {
@@ -1126,7 +1116,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       objectFit: "cover",
                       width: "100%",
                       height: "100%",
-                      opacity: isActiveImageLoaded ? 0 : 1,
+                      opacity: isActiveImageLoaded && !hasPendingImageAnimation ? 0 : 1,
                       transition: "opacity 0.3s ease",
                     }}
                   />

@@ -11,12 +11,18 @@ interface Skiper10Props {
 }
 
 interface Preloader004Props {
+  isExiting: boolean;
   text: string;
 }
 
 const SMALL_IMAGE_PRELOAD_CONCURRENCY = 16;
 const LARGE_IMAGE_PRELOAD_CONCURRENCY = 1;
 const LOADER_DURATION_MS = 1600;
+const LOADER_EXIT_START_MS = 1100;
+const CURTAIN_CLOSE_DURATION_SECONDS = 0.22;
+const CURTAIN_STAGGER_SECONDS = 0.015;
+const CURTAIN_INITIAL_DELAY_SECONDS = 0.01;
+const CURTAIN_EASING = [0.455, 0.03, 0.515, 0.955] as const;
 const EMPTY_PRELOAD_TIERS: readonly (readonly string[])[] = [];
 
 function preloadImage(src: string) {
@@ -65,6 +71,7 @@ const Skiper10 = ({
   text = "Turning concepts into working systems.",
 }: Skiper10Props) => {
   const [showPreloader, setShowPreloader] = useState(true);
+  const [isPreloaderExiting, setIsPreloaderExiting] = useState(false);
   const [canRenderChildren, setCanRenderChildren] = useState(
     preloadTiers.length === 0,
   );
@@ -77,6 +84,13 @@ const Skiper10 = ({
       0,
       LOADER_DURATION_MS - window.performance.now(),
     );
+    const remainingExitDelay = Math.max(
+      0,
+      LOADER_EXIT_START_MS - window.performance.now(),
+    );
+    const exitTimer = window.setTimeout(() => {
+      setIsPreloaderExiting(true);
+    }, remainingExitDelay);
     const loaderTimer = window.setTimeout(() => {
       setCanRenderChildren(true);
       setShowPreloader(false);
@@ -107,6 +121,7 @@ const Skiper10 = ({
 
     return () => {
       cancelled = true;
+      window.clearTimeout(exitTimer);
       window.clearTimeout(loaderTimer);
     };
   }, [preloadTiers]);
@@ -137,13 +152,15 @@ const Skiper10 = ({
 
   return (
     <main className="relative min-h-screen bg-[#121212]">
-      {showPreloader ? <Preloader004 text={text} /> : null}
+      {showPreloader ? (
+        <Preloader004 isExiting={isPreloaderExiting} text={text} />
+      ) : null}
       {canRenderChildren ? children : null}
     </main>
   );
 };
 
-const Preloader004 = ({ text }: Preloader004Props) => {
+const Preloader004 = ({ isExiting, text }: Preloader004Props) => {
   const words = text.trim().split(/\s+/);
 
   return (
@@ -152,7 +169,11 @@ const Preloader004 = ({ text }: Preloader004Props) => {
         <motion.h1
           className="font-cal-sans text-3xl font-medium tracking-normal"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 0.75 } }}
+          animate={{ opacity: isExiting ? 0 : 1 }}
+          transition={{
+            duration: isExiting ? 0.15 : 0.75,
+            ease: CURTAIN_EASING,
+          }}
         >
           {words.map((word, index) => (
             <motion.span
@@ -170,8 +191,16 @@ const Preloader004 = ({ text }: Preloader004Props) => {
 
       <div className="pointer-events-none fixed left-0 top-0 z-[2] flex h-[50vh]">
         {[...Array(10)].map((_, index) => (
-          <div
+          <motion.div
             key={`top-${index}`}
+            animate={{ height: isExiting ? 0 : "100%" }}
+            transition={{
+              duration: CURTAIN_CLOSE_DURATION_SECONDS,
+              delay:
+                CURTAIN_INITIAL_DELAY_SECONDS +
+                CURTAIN_STAGGER_SECONDS * index,
+              ease: CURTAIN_EASING,
+            }}
             className="h-full w-[10vw] bg-black"
           />
         ))}
@@ -179,8 +208,16 @@ const Preloader004 = ({ text }: Preloader004Props) => {
 
       <div className="pointer-events-none fixed bottom-0 left-0 z-[2] flex h-[50vh] items-end">
         {[...Array(10)].map((_, index) => (
-          <div
+          <motion.div
             key={`bottom-${index}`}
+            animate={{ height: isExiting ? 0 : "100%" }}
+            transition={{
+              duration: CURTAIN_CLOSE_DURATION_SECONDS,
+              delay:
+                CURTAIN_INITIAL_DELAY_SECONDS +
+                CURTAIN_STAGGER_SECONDS * index,
+              ease: CURTAIN_EASING,
+            }}
             className="h-full w-[10vw] bg-black"
           />
         ))}

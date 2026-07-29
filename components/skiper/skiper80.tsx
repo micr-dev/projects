@@ -168,7 +168,7 @@ function getInitialItemIndex(
 
 const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const initialItemIndex = getInitialItemIndex(sections, initialSlug);
-  const [isHoveredIndex, setIsHoveredIndex] = useState(initialItemIndex ?? 0);
+  const [isHoveredIndex, setIsHoveredIndexState] = useState(initialItemIndex ?? 0);
   const [isItemActive, setIsItemActive] = useState<number | null>(initialItemIndex);
   const [isClosing, setIsClosing] = useState(false);
   const [sourceTitleSnapshot, setSourceTitleSnapshot] =
@@ -177,6 +177,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     useState<TitleSnapshot | null>(null);
   const [sourceImageSnapshot, setSourceImageSnapshot] =
     useState<BoxSnapshot | null>(null);
+  const [sourceImageSrcSnapshot, setSourceImageSrcSnapshot] =
+    useState<string | null>(null);
   const [targetImageSnapshot, setTargetImageSnapshot] =
     useState<BoxSnapshot | null>(null);
   const [closingTitleSource, setClosingTitleSource] =
@@ -197,23 +199,27 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const detailImageRef = useRef<HTMLImageElement | null>(null);
   const enterAnimationTokenRef = useRef(0);
   const closingAnimationTokenRef = useRef(0);
-  const hoverIntentTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoveredIndexRef = useRef(initialItemIndex ?? 0);
   const itemTitleRefs = useRef(new Map<number, HTMLLIElement | null>());
   const warmedImagesRef = useRef(new Set<string>());
   const loadedImagesRef = useRef(new Set<string>());
   const closingTitleScrollOriginRef = useRef(0);
 
-  const queueHoveredIndex = useCallback((index: number) => {
-    if (hoverIntentTimeoutRef.current != null) {
-      globalThis.clearTimeout(hoverIntentTimeoutRef.current);
-    }
+  const selectHoveredIndex = useCallback(
+    (index: number, playSound = false) => {
+      if (hoveredIndexRef.current === index) {
+        return;
+      }
 
-    hoverIntentTimeoutRef.current = globalThis.setTimeout(() => {
-      setIsHoveredIndex(index);
-      maybePlayHover();
-      hoverIntentTimeoutRef.current = null;
-    }, 40);
-  }, []);
+      hoveredIndexRef.current = index;
+      setIsHoveredIndexState(index);
+
+      if (playSound) {
+        maybePlayHover();
+      }
+    },
+    [],
+  );
 
   const superHoverRef = useSuperHoverRef({
     sweptHitTest: true,
@@ -226,7 +232,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       if (indexAttr != null) {
         const index = Number(indexAttr);
         if (!Number.isNaN(index) && index >= 0 && index < items.length) {
-          queueHoveredIndex(index);
+          selectHoveredIndex(index, true);
         }
       }
     },
@@ -321,6 +327,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setSourceTitleSnapshot(null);
     setTargetTitleSnapshot(null);
     setSourceImageSnapshot(null);
+    setSourceImageSrcSnapshot(null);
     setTargetImageSnapshot(null);
   }, []);
 
@@ -377,19 +384,20 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       }
 
       preloadImage([items[matchedIndex].image, ...items[matchedIndex].responsiveUrls], "high");
-      setIsHoveredIndex(matchedIndex);
+      selectHoveredIndex(matchedIndex);
       setIsItemActive(matchedIndex);
     },
-    [items, preloadImage, resetClosingAnimationState, resetOpeningSnapshots],
+    [
+      items,
+      preloadImage,
+      resetClosingAnimationState,
+      resetOpeningSnapshots,
+      selectHoveredIndex,
+    ],
   );
 
   const openItem = useCallback(
     (itemIndex: number, titleElement: HTMLElement) => {
-      if (hoverIntentTimeoutRef.current != null) {
-        globalThis.clearTimeout(hoverIntentTimeoutRef.current);
-        hoverIntentTimeoutRef.current = null;
-      }
-
       if (isClosing) {
         resetClosingAnimationState();
       }
@@ -400,14 +408,26 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
       if (previewImageRef.current) {
         setSourceImageSnapshot(snapshotBox(previewImageRef.current));
+        setSourceImageSrcSnapshot(
+          isActiveImageLoaded
+            ? previewImageRef.current.currentSrc || previewImageRef.current.src
+            : activeItem.lqip,
+        );
       }
 
       setTargetImageSnapshot(null);
-      setIsHoveredIndex(itemIndex);
+      selectHoveredIndex(itemIndex);
       setIsItemActive(itemIndex);
       syncRoute(itemIndex, "push");
     },
-    [isClosing, resetClosingAnimationState, syncRoute],
+    [
+      activeItem.lqip,
+      isActiveImageLoaded,
+      isClosing,
+      resetClosingAnimationState,
+      selectHoveredIndex,
+      syncRoute,
+    ],
   );
 
   useLayoutEffect(() => {
@@ -537,7 +557,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       return;
     }
 
-    setIsHoveredIndex(isItemActive);
+    selectHoveredIndex(isItemActive);
 
     const currentTitleSource = detailTitleRef.current
       ? snapshotTitle(detailTitleRef.current)
@@ -563,7 +583,13 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setIsClosing(true);
     cuelumePlay("release");
     syncRoute(null);
-  }, [isClosing, isItemActive, resetOpeningSnapshots, syncRoute]);
+  }, [
+    isClosing,
+    isItemActive,
+    resetOpeningSnapshots,
+    selectHoveredIndex,
+    syncRoute,
+  ]);
 
   const navigateActiveItem = useCallback(
     (direction: -1 | 1) => {
@@ -587,7 +613,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
       const nextItem = items[nextIndex];
       preloadImage([nextItem.image, ...nextItem.responsiveUrls], "high");
-      setIsHoveredIndex(nextIndex);
+      selectHoveredIndex(nextIndex);
       setIsItemActive(nextIndex);
       syncRoute(nextIndex);
       maybePlayNav();
@@ -599,6 +625,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       preloadImage,
       sourceImageSnapshot,
       sourceTitleSnapshot,
+      selectHoveredIndex,
       syncRoute,
     ],
   );
@@ -657,7 +684,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const shouldAnimateTitle =
     hasPendingTitleAnimation && targetTitleSnapshot != null;
   const hasPendingImageAnimation =
-    isItemActive != null && sourceImageSnapshot != null;
+    isItemActive != null &&
+    sourceImageSnapshot != null &&
+    sourceImageSrcSnapshot != null;
   const shouldAnimateImage =
     hasPendingImageAnimation && targetImageSnapshot != null;
   const shouldAnimateClosingTitle =
@@ -772,7 +801,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       }}
                       className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight lg:w-fit lg:text-4xl lg:tracking-tighter"
                       onMouseEnter={() => {
-                        queueHoveredIndex(item.index);
+                        selectHoveredIndex(item.index, true);
                       }}
                       onClick={(event) => {
                         cuelumePlay("press");
@@ -860,10 +889,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               </motion.div>
             ) : null}
 
-            {hasPendingImageAnimation ? (
+            {sourceImageSnapshot && sourceImageSrcSnapshot ? (
               <motion.img
                 className="pointer-events-none fixed z-30 border border-foreground/10 object-cover"
-                src={activeItem.image}
+                src={sourceImageSrcSnapshot}
                 alt=""
                 width={1280}
                 height={720}
@@ -906,6 +935,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     return;
                   }
                   setSourceImageSnapshot(null);
+                  setSourceImageSrcSnapshot(null);
                 }}
               />
             ) : null}

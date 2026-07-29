@@ -1,9 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skiper10 from "../components/skiper/skiper10";
 import Skiper80 from "../components/skiper/skiper80";
+import { getRepoImagePreloadTiers } from "./repo-images";
 import type { RepoSection } from "./repo-sections";
 
 const SPANISH_REDIRECT_DISMISSED_KEY = "micr-projects-spanish-redirect-dismissed";
@@ -24,6 +25,15 @@ const PortfolioShell = ({
 }: PortfolioShellProps) => {
   const [showSpanishPrompt, setShowSpanishPrompt] = useState(false);
   const spanishPromptTimerRef = useRef<number | null>(null);
+  const preloadTiers = useMemo(
+    () =>
+      getRepoImagePreloadTiers(
+        sections.flatMap((section) =>
+          section.items.map((item) => item.title),
+        ),
+      ),
+    [sections],
+  );
 
   useEffect(() => {
     return () => {
@@ -87,7 +97,11 @@ const PortfolioShell = ({
   }, []);
 
   return (
-    <Skiper10 text={preloaderText} onComplete={handlePreloaderComplete}>
+    <Skiper10
+      text={preloaderText}
+      preloadTiers={preloadTiers}
+      onComplete={handlePreloaderComplete}
+    >
       <>
         <Skiper80 sections={sections} initialSlug={initialSlug} />
         <AnimatePresence>

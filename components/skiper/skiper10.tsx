@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react";
 
 interface Skiper10Props {
   children: React.ReactNode;
-  durationMs?: number;
   onComplete?: () => void;
+  preloadTiers?: readonly (readonly string[])[];
   text?: string;
 }
 
@@ -14,21 +14,87 @@ interface Preloader004Props {
   text: string;
 }
 
+const PRELOAD_CONCURRENCY = 8;
+const LOADER_DURATION_MS = 1600;
+const EMPTY_PRELOAD_TIERS: readonly (readonly string[])[] = [];
+
+function preloadImage(src: string) {
+  return new Promise<void>((resolve) => {
+    const image = new window.Image();
+    image.decoding = "async";
+    image.onload = () => resolve();
+    image.onerror = () => resolve();
+    image.src = src;
+  });
+}
+
+async function preloadTier(
+  urls: readonly string[],
+  isCancelled: () => boolean,
+) {
+  let nextIndex = 0;
+
+  const worker = async () => {
+    while (!isCancelled()) {
+      const index = nextIndex;
+      nextIndex += 1;
+
+      if (index >= urls.length) {
+        return;
+      }
+
+      await preloadImage(urls[index]);
+    }
+  };
+
+  await Promise.all(
+    Array.from(
+      { length: Math.min(PRELOAD_CONCURRENCY, urls.length) },
+      worker,
+    ),
+  );
+}
+
 const Skiper10 = ({
   children,
-  durationMs = 1600,
   onComplete,
+  preloadTiers = EMPTY_PRELOAD_TIERS,
   text = "Turning concepts into working systems.",
 }: Skiper10Props) => {
   const [showPreloader, setShowPreloader] = useState(true);
+  const [canRenderChildren, setCanRenderChildren] = useState(
+    preloadTiers.length === 0,
+  );
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    let cancelled = false;
+    const loaderTimer = window.setTimeout(() => {
+      setCanRenderChildren(true);
       setShowPreloader(false);
-    }, durationMs);
+    }, LOADER_DURATION_MS);
 
-    return () => window.clearTimeout(timer);
-  }, [durationMs]);
+    const preloadAllTiers = async () => {
+      for (const [tierIndex, tier] of preloadTiers.entries()) {
+        await preloadTier(tier, () => cancelled);
+
+        if (cancelled) {
+          return;
+        }
+
+        if (tierIndex === 0) {
+          setCanRenderChildren(true);
+        }
+      }
+    };
+
+    // Keep warming the remaining tiers after the fixed loader window closes.
+    void preloadAllTiers();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(loaderTimer);
+    };
+  }, [preloadTiers]);
 
   useEffect(() => {
     if (showPreloader) {
@@ -59,7 +125,7 @@ const Skiper10 = ({
       <AnimatePresence mode="wait">
         {showPreloader ? <Preloader004 key="preloader" text={text} /> : null}
       </AnimatePresence>
-      {children}
+      {canRenderChildren ? children : null}
     </main>
   );
 };

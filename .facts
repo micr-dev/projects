@@ -1,0 +1,6 @@
+
+# portfolio
+
+## loading
+- the initial portfolio loader closes after 1600 milliseconds regardless of image preload completion @implemented
+- portfolio images preload from the smallest responsive tier to larger tiers and unfinished work continues after the loader closes @implemented

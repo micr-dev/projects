@@ -142,6 +142,27 @@ export function getRepoImageResponsiveUrls(title: string, index: number) {
   );
 }
 
+/** Returns unique responsive thumbnail URLs grouped from smallest to largest. */
+export function getRepoImagePreloadTiers(titles: readonly string[]) {
+  const urlsByWidth = new Map<number, Set<string>>(
+    WIDTHS.map((width) => [width, new Set<string>()]),
+  );
+
+  titles.forEach((title, index) => {
+    for (const url of getRepoImageResponsiveUrls(title, index)) {
+      const width = WIDTHS.find((candidate) =>
+        url.endsWith(`-${candidate}w.webp`),
+      );
+
+      if (width != null) {
+        urlsByWidth.get(width)?.add(url);
+      }
+    }
+  });
+
+  return WIDTHS.map((width) => [...(urlsByWidth.get(width) ?? [])]);
+}
+
 export function getRepoImage(title: string, index: number) {
   const filename = repoImages[title];
 

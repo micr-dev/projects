@@ -187,6 +187,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     useState<TitleSnapshot | null>(null);
   const [closingImageSource, setClosingImageSource] =
     useState<BoxSnapshot | null>(null);
+  const [closingImageSrc, setClosingImageSrc] = useState<string | null>(null);
   const [closingImageTarget, setClosingImageTarget] =
     useState<BoxSnapshot | null>(null);
   const [titleCloseDone, setTitleCloseDone] = useState(false);
@@ -337,6 +338,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setClosingTitleSource(null);
     setClosingTitleTarget(null);
     setClosingImageSource(null);
+    setClosingImageSrc(null);
     setClosingImageTarget(null);
     setTitleCloseDone(false);
     setImageCloseDone(false);
@@ -565,6 +567,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     const currentImageSource = detailImageRef.current
       ? snapshotBox(detailImageRef.current)
       : null;
+    const currentImageSrc = detailImageRef.current
+      ? isActiveImageLoaded
+        ? detailImageRef.current.currentSrc || detailImageRef.current.src
+        : activeItem.lqip
+      : null;
 
     if (!currentTitleSource && !currentImageSource) {
       syncRoute(null);
@@ -577,6 +584,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setClosingTitleSource(currentTitleSource);
     setClosingTitleTarget(null);
     setClosingImageSource(currentImageSource);
+    setClosingImageSrc(currentImageSrc);
     setClosingImageTarget(null);
     setTitleCloseDone(currentTitleSource == null);
     setImageCloseDone(currentImageSource == null);
@@ -584,6 +592,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     cuelumePlay("release");
     syncRoute(null);
   }, [
+    activeItem.lqip,
+    isActiveImageLoaded,
     isClosing,
     isItemActive,
     resetOpeningSnapshots,
@@ -1001,10 +1011,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               </motion.div>
             ) : null}
 
-            {closingImageSource ? (
+            {closingImageSource && closingImageSrc ? (
               <motion.img
                 className="pointer-events-none fixed z-30 border border-foreground/10 object-cover"
-                src={activeItem.image}
+                src={closingImageSrc}
                 alt=""
                 width={1280}
                 height={720}

@@ -2,7 +2,7 @@
 # portfolio
 
 ## loading
-- the initial portfolio loader begins closing after 2500 milliseconds regardless of image preload completion @implemented
+- the initial portfolio loader begins closing after 1600 milliseconds regardless of image preload completion @spec @implemented
 - portfolio images preload from the smallest responsive tier to larger tiers and unfinished work continues after the loader closes @implemented
 - the fixed loader window prioritizes smallest thumbnails while larger preload tiers use limited background concurrency to avoid blocking hover frames @implemented
 

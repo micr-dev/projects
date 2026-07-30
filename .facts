@@ -13,3 +13,6 @@
 ## images
 - portfolio list previews use the smallest responsive thumbnail while detail views request larger sources at high priority @implemented
 - while the portfolio list is open, every crossed project receives one rendered frame with its decoded 300-pixel thumbnail before the queue advances @spec @implemented
+
+# projects
+- the portfolio lists telnyx-voice-agent with matching metadata, description, and cover image in both language mirrors @spec @implemented

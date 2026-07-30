@@ -379,6 +379,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://github.com/Microck/tailstick",
     isPrivate: false,
   },
+  "telnyx-voice-agent": {
+    repo: "Microck/telnyx-voice-agent",
+    sourceUrl: "https://github.com/Microck/telnyx-voice-agent",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "m-d/thinko": {
     repo: "micr-dev/thinko",
     sourceUrl: "https://github.com/micr-dev/thinko",

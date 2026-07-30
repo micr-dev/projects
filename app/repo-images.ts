@@ -86,6 +86,7 @@ const repoImages: Record<string, string> = {
   "t3-chat-zipper": "t3-chat-zipper.webp",
   traccia: "traccia.webp",
   tailstick: "tailstick.webp",
+  "telnyx-voice-agent": "telnyx-voice-agent.webp",
   "m-d/thinko": "thinko.webp",
   "m-d/tokens": "tokens.webp",
   "topre-ec-archive": "topre-ec-archive.webp",

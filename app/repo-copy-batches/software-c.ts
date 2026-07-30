@@ -145,4 +145,12 @@ export const softwareBatchC = {
     ],
     languages: ["Go", "JavaScript"],
   },
+  "telnyx-voice-agent": {
+    paragraphs: [
+      "Telnyx-voice-agent is an outbound voice agent that places phone calls, lets a managed AI assistant handle the conversation, and keeps a live operator in the approval loop.",
+      "Fully autonomous calling can make consequential decisions without human oversight, while manual calling loses the speed and consistency of an assistant, so this project keeps the operator one notification away from each sensitive step.",
+      "The Python service uses Telnyx Call Control and AI Assistant webhooks, ntfy push actions for approve, deny, and reply decisions, Ed25519 verification, bearer-protected endpoints, and SQLite persistence for calls, transcripts, and dual-channel recordings.",
+    ],
+    languages: ["Python", "Dockerfile"],
+  },
 } as const satisfies Record<string, RepoDescription>;

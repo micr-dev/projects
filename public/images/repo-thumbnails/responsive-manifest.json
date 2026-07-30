@@ -373,6 +373,11 @@
     1000,
     2000
   ],
+  "telnyx-voice-agent": [
+    300,
+    1000,
+    2000
+  ],
   "tgr03-prototype-plate": [
     300,
     2000

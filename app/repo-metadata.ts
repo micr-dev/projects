@@ -318,6 +318,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "simple-pool": {
+    repo: "Microck/simple-pool",
+    sourceUrl: "https://github.com/Microck/simple-pool",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   solecist: {
     repo: "Microck/solecist",
     sourceUrl: "https://github.com/Microck/solecist",

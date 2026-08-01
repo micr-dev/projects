@@ -74,6 +74,7 @@ const repoImages: Record<string, string> = {
   revisor: "revisor.webp",
   "RPi4toNAS-Guide": "RPi4toNAS-Guide.webp",
   scudo: "scudo.webp",
+  "simple-pool": "simple-pool.webp",
   "seedance-skills": "seedance-skills.webp",
   "tailor-coderabbit-config": "tailor-coderabbit-config.webp",
   sincronizado: "sincronizado.webp",

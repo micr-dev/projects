@@ -161,6 +161,14 @@ export const softwareBatchB = {
     ],
     languages: ["PowerShell", "Batchfile"],
   },
+  "simple-pool": {
+    paragraphs: [
+      "simple-pool is a local sticky failover router for OpenAI-compatible chat-completions backends that keeps serving requests when one provider goes down.",
+      "A plain round-robin proxy forgets which backend is healthy and can keep sending traffic into rate limits or outages, so simple-pool uses ordered fallback with persisted cooldowns.",
+      "The Python service exposes `/v1/models` and `/v1/chat/completions`, expands secrets from environment variables, remembers the last healthy backend, and returns an aggregate 503 only when every backend is unavailable.",
+    ],
+    languages: ["Python"],
+  },
   sincronizado: {
     paragraphs: [
       "Sincronizado's `sinc` CLI keeps your local files in sync with a remote VPS so heavy AI agents run there while you edit with your local editor.",

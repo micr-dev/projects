@@ -240,6 +240,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "mic-hotkey-remapper": {
+    repo: "Microck/mic-hotkey-remapper",
+    sourceUrl: "https://github.com/Microck/mic-hotkey-remapper",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   moji: {
     repo: "Microck/moji",
     sourceUrl: "https://github.com/Microck/moji",

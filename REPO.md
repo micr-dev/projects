@@ -37,6 +37,7 @@ m-d/quarzite
 m-d/thinko
 m-d/tokens
 md2pkt
+mic-hotkey-remapper
 micromail
 moji
 ms26/bansho

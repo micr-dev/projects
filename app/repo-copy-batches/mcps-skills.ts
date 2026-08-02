@@ -113,4 +113,12 @@ export const mcpsSkillsBatch = {
     ],
     languages: ["Markdown"],
   },
+  "ui-unslop": {
+    paragraphs: [
+      "ui-unslop is a Codex skill for removing formulaic AI styling from frontend UI and making generated interfaces feel intentional again.",
+      "AI-generated interfaces often fall back to the same gradients, rounded cards, oversized headings, and decorative patterns, so the skill turns visual cleanup into a concrete review process.",
+      "It ships a reusable SKILL.md workflow, an OpenAI skill manifest, and a pattern catalog that identifies common UI slop and replaces it with clearer hierarchy, spacing, typography, and interaction choices.",
+    ],
+    languages: ["Markdown"],
+  },
 } as const satisfies Record<string, RepoDescription>;

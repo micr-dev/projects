@@ -78,6 +78,7 @@ const repoImages: Record<string, string> = {
   "simple-pool": "simple-pool.webp",
   "seedance-skills": "seedance-skills.webp",
   "tailor-coderabbit-config": "tailor-coderabbit-config.webp",
+  "ui-unslop": "ui-unslop.webp",
   sincronizado: "sincronizado.webp",
   solecist: "solecist.webp",
   SpainGPT: "SpainGPT.webp",

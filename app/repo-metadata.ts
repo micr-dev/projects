@@ -529,6 +529,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "ui-unslop": {
+    repo: "Microck/ui-unslop",
+    sourceUrl: "https://github.com/Microck/ui-unslop",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "gitquarry-mcp": {
     repo: "Microck/gitquarry-mcp",
     sourceUrl: "https://github.com/Microck/gitquarry-mcp",

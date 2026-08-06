@@ -24,6 +24,7 @@ gitquarry
 glm-quota-widget
 glob
 goofish-watcher
+handy-codex
 hermes-dayshift
 hermes-nightshift
 kagi-cli

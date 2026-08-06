@@ -47,6 +47,7 @@ const repoImages: Record<string, string> = {
   "goofish-watcher": "goofish-watcher.webp",
   "gsap-skills": "gsap-skills.webp",
   "hermes-nightshift": "hermes-nightshift.webp",
+  "handy-codex": "handy-codex.webp",
   "hermes-dayshift": "hermes-dayshift.webp",
   "ms26/indagine": "indagine.webp",
   "ms26/jarspect": "jarspect.webp",

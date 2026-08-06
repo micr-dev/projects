@@ -186,6 +186,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "handy-codex": {
+    repo: "Microck/handy-codex",
+    sourceUrl: "https://github.com/Microck/handy-codex",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "hermes-dayshift": {
     repo: "Microck/hermes-dayshift-glm",
     sourceUrl: "https://github.com/Microck/hermes-dayshift-glm",

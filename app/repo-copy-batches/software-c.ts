@@ -121,6 +121,14 @@ export const softwareBatchC = {
     ],
     languages: ["Java", "Shell"],
   },
+  "waa-desktop-24": {
+    paragraphs: [
+      "WAA Desktop-24 is a compact, browser-free suite of 24 normal-difficulty desktop tasks for evaluating computer-use agents inside Windows Agent Arena.",
+      "Running the full upstream benchmark is costly and includes browser tasks, while smaller ad hoc subsets are hard to reproduce or compare, so this package fixes a documented desktop-only selection.",
+      "The Python toolkit pins every task to an upstream commit, installs the manifest into an existing WAA checkout, validates task files and checksums, launches runs through Linux/WSL or PowerShell, and summarizes scores and costs.",
+    ],
+    languages: ["Python", "Shell", "PowerShell", "Makefile"],
+  },
   waterWAV: {
     paragraphs: [
       "WaterWAV is a Python script that embeds an image into an audio file's spectrogram via STFT so the watermark appears when you load it into a spectrogram viewer.",

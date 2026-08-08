@@ -77,6 +77,7 @@ vapora
 veskforge
 veyoff
 vss
+waa-desktop-24
 waterWAV
 
 ## Hardware

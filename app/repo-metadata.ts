@@ -469,6 +469,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "waa-desktop-24": {
+    repo: "Microck/waa-desktop-24",
+    sourceUrl: "https://github.com/Microck/waa-desktop-24",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   waterWAV: {
     repo: "Microck/waterWAV",
     sourceUrl: "https://github.com/Microck/waterWAV",

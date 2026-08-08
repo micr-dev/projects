@@ -103,6 +103,7 @@ const repoImages: Record<string, string> = {
   veskforge: "veskforge.webp",
   veyoff: "veyoff.webp",
   vss: "vss.webp",
+  "waa-desktop-24": "waa-desktop-24.webp",
   waterWAV: "waterWAV.webp",
   YAWN60: "YAWN60.webp",
   "tgr03-prototype-plate": "tgr03-prototype-plate.webp",

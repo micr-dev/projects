@@ -102,6 +102,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://gamebanana.com/mods/486547",
     isPrivate: false,
   },
+  "cat-monitor": {
+    repo: "Microck/cat-monitor",
+    sourceUrl: "https://github.com/Microck/cat-monitor",
+    livePreviewUrl: null,
+    isPrivate: true,
+  },
   chalcopyrite: {
     repo: "Microck/chalcopyrite",
     sourceUrl: "https://github.com/Microck/chalcopyrite",

@@ -27,6 +27,7 @@ const repoImages: Record<string, string> = {
   "camofox-mcp": "camofox-mcp.webp",
   "catbox-mcp": "catbox-mcp.webp",
   "Celeste-SkinMod": "Celeste-QuartzSkin.webp",
+  "cat-monitor": "cat-monitor.webp",
   chalcopyrite: "chalcopyrite.webp",
   "chatgpt-webui-mcp": "chatgpt-webui-mcp.webp",
   cinco: "cinco.webp",

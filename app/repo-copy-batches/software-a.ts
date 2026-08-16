@@ -97,6 +97,14 @@ export const softwareBatchA = {
     ],
     languages: ["Python"]
   },
+  "cat-monitor": {
+    paragraphs: [
+      "Cat Monitor is a production watchdog for Chalcopyrite's deployed meow-monitor service, tracking failures and bounded repairs instead of relying on simple liveness checks.",
+      "It inspects real production state such as scraper freshness, scrape quality, solver health, backups, disk usage, containers, and recent errors, then reports incidents through Discord with pause and resume controls.",
+      "The TypeScript service runs allowlisted SSH commands, persists incident history in SQLite WAL, writes audit artifacts and repair requests, and delegates isolated Codex repair work to a sidecar worker before exact-SHA deploy and verification."
+    ],
+    languages: ["TypeScript", "Shell", "Perl", "Dockerfile"]
+  },
   "chalcopyrite": {
     paragraphs: [
       "Chalcopyrite is a price-monitoring suite that bypasses Cloudflare, eBay Shield, and similar defenses with a hybrid scraping and solver stack.",

@@ -12,6 +12,7 @@ bdss-website
 bettersaves
 boilify
 Celeste-SkinMod
+cat-monitor
 chalcopyrite
 cinco
 codexport

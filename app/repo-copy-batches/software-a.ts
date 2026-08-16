@@ -176,5 +176,13 @@ export const softwareBatchA = {
       "The fork adds a Rust/Tauri CodexAsr engine that discovers or accepts a configured Codex auth.json, sends recordings to ChatGPT's transcription endpoint with the account context, and exposes the provider through the React/TypeScript model selector and settings UI."
     ],
     languages: ["Rust", "TypeScript", "Nix", "NSIS", "Python", "CSS", "Swift", "Shell", "HTML", "C", "JavaScript"]
+  },
+  "keyflare-qmk-tool": {
+    paragraphs: [
+      "keyflare is a cross-platform desktop app that builds fixed-color reactive lighting into QMK firmware without requiring users to edit C by hand.",
+      "QMK cannot safely infer physical LED wiring from a keyboard model or layout, so keyflare exposes only the backlight and host indicator channels the selected keyboard source actually declares.",
+      "The Electron and React app imports a keyboard source and keymap, reads QMK layout metadata, injects a pinned QMK Community Module, runs the real QMK compiler, and saves `.hex`, `.bin`, or `.uf2` artifacts through a validated IPC boundary.",
+    ],
+    languages: ["TypeScript", "CSS", "C", "HTML"],
   }
 } as const satisfies Record<string, RepoDescription>;

@@ -228,6 +228,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://kefine.store",
     isPrivate: true,
   },
+  "keyflare-qmk-tool": {
+    repo: "Microck/keyflare-qmk-tool",
+    sourceUrl: "https://github.com/Microck/keyflare-qmk-tool",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "m-d/micr.dev": {
     repo: "micr-dev/micr.dev",
     sourceUrl: "https://github.com/micr-dev/micr.dev",

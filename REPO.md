@@ -30,6 +30,7 @@ hermes-dayshift
 hermes-nightshift
 kagi-cli
 kefine-website
+keyflare-qmk-tool
 m-d/about
 m-d/ai
 m-d/blog

@@ -55,6 +55,7 @@ const repoImages: Record<string, string> = {
   "kagi-cli": "kagi-cli.webp",
   "kagi-mcp": "kagi-cli.webp",
   "kefine-website": "kefine-website.webp",
+  "keyflare-qmk-tool": "keyflare-qmk-tool.webp",
   "m-d/micr.dev": "micr.dev.webp",
   "m-d/microkeebs": "microkeebs.webp",
   mullgate: "mullgate.webp",

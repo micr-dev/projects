@@ -96,6 +96,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "calendar-peek-extension": {
+    repo: "Microck/calendar-peek-extension",
+    sourceUrl: "https://github.com/Microck/calendar-peek-extension",
+    livePreviewUrl: "https://github.com/Microck/calendar-peek-extension",
+    isPrivate: false,
+  },
   "Celeste-SkinMod": {
     repo: "Microck/Celeste-QuarziteSkin",
     sourceUrl: "https://github.com/Microck/Celeste-QuarziteSkin",

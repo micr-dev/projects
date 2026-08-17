@@ -11,6 +11,7 @@ archie
 bdss-website
 bettersaves
 boilify
+calendar-peek-extension
 Celeste-SkinMod
 cat-monitor
 chalcopyrite

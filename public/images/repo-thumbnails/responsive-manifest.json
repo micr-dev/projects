@@ -104,6 +104,11 @@
     1000,
     2000
   ],
+  "calendar-peek-extension": [
+    300,
+    1000,
+    2000
+  ],
   "camofox-mcp": [
     300,
     1000,

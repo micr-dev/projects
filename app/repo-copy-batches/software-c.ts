@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchC = {
+  "calendar-peek-extension": {
+    paragraphs: [
+      "Calendar Peek is a Chromium extension that opens a coworker's shared Google Calendar from their Google Workspace profile card.",
+      "Finding a coworker's calendar normally means copying an email address and searching manually, so the extension keeps that lookup one click away without bypassing Google's sharing rules.",
+      "It uses Manifest V3 content scripts across Google Workspace, accessible profile-card signals, Google's native people search, and a local popup fallback with short-lived chrome.storage state.",
+    ],
+    languages: ["JavaScript", "CSS", "HTML"],
+  },
   squircle: {
     paragraphs: [
       "Squircle is a Next.js app that lets you drop images or GIFs, tune corner radius, shadows, outlines, and export transparent-corner files without sending anything to a server.",

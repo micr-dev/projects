@@ -24,6 +24,7 @@ const repoImages: Record<string, string> = {
   "m-d/blog": "blog.webp",
   bettersaves: "bettersaves.webp",
   boilify: "bolify.webp",
+  "calendar-peek-extension": "calendar-peek-extension.webp",
   "camofox-mcp": "camofox-mcp.webp",
   "catbox-mcp": "catbox-mcp.webp",
   "Celeste-SkinMod": "Celeste-QuartzSkin.webp",

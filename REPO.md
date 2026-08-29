@@ -56,6 +56,7 @@ old-f3
 ollama-quota-bench
 onairo
 opencode-studio
+pangram-cli
 protoncode
 rental-search
 revisor

@@ -57,6 +57,14 @@ export const softwareBatchB = {
     ],
     languages: ["Rust", "Shell", "JavaScript", "MDX"],
   },
+  "omp-kagi-cli": {
+    paragraphs: [
+      "omp-kagi-cli is an omp plugin that replaces omp's native Kagi web-search provider with kagi-cli, enabling subscriber search through session authentication instead of a paid API key.",
+      "The stock provider talks to the Kagi Search API directly and needs `KAGI_API_KEY`, while this plugin keeps the existing provider slot and lets kagi-cli reuse its profiles, lenses, and one credential source.",
+      "The TypeScript plugin takes over the live provider registry, runs `kagi search --format json`, preserves omp's fallback and timeout settings, and falls back to the stock provider when the CLI is unavailable or fails.",
+    ],
+    languages: ["TypeScript"],
+  },
   "kefine-website": {
     paragraphs: [
       "Kefine-website is the Vite and React storefront for curated replica drops, upcoming pipeline statuses, and a GitHub Gist-powered CMS with a Three.js logo and sound cues.",

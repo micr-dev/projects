@@ -228,6 +228,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://github.com/Microck/kagi-cli",
     isPrivate: false,
   },
+  "omp-kagi-cli": {
+    repo: "Microck/omp-kagi-cli",
+    sourceUrl: "https://github.com/Microck/omp-kagi-cli",
+    livePreviewUrl: "https://github.com/Microck/omp-kagi-cli",
+    isPrivate: false,
+  },
   "kefine-website": {
     repo: "Microck/kefine-website",
     sourceUrl: "https://github.com/Microck/kefine-website",

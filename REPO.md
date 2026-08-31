@@ -30,6 +30,7 @@ handy-codex
 hermes-dayshift
 hermes-nightshift
 kagi-cli
+omp-kagi-cli
 kefine-website
 keyflare-qmk-tool
 m-d/about

@@ -75,6 +75,7 @@ const repoImages: Record<string, string> = {
   "pangram-cli": "pangram-cli.webp",
   "perplexity-mcp": "perplexity-mcp.webp",
   protoncode: "protoncode.webp",
+  "ravenbin-upload": "ravenbin-upload.webp",
   "m-d/quarzite": "quarzite.webp",
   "ms26/repatrol": "repatrol.webp",
   "rental-search": "rental-search.webp",

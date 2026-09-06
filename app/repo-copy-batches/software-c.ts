@@ -145,6 +145,14 @@ export const softwareBatchC = {
     ],
     languages: ["Python"],
   },
+  "ravenbin-upload": {
+    paragraphs: [
+      "ravenbin-upload is a Python command-line client that sends a local file to Raven Bin and prints a temporary share URL for shell workflows.",
+      "Temporary artifact sharing often means setting up a separate upload service or exposing a local file, while this wrapper keeps the one-command path and lets Raven handle encryption.",
+      "It drives Raven's current web client in headless Chromium with Playwright, stages files under the user's home directory for sandbox compatibility, selects one of six expiry values, and removes the staged copy after upload.",
+    ],
+    languages: ["Python"],
+  },
   "rental-search": {
     paragraphs: [
       "Rental-search is a local CLI that captures rental listings from Spanish property portals, feeds photos and text to a vision-capable LLM, and produces evidence-backed JSON evaluations against a configurable criteria set.",

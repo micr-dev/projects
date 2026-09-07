@@ -92,3 +92,11 @@ body::-webkit-scrollbar {
 .overlay-scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+
+/* The modal, rather than the catalogue or preloader, owns scrolling while open. */
+html:has(.portfolio-detail[open]),
+body:has(.portfolio-detail[open]) {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}

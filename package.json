@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test app/*.test.mjs",
     "lqip": "python3 scripts/generate-lqip.py",
     "lqip:check": "python3 scripts/generate-lqip.py --check",
     "responsive": "python3 scripts/generate-responsive-thumbnails.py",

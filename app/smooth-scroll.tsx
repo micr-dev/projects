@@ -12,6 +12,7 @@ export default function SmoothScroll() {
       lerp: 0.09,
       smoothWheel: true,
       syncTouch: false,
+      prevent: (node) => node.closest("[data-portfolio-detail-scroll]") != null,
     });
 
     let frameId = 0;

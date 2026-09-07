@@ -1,8 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { SoundName } from "cuelume";
-import { BookOpen, CircleArrowOutUpRight, Lock } from "lucide-react";
+import { BookOpen, CircleArrowOutUpRight, Lock, X } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   getRepoDisplayTitle,
@@ -192,6 +192,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const [imageCloseDone, setImageCloseDone] = useState(false);
   const [closingTitleScrollOffset, setClosingTitleScrollOffset] = useState(0);
   const [, setLoadedImageVersion] = useState(0);
+  const detailDialogRef = useRef<HTMLDialogElement | null>(null);
+  const returnFocusIndexRef = useRef<number | null>(initialItemIndex);
+  const isDetailOpen = isItemActive != null;
   const previewFrameRef = useRef<HTMLDivElement | null>(null);
   const previewImageRefs = useRef(new Map<number, HTMLImageElement>());
   const projectListRef = useRef<HTMLUListElement | null>(null);
@@ -204,7 +207,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const sampledHoverIndexRef = useRef(initialItemIndex ?? 0);
   const pendingHoverIndicesRef = useRef<number[]>([]);
   const traversalDirectionRef = useRef<-1 | 0 | 1>(0);
-  const itemTitleRefs = useRef(new Map<number, HTMLLIElement | null>());
+  const itemTitleRefs = useRef(new Map<number, HTMLAnchorElement | null>());
   const warmedImagesRef = useRef(new Set<string>());
   const loadedImagesRef = useRef(new Set<string>());
   const closingTitleScrollOriginRef = useRef(0);
@@ -614,6 +617,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         resetClosingAnimationState();
       }
 
+      returnFocusIndexRef.current = itemIndex;
       const item = items[itemIndex];
       preloadImage([item.image, ...item.responsiveUrls.slice(1)], "high");
       enterAnimationTokenRef.current += 1;
@@ -621,7 +625,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       setTargetTitleSnapshot(null);
 
       const previewImage = previewImageRefs.current.get(itemIndex);
-      if (previewFrameRef.current && previewImage) {
+      if (previewFrameRef.current?.getBoundingClientRect().width && previewImage) {
         const isItemImageLoaded =
           loadedImagesRef.current.has(item.image) ||
           item.responsiveUrls.some((url) => loadedImagesRef.current.has(url));
@@ -647,6 +651,23 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       syncRoute,
     ],
   );
+
+  useLayoutEffect(() => {
+    if (!isDetailOpen) {
+      // Restore focus after the browser has removed the dialog from the top layer.
+      const frame = requestAnimationFrame(() => {
+        const index = returnFocusIndexRef.current;
+        if (index != null) itemTitleRefs.current.get(index)?.focus({ preventScroll: true });
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+    const dialog = detailDialogRef.current;
+    if (!dialog) return;
+    dialog.showModal();
+    return () => {
+      dialog.close();
+    };
+  }, [isDetailOpen]);
 
   useLayoutEffect(() => {
     if (isItemActive == null) {
@@ -780,7 +801,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     const currentTitleSource = detailTitleRef.current
       ? snapshotTitle(detailTitleRef.current)
       : null;
-    const currentImageSource = detailImageRef.current
+    const currentImageSource =
+      detailImageRef.current && previewFrameRef.current?.getBoundingClientRect().width
       ? snapshotBox(detailImageRef.current)
       : null;
     const currentImageSrc = detailImageRef.current
@@ -949,13 +971,13 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           transition={{ duration: 0.22, ease: "easeOut" }}
         />
       ) : null}
-      <AnimatePresence mode="wait" initial={false}>
+      {/* Opening and closing animations are state-driven; keep the catalogue mounted. */}
+      <>
         <motion.div
           key="repo-list"
           className="w-full"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 1 }}
         >
             {shouldShowPreviewThumbnail ? (
               <>
@@ -963,7 +985,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   aria-hidden="true"
                   alt=""
                   src={activeItem.lqip}
-                  className="fixed left-1/2 top-20 z-[19] aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
+                  className="hidden lg:block fixed left-1/2 top-20 z-[19] aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden rounded-[25px] lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-auto"
                   style={{
                     imageRendering: "pixelated",
                     objectFit: "cover",
@@ -981,12 +1003,12 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               borderRadius: "25px",
               visibility: shouldShowPreviewThumbnail ? "visible" : "hidden",
             }}
-            className="fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden border border-foreground/10 lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-[22.222rem]"
+            className="hidden lg:block fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden border border-foreground/10 lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-[22.222rem]"
           >
             {previewImageLayers}
           </motion.div>
 
-          <ul ref={projectListRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-[46vh] lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
+          <ul ref={projectListRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-8 lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
             {(() => {
               let itemCursor = 0;
 
@@ -1001,31 +1023,39 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   const displayTitle = getRepoDisplayTitle(title);
 
                   return (
-                    <li
-                      ref={(element) => {
-                        itemTitleRefs.current.set(item.index, element);
+                    <li key={item.key} className="max-w-full lg:w-fit">
+                      <a
+                        href={`/${item.slug}`}
+                        ref={(element) => {
+                          itemTitleRefs.current.set(item.index, element);
 
-                        if (element && item.index === hoveredIndexRef.current) {
-                          element.setAttribute("data-super-hover-active", "");
-                        }
-                      }}
-                      key={item.key}
-                      data-super-hover={String(item.index)}
-                      style={{
-                        opacity:
-                          isClosing && isItemActive === item.index ? 0 : undefined,
-                      }}
-                      className="relative flex w-full max-w-full cursor-pointer items-center break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight opacity-50 data-[super-hover-active]:opacity-100 [&[data-super-hover-active]_.hover-indicator]:opacity-100 lg:w-fit lg:text-4xl lg:tracking-tighter"
-                      onPointerEnter={() => {
-                        enqueueHoveredIndex(item.index);
-                      }}
-                      onClick={(event) => {
-                        cuelumePlay("press");
-                        openItem(item.index, event.currentTarget);
-                      }}
-                    >
-                      {displayTitle}
-                      <div className="hover-indicator bg-foreground absolute left-full ml-2.5 size-1 rounded-full opacity-0" />
+                          if (element && item.index === hoveredIndexRef.current) {
+                            element.setAttribute("data-super-hover-active", "");
+                          }
+                        }}
+                        data-super-hover={String(item.index)}
+                        style={{
+                          opacity:
+                            isClosing && isItemActive === item.index ? 0 : undefined,
+                        }}
+                        className="relative flex w-full max-w-full cursor-pointer items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight opacity-50 data-[super-hover-active]:opacity-100 [&[data-super-hover-active]_.hover-indicator]:opacity-100 lg:w-fit lg:text-4xl lg:tracking-tighter"
+                        onFocus={() => setHoveredIndexImmediately(item.index)}
+                        onPointerEnter={() => {
+                          enqueueHoveredIndex(item.index);
+                        }}
+                        onClick={(event) => {
+                          if (
+                            event.button !== 0 || event.metaKey || event.ctrlKey ||
+                            event.shiftKey || event.altKey
+                          ) return;
+                          event.preventDefault();
+                          cuelumePlay("press");
+                          openItem(item.index, event.currentTarget);
+                        }}
+                      >
+                        {displayTitle}
+                        <span aria-hidden="true" className="hover-indicator bg-foreground absolute left-full ml-2.5 size-1 rounded-full opacity-0" />
+                      </a>
                     </li>
                   );
                 })}
@@ -1036,12 +1066,29 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         </motion.div>
 
         {isItemActive != null ? (
-          <motion.div
+          <dialog
+            ref={detailDialogRef}
             key="repo-detail"
-            className={`overlay-scrollbar-none inset-0 z-20 ${isClosing ? "fixed overflow-hidden" : "fixed overflow-y-auto"}`}
-            style={{ pointerEvents: isClosing ? "none" : "auto" }}
-            onClick={closeActiveItem}
+            aria-labelledby="project-detail-title"
+            data-portfolio-detail-scroll
+            data-lenis-prevent
+            className={`portfolio-detail overlay-scrollbar-none fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-transparent p-0 text-foreground overscroll-contain touch-pan-y backdrop:bg-transparent ${isClosing ? "overflow-hidden" : "overflow-y-auto"}`}
+            onCancel={(event) => {
+              event.preventDefault();
+              closeActiveItem();
+            }}
+            onClick={(event) => {
+              if (event.target === event.currentTarget) closeActiveItem();
+            }}
           >
+            <button
+              type="button"
+              aria-label="Close project"
+              onClick={closeActiveItem}
+              className="fixed right-4 top-4 z-40 flex h-11 items-center gap-2 rounded-xl border border-foreground/20 bg-[#121212] px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+            >
+              Close project <X aria-hidden="true" className="size-4" />
+            </button>
             {hasPendingTitleAnimation ? (
               <motion.div
                 className="pointer-events-none fixed z-30 whitespace-normal lg:whitespace-nowrap"
@@ -1275,6 +1322,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     {activeDisplayTitle}
                   </div>
                   <motion.h1
+                    id="project-detail-title"
                     ref={detailTitleRef}
                     className="absolute inset-0 inline-block max-w-full break-words lg:whitespace-nowrap"
                     style={{
@@ -1414,7 +1462,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                         onClick={(event) => event.stopPropagation()}
                         className="bg-foreground text-background flex h-9 items-center gap-2 rounded-xl px-3 text-sm"
                       >
-                        Live Preview <CircleArrowOutUpRight className="size-3.5" />
+                        {activeItem.metadata.livePreviewLabel ?? "Live Preview"} <CircleArrowOutUpRight className="size-3.5" />
                       </a>
                     ) : null}
                     {activeItem.metadata.isPrivate ? (
@@ -1439,9 +1487,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                 </motion.div>
               </motion.div>
             </div>
-          </motion.div>
+          </dialog>
         ) : null}
-      </AnimatePresence>
+      </>
     </div>
   );
 };

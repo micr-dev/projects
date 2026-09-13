@@ -333,7 +333,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             aria-hidden="true"
             alt=""
             src={src}
-            loading="eager"
+            loading="lazy"
             decoding="async"
             fetchPriority={
               item.index === hoveredIndexRef.current ? "high" : "low"

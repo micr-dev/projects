@@ -360,6 +360,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://ravenbin.com/",
     isPrivate: false,
   },
+  "remind-me-later": {
+    repo: "Microck/remind-me-later",
+    sourceUrl: "https://github.com/Microck/remind-me-later",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   revisor: {
     repo: "Microck/revisor",
     sourceUrl: "https://github.com/Microck/revisor",

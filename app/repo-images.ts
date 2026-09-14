@@ -76,6 +76,7 @@ const repoImages: Record<string, string> = {
   "perplexity-mcp": "perplexity-mcp.webp",
   protoncode: "protoncode.webp",
   "ravenbin-upload": "ravenbin-upload.webp",
+  "remind-me-later": "remind-me-later.webp",
   "m-d/quarzite": "quarzite.webp",
   "ms26/repatrol": "repatrol.webp",
   "rental-search": "rental-search.webp",

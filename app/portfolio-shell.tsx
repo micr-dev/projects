@@ -9,6 +9,7 @@ import type { RepoSection } from "./repo-sections";
 
 const SPANISH_REDIRECT_DISMISSED_KEY = "micr-projects-spanish-redirect-dismissed";
 const SPANISH_PROMPT_DELAY_MS = 950;
+const INITIAL_PRELOAD_COUNT = 12;
 const dialogSpring = { type: "spring" as const, stiffness: 150, damping: 25 };
 const buttonSpring = { type: "spring" as const, stiffness: 260, damping: 18 };
 
@@ -28,9 +29,9 @@ const PortfolioShell = ({
   const preloadTiers = useMemo(
     () =>
       getRepoImagePreloadTiers(
-        sections.flatMap((section) =>
-          section.items.map((item) => item.title),
-        ),
+        sections
+          .flatMap((section) => section.items.map((item) => item.title))
+          .slice(0, INITIAL_PRELOAD_COUNT),
       ),
     [sections],
   );

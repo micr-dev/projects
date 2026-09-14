@@ -40,6 +40,7 @@ const repoImages: Record<string, string> = {
   "dialogue-textbox": "dialogue-textbox.webp",
   "discord-self-mcp": "discord-self-mcp.webp",
   gitbanana: "gitbanana.webp",
+  "github-open-counts-script": "github-open-counts-script.webp",
   "gitquarry-mcp": "gitquarry-mcp.webp",
   DXFtoIRL: "DXFtoIRL.webp",
   "elevenlabs-webui": "elevenlabs-webui.webp",

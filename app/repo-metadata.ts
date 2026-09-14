@@ -179,6 +179,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "github-open-counts-script": {
+    repo: "Microck/github-open-counts-script",
+    sourceUrl: "https://github.com/Microck/github-open-counts-script",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   gitquarry: {
     repo: "Microck/gitquarry",
     sourceUrl: "https://github.com/Microck/gitquarry",

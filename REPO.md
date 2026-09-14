@@ -22,6 +22,7 @@ dialogue-textbox
 DXFtoIRL
 elevenlabs-webui
 gitbanana
+github-open-counts-script
 gitquarry
 glm-quota-widget
 glob

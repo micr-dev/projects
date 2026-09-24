@@ -382,7 +382,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     repo: "Microck/rosario",
     sourceUrl: "https://github.com/Microck/rosario",
     livePreviewUrl: "https://rosario.fyi",
-    isPrivate: false,
+    isPrivate: true,
   },
   revisor: {
     repo: "Microck/revisor",

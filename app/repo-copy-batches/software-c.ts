@@ -193,4 +193,28 @@ export const softwareBatchC = {
     ],
     languages: ["Python", "Dockerfile"],
   },
+  "codex-live-voice": {
+    paragraphs: [
+      "Codex Live Voice adds two-way realtime voice to web apps through a local Codex CLI login, without requiring a separate API key for the voice session.",
+      "Hosted voice APIs often require separate credentials and move session handling outside the app owner's machine, while this broker reuses the signed-in Codex account and keeps browser audio on a direct WebRTC connection.",
+      "A Python broker negotiates SDP through `codex app-server`, exposes optional FastAPI routes, and pairs with a build-free JavaScript client for transcripts, interruption, usage, and delegation.",
+    ],
+    languages: ["Python", "JavaScript", "Shell"],
+  },
+  "rosario": {
+    paragraphs: [
+      "Rosario is a voice receptionist demo for clinics that handles phone and browser calls, checks patient and appointment records, and saves confirmed bookings, changes, and cancellations.",
+      "A voice interface must do more than transcribe requests: it needs to validate identity and availability, preserve appointment state, and let staff review what happened without presenting a demo as a real clinical service.",
+      "Its Python backend uses Pipecat, GPT-Live, reasoning-model tools, SQLite, Twilio Media Streams, and WebRTC, while a React console reviews call transcripts, recordings, decisions, and the shared calendar.",
+    ],
+    languages: ["Python", "TypeScript", "CSS", "HTML", "JavaScript", "Shell", "Makefile"],
+  },
+  "wallapop-cli": {
+    paragraphs: [
+      "wallapop-cli is a terminal client for searching Wallapop listings, tracking changes to searches, items, and sellers, and managing seller chats from your own account.",
+      "The website is the only practical way to use these workflows interactively, while scripts and agents need structured output and a repeatable interface that does not require a browser session for every command.",
+      "Written in Go as a static binary, it emits JSON by default, imports browser session cookies, and provides filters, multi-account profiles, event-based watches, notification sinks, and chat commands.",
+    ],
+    languages: ["Go", "MDX", "TypeScript", "JavaScript", "CSS", "Shell", "Makefile"],
+  },
 } as const satisfies Record<string, RepoDescription>;

@@ -16,6 +16,7 @@ Celeste-SkinMod
 cat-monitor
 chalcopyrite
 cinco
+codex-live-voice
 codexport
 crabbox-template-boxes
 dialogue-textbox
@@ -64,6 +65,7 @@ ravenbin-upload
 remind-me-later
 rental-search
 revisor
+rosario
 scudo
 simple-pool
 sincronizado
@@ -85,6 +87,7 @@ vapora
 veskforge
 veyoff
 vss
+wallapop-cli
 waa-desktop-24
 waterWAV
 

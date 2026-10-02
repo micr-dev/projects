@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
 interface Skiper10Props {
@@ -121,12 +121,14 @@ const Skiper10 = ({
   }, [showPreloader]);
 
   return (
-    <main className="relative min-h-screen bg-[#121212]">
-      <AnimatePresence mode="wait">
-        {showPreloader ? <Preloader004 key="preloader" text={text} /> : null}
-      </AnimatePresence>
-      {canRenderChildren ? children : null}
-    </main>
+    <MotionConfig reducedMotion="user">
+      <main className="relative min-h-screen bg-[#121212]">
+        <AnimatePresence mode="wait">
+          {showPreloader ? <Preloader004 key="preloader" text={text} /> : null}
+        </AnimatePresence>
+        {canRenderChildren ? children : null}
+      </main>
+    </MotionConfig>
   );
 };
 

@@ -215,5 +215,5 @@ export function getRepoLqip(title: string, index: number) {
 
 /** Responsive image sizes for the preview + detail thumbnails. */
 export function getRepoImageSizes() {
-  return "(max-width: 1024px) 90vw, 30vw";
+  return "(max-width: 607px) calc(100vw - 32px), 576px";
 }

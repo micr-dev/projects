@@ -303,21 +303,25 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           image.setAttribute("data-preview-decoded", "");
           markImageLoaded(image, index === hoveredIndexRef.current);
         },
-        () => markImageLoaded(image, index === hoveredIndexRef.current),
+        () => {
+          image.setAttribute("data-preview-decoded", "");
+          const fallback = items[index].lqip;
+          if (image.getAttribute("src") !== fallback) image.src = fallback;
+        },
       );
     },
-    [markImageLoaded],
+    [items, markImageLoaded],
   );
 
   const handlePreviewImageError = useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
       const index = Number(event.currentTarget.dataset.previewImage);
-      markImageLoaded(
-        event.currentTarget,
-        index === hoveredIndexRef.current,
-      );
+      const image = event.currentTarget;
+      image.setAttribute("data-preview-decoded", "");
+      const fallback = items[index].lqip;
+      if (image.getAttribute("src") !== fallback) image.src = fallback;
     },
-    [markImageLoaded],
+    [items],
   );
 
   const previewImageLayers = useMemo(
@@ -375,7 +379,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         image.decoding = "async";
         image.fetchPriority = priority;
         image.onload = () => markImageLoaded(image);
-        image.onerror = () => markImageLoaded(src);
+        image.onerror = () => warmedImagesRef.current.delete(src);
         image.src = src;
       }
     },
@@ -598,6 +602,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         return;
       }
 
+      returnFocusIndexRef.current = matchedIndex;
+      detailDialogRef.current?.scrollTo({ top: 0, behavior: "instant" });
       preloadImage([items[matchedIndex].image, ...items[matchedIndex].responsiveUrls], "high");
       setHoveredIndexImmediately(matchedIndex);
       setIsItemActive(matchedIndex);
@@ -862,6 +868,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       const nextItem = items[nextIndex];
       preloadImage([nextItem.image, ...nextItem.responsiveUrls], "high");
       setHoveredIndexImmediately(nextIndex);
+      returnFocusIndexRef.current = nextIndex;
+      detailDialogRef.current?.scrollTo({ top: 0, behavior: "instant" });
       setIsItemActive(nextIndex);
       syncRoute(nextIndex);
       maybePlayNav();
@@ -884,6 +892,12 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        event.preventDefault();
+        closeActiveItem();
+        return;
+      }
+
       if (
         event.defaultPrevented ||
         event.altKey ||
@@ -894,13 +908,13 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         return;
       }
 
-      if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      if (event.key === "ArrowLeft") {
         event.preventDefault();
         navigateActiveItem(-1);
         return;
       }
 
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      if (event.key === "ArrowRight") {
         event.preventDefault();
         navigateActiveItem(1);
       }
@@ -911,7 +925,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isItemActive, navigateActiveItem]);
+  }, [closeActiveItem, isItemActive, navigateActiveItem]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -1085,13 +1099,13 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               type="button"
               aria-label="Close project"
               onClick={closeActiveItem}
-              className="fixed right-4 top-4 z-40 flex h-11 items-center gap-2 rounded-xl border border-foreground/20 bg-[#121212] px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+              className="fixed right-[max(0.5rem,env(safe-area-inset-right))] top-[max(0.5rem,env(safe-area-inset-top))] z-40 flex size-11 items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
             >
-              Close project <X aria-hidden="true" className="size-4" />
+              <X aria-hidden="true" className="size-3.5" strokeWidth={1.5} />
             </button>
             {hasPendingTitleAnimation ? (
               <motion.div
-                className="pointer-events-none fixed z-30 whitespace-normal lg:whitespace-nowrap"
+                className="pointer-events-none fixed z-30 whitespace-normal break-words"
                 initial={{
                   top: sourceTitleSnapshot.top,
                   left: sourceTitleSnapshot.left,
@@ -1203,7 +1217,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
             {closingTitleSource ? (
               <motion.div
-                className="pointer-events-none fixed z-30 whitespace-normal lg:whitespace-nowrap"
+                className="pointer-events-none fixed z-30 whitespace-normal break-words"
                 initial={{
                   top: closingTitleSource.top,
                   left: closingTitleSource.left,
@@ -1317,14 +1331,14 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   <div
                     ref={detailTitleMeasureRef}
                     aria-hidden="true"
-                    className="invisible inline-block max-w-full break-words lg:whitespace-nowrap"
+                    className="invisible inline-block max-w-full break-words"
                   >
                     {activeDisplayTitle}
                   </div>
                   <motion.h1
                     id="project-detail-title"
                     ref={detailTitleRef}
-                    className="absolute inset-0 inline-block max-w-full break-words lg:whitespace-nowrap"
+                    className="absolute inset-0 inline-block max-w-full break-words"
                     style={{
                       opacity:
                         hasPendingTitleAnimation || isClosing ? 0 : 1,
@@ -1371,7 +1385,18 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     alt=""
                     className="h-full w-full object-cover"
                     onLoad={(event) => markImageLoaded(event.currentTarget)}
-                    onError={(event) => markImageLoaded(event.currentTarget)}
+                    onError={(event) => {
+                      const image = event.currentTarget;
+                      if (image.getAttribute("src") === activeItem.lqip) return;
+                      const failedPath = new URL(
+                        image.currentSrc || image.src,
+                        window.location.href,
+                      ).pathname;
+                      image.removeAttribute("srcset");
+                      image.src = failedPath === activeItem.image
+                        ? activeItem.lqip
+                        : activeItem.image;
+                    }}
                   />
                 </div>
               </div>
@@ -1419,7 +1444,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   </div>
 
                   {isMicrosoftHackathonProject ? (
-                    <p className="text-foreground/40 mt-4 inline-flex items-center gap-2 text-xs">
+                    <p className="text-foreground/60 mt-4 inline-flex items-center gap-2 text-xs">
                       <span className="inline-flex h-3.5 w-3.5 overflow-hidden rounded-[2px]">
                         <svg viewBox="0 0 16 16" className="h-full w-full" aria-hidden="true">
                           <rect x="0" y="0" width="7" height="7" fill="#f25022" />
@@ -1432,7 +1457,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     </p>
                   ) : null}
 
-                  <p className="text-foreground/40 mt-4 text-xs">
+                  <p className="text-foreground/60 mt-4 text-xs">
                     Languages:{" "}
                     {activeCopy.languages.map((language, index) => (
                       <React.Fragment key={language}>

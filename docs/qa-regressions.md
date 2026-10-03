@@ -31,3 +31,27 @@ Both builds passed tests, lint, and production compilation. Each locale has
 three existing next/no-img-element warnings. Browser testing used desktop
 Chromium with viewport emulation; physical touch devices and Safari were
 not tested.
+
+## Audit on 2026-10-02
+
+Changes from this audit:
+
+- Close is a 14px cross with a 44px keyboard-focusable tap target, localized accessible name, and safe-area spacing. Escape explicitly invokes the same close lifecycle; native dialog cancellation remains handled.
+- Up/Down retain native detail scrolling. Left/Right navigate projects, reset the detail scroll position, and update the focus return target.
+- Long desktop headings and their animation copies wrap within the detail content. Production measurement of `github-open-counts-script` found 834px of text inside a 576px heading before this change.
+- Detail srcSet sizes now match the 576px content cap. Failed preview decodes release the hover queue and use the placeholder. Failed detail images fall back rather than being marked successfully loaded.
+- Secondary small text uses a higher contrast color. The motion provider honors reduced-motion preferences, and Lenis is skipped when reduced motion is requested.
+- The English language prompt tolerates blocked localStorage.
+- Added WebP container/manifest regression checks. A Pillow verification pass covered all committed raster assets in both repositories; the Spanish empty `upstash-keepalive-2000w.webp` was repaired using the valid English counterpart.
+
+Validation: tests, lint (zero errors, three existing raw-image warnings), TypeScript, and production builds passed for both locales. This workspace requires a temporary external runtime shim for unavailable OS memory/network inspection; the build also requires Next's system TLS certificate option for Google Fonts. Neither workaround changes repository configuration.
+
+Live desktop Chromium inspection verified the pre-change long-title overflow and Escape route dismissal. The browser cannot access this workspace's localhost, and its exposed API does not offer viewport resizing. Consequently the changed UI and the full mobile/desktop viewport matrix have not been browser-verified in this audit. Safari and physical touch devices remain untested. The earlier September browser verification above describes the earlier code, not these changes.
+
+Local follow-up review corrected responsive-image failure handling to retry the original source before the placeholder, and guarded the placeholder decode fallback against repeated reloads. CodeRabbit and GitHub Codex reviews have not run: publishing the branches is blocked by the active GitHub integration returning 403 for repository writes. The connection currently lists only the Microck account installation, not micr-dev.
+
+## Follow-up verification after PR publication
+
+After the audit above, local Chromium verification exercised the updated English and Spanish builds at 1366x900, 390x844, and 320x568. No horizontal overflow or page errors were observed. Project details opened and closed with Escape and the close button, focus returned to the selected project, Left/Right navigation worked, and browser Back/Forward kept the selected route in sync. Vercel preview access was not used for these checks. Safari and physical touch devices remain untested.
+
+Both branches were subsequently pushed and their PRs opened. Automated CodeRabbit and GitHub Codex review requests were posted; neither review had arrived at the time of this follow-up.

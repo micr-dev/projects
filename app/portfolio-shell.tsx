@@ -53,8 +53,10 @@ const PortfolioShell = ({
       return;
     }
 
-    if (window.localStorage.getItem(SPANISH_REDIRECT_DISMISSED_KEY) === "1") {
-      return;
+    try {
+      if (window.localStorage.getItem(SPANISH_REDIRECT_DISMISSED_KEY) === "1") return;
+    } catch {
+      // The language prompt still works when browser storage is unavailable.
     }
 
     const browserLanguages = [
@@ -80,7 +82,11 @@ const PortfolioShell = ({
 
   const handleStayHere = useCallback(() => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(SPANISH_REDIRECT_DISMISSED_KEY, "1");
+      try {
+        window.localStorage.setItem(SPANISH_REDIRECT_DISMISSED_KEY, "1");
+      } catch {
+        // Dismiss for this visit even if the preference cannot be persisted.
+      }
     }
 
     setShowSpanishPrompt(false);

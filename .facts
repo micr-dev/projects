@@ -7,7 +7,8 @@
 - the fixed loader window prioritizes smallest thumbnails while larger preload tiers use limited background concurrency to avoid blocking hover frames @implemented
 
 ## interaction
-- portfolio hover samples the project title under the pointer on every animation frame and enqueues every crossed project in traversal order @spec @implemented
+- portfolio hover samples the project title under the pointer on the next animation frame after pointer movement or scrolling and enqueues every crossed project in traversal order @spec @implemented
+- portfolio hover schedules no animation frames while the pointer is idle and the hover queue has no decoded project ready to advance @spec @implemented
 - project title hover feedback and preview images advance by one queued project per rendered frame without transition animation @spec @implemented
 
 ## images

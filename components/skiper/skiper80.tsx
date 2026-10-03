@@ -19,6 +19,7 @@ import {
 import type { RepoDescription } from "../../app/repo-description-types";
 import type { RepoMetadata } from "../../app/repo-metadata";
 import type { RepoSection } from "../../app/repo-sections";
+import { createHoverFrameScheduler } from "./hover-frame-scheduler";
 import ProgressiveBlur from "./progressive-blur";
 import { TextShimmer } from "./text-shimmer";
 
@@ -206,6 +207,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const hoveredIndexRef = useRef(initialItemIndex ?? 0);
   const sampledHoverIndexRef = useRef(initialItemIndex ?? 0);
   const pendingHoverIndicesRef = useRef<number[]>([]);
+  const notifyHoverQueueRef = useRef<() => void>(() => {});
   const traversalDirectionRef = useRef<-1 | 0 | 1>(0);
   const itemTitleRefs = useRef(new Map<number, HTMLAnchorElement | null>());
   const warmedImagesRef = useRef(new Set<string>());
@@ -302,9 +304,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         () => {
           image.setAttribute("data-preview-decoded", "");
           markImageLoaded(image, index === hoveredIndexRef.current);
+          notifyHoverQueueRef.current();
         },
         () => {
           image.setAttribute("data-preview-decoded", "");
+          notifyHoverQueueRef.current();
           const fallback = items[index].lqip;
           if (image.getAttribute("src") !== fallback) image.src = fallback;
         },
@@ -318,6 +322,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       const index = Number(event.currentTarget.dataset.previewImage);
       const image = event.currentTarget;
       image.setAttribute("data-preview-decoded", "");
+      notifyHoverQueueRef.current();
       const fallback = items[index].lqip;
       if (image.getAttribute("src") !== fallback) image.src = fallback;
     },
@@ -465,16 +470,18 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     traversalDirectionRef.current = movementDirection;
   }, []);
 
+  // Returns whether another frame is needed to keep draining the queue.
   const advanceHoveredQueue = useCallback(() => {
     const nextIndex = pendingHoverIndicesRef.current[0];
     if (nextIndex == null) {
       traversalDirectionRef.current = 0;
-      return;
+      return false;
     }
 
+    // Blocked until this preview decodes; its decode handler wakes the queue.
     const nextPreview = previewImageRefs.current.get(nextIndex);
     if (!nextPreview?.hasAttribute("data-preview-decoded")) {
-      return;
+      return false;
     }
 
     pendingHoverIndicesRef.current.shift();
@@ -482,7 +489,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
     if (pendingHoverIndicesRef.current.length === 0) {
       traversalDirectionRef.current = 0;
+      return false;
     }
+
+    return true;
   }, [selectHoveredIndex]);
 
   useEffect(() => {
@@ -492,27 +502,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       return;
     }
 
-    let pointerPosition: { x: number; y: number } | null = null;
-    let frameId = 0;
-
-    const handlePointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse" && event.pointerType !== "pen") {
-        return;
-      }
-
-      pointerPosition = { x: event.clientX, y: event.clientY };
-    };
-
-    const clearPointer = () => {
-      pointerPosition = null;
-    };
-
-    const hitTestCurrentFrame = () => {
-      if (pointerPosition) {
-        const hit = document.elementFromPoint(
-          pointerPosition.x,
-          pointerPosition.y,
-        );
+    const scheduler = createHoverFrameScheduler({
+      requestFrame: (callback) => window.requestAnimationFrame(callback),
+      cancelFrame: (frameId) => window.cancelAnimationFrame(frameId),
+      hitTest: (x, y) => {
+        const hit = document.elementFromPoint(x, y);
         const projectTitle = hit?.closest<HTMLElement>("[data-super-hover]");
 
         if (projectTitle && projectList.contains(projectTitle)) {
@@ -522,22 +516,34 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             enqueueHoveredIndex(index);
           }
         }
+      },
+      advanceQueue: advanceHoveredQueue,
+    });
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") {
+        return;
       }
 
-      advanceHoveredQueue();
-      frameId = window.requestAnimationFrame(hitTestCurrentFrame);
+      scheduler.pointerMoved(event.clientX, event.clientY);
     };
 
+    notifyHoverQueueRef.current = () => {
+      if (pendingHoverIndicesRef.current.length > 0) scheduler.queueChanged();
+    };
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    window.addEventListener("blur", clearPointer);
-    document.addEventListener("pointerleave", clearPointer);
-    frameId = window.requestAnimationFrame(hitTestCurrentFrame);
+    // Smooth scrolling moves titles under a stationary pointer.
+    window.addEventListener("scroll", scheduler.contentMoved, { passive: true });
+    window.addEventListener("blur", scheduler.pointerLeft);
+    document.addEventListener("pointerleave", scheduler.pointerLeft);
 
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("blur", clearPointer);
-      document.removeEventListener("pointerleave", clearPointer);
-      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("scroll", scheduler.contentMoved);
+      window.removeEventListener("blur", scheduler.pointerLeft);
+      document.removeEventListener("pointerleave", scheduler.pointerLeft);
+      notifyHoverQueueRef.current = () => {};
+      scheduler.dispose();
     };
   }, [advanceHoveredQueue, enqueueHoveredIndex, items.length]);
 
@@ -1056,6 +1062,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                         onFocus={() => setHoveredIndexImmediately(item.index)}
                         onPointerEnter={() => {
                           enqueueHoveredIndex(item.index);
+                          notifyHoverQueueRef.current();
                         }}
                         onClick={(event) => {
                           if (
@@ -1103,9 +1110,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             >
               <X aria-hidden="true" className="size-3.5" strokeWidth={1.5} />
             </button>
+            {/* Title copies (z-31) paint above image copies (z-30): the image path crosses the title path, and the real heading stays hidden until its copy lands. */}
             {hasPendingTitleAnimation ? (
               <motion.div
-                className="pointer-events-none fixed z-30 whitespace-normal break-words"
+                className="pointer-events-none fixed z-[31] whitespace-normal break-words"
                 initial={{
                   top: sourceTitleSnapshot.top,
                   left: sourceTitleSnapshot.left,
@@ -1217,7 +1225,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
             {closingTitleSource ? (
               <motion.div
-                className="pointer-events-none fixed z-30 whitespace-normal break-words"
+                className="pointer-events-none fixed z-[31] whitespace-normal break-words"
                 initial={{
                   top: closingTitleSource.top,
                   left: closingTitleSource.left,

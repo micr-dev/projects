@@ -1113,7 +1113,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             {/* Title copies (z-31) paint above image copies (z-30): the image path crosses the title path, and the real heading stays hidden until its copy lands. */}
             {hasPendingTitleAnimation ? (
               <motion.div
-                className="pointer-events-none fixed z-[31] whitespace-normal break-words"
+                className="pointer-events-none fixed z-[31] whitespace-normal break-words lg:whitespace-nowrap"
                 initial={{
                   top: sourceTitleSnapshot.top,
                   left: sourceTitleSnapshot.left,
@@ -1225,7 +1225,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
             {closingTitleSource ? (
               <motion.div
-                className="pointer-events-none fixed z-[31] whitespace-normal break-words"
+                className="pointer-events-none fixed z-[31] whitespace-normal break-words lg:whitespace-nowrap"
                 initial={{
                   top: closingTitleSource.top,
                   left: closingTitleSource.left,
@@ -1339,14 +1339,14 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   <div
                     ref={detailTitleMeasureRef}
                     aria-hidden="true"
-                    className="invisible inline-block max-w-full break-words"
+                    className="invisible inline-block max-w-full break-words lg:whitespace-nowrap"
                   >
                     {activeDisplayTitle}
                   </div>
                   <motion.h1
                     id="project-detail-title"
                     ref={detailTitleRef}
-                    className="absolute inset-0 inline-block max-w-full break-words"
+                    className="absolute inset-0 inline-block max-w-full break-words lg:whitespace-nowrap"
                     style={{
                       opacity:
                         hasPendingTitleAnimation || isClosing ? 0 : 1,

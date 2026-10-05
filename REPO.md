@@ -22,6 +22,7 @@ crabbox-template-boxes
 dialogue-textbox
 DXFtoIRL
 elevenlabs-webui
+galleton
 gitbanana
 github-open-counts-script
 gitquarry

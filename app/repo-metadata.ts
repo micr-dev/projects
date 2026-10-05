@@ -179,6 +179,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  galleton: {
+    repo: "Microck/galleton",
+    sourceUrl: "https://github.com/Microck/galleton",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   gitbanana: {
     repo: "Microck/gitbanana",
     sourceUrl: "https://github.com/Microck/gitbanana",

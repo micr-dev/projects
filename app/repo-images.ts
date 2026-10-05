@@ -45,6 +45,7 @@ const repoImages: Record<string, string> = {
   "gitquarry-mcp": "gitquarry-mcp.webp",
   DXFtoIRL: "DXFtoIRL.webp",
   "elevenlabs-webui": "elevenlabs-webui.webp",
+  galleton: "galleton.webp",
   glob: "glob.webp",
   gitquarry: "gitquarry.webp",
   "glm-quota-widget": "glm-quota-widget.webp",

@@ -1,72 +1,20 @@
-import { getRepoDisplayTitle, getRepoSlugPath } from "../repo-paths";
-import { getRepoSections, type RepoItem } from "../repo-sections";
+const body = `# Microck Projects
 
-export const dynamic = "force-dynamic";
+A public portfolio of software, tools, and experiments by Microck.
 
-function getSite(request: Request): { baseUrl: string; title: string } {
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  const host = forwardedHost ?? request.headers.get("host") ?? "projects.micr.dev";
-  const normalizedHost = host.toLowerCase();
-  const isLocalhost =
-    normalizedHost.startsWith("localhost") ||
-    normalizedHost.startsWith("127.0.0.1") ||
-    normalizedHost.startsWith("[::1]");
-  const protocol = isLocalhost ? "http" : "https";
+- Portfolio: https://projects.micr.dev/
+- English: https://projects.micr.dev/en/
+- Spanish: https://projects.micr.dev/es/
+- GitHub: https://github.com/Microck
 
-  return {
-    baseUrl: `${protocol}://${host}`,
-    title: normalizedHost.includes("proyectos.micr.dev") ? "Proyectos" : "Projects",
-  };
-}
+Use project pages as the source of truth. Prefer linked repositories and official sites for code and release details.
+`;
 
-function getProjectLink(item: RepoItem): string | null {
-  if (item.metadata.livePreviewUrl) {
-    return item.metadata.livePreviewUrl;
-  }
-
-  if (!item.metadata.isPrivate) {
-    return item.metadata.sourceUrl;
-  }
-
-  return null;
-}
-
-function formatProjectEntry(item: RepoItem, baseUrl: string): string {
-  const projectName = getRepoDisplayTitle(item.title);
-  const projectUrl = `${baseUrl}/${getRepoSlugPath(item.title)}`;
-  const projectLink = getProjectLink(item);
-  const lines = [
-    `## ${projectName}`,
-    `Portfolio URL: ${projectUrl}`,
-    projectLink ? `Project link: ${projectLink}` : "Project link: None listed",
-    `Languages: ${item.description.languages.join(", ")}`,
-    "",
-    "Description:",
-    ...item.description.paragraphs,
-  ];
-
-  return lines.join("\n");
-}
-
-export async function GET(request: Request) {
-  const { baseUrl, title } = getSite(request);
-  const sections = await getRepoSections();
-  const entries = sections.flatMap((section) => section.items);
-  const projectEntries = entries.map((item) => formatProjectEntry(item, baseUrl));
-  const body = [
-    `# ${title}`,
-    "",
-    `URL: ${baseUrl}`,
-    "",
-    "This file is generated from the same project data used by the regular portfolio page.",
-    "",
-    projectEntries.join("\n\n"),
-    "",
-  ].join("\n");
-
+export function GET() {
   return new Response(body, {
     headers: {
-      "content-type": "text/plain; charset=utf-8",
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
     },
   });
 }

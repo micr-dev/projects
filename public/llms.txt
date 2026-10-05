@@ -1,0 +1,18 @@
+# Microck Projects
+
+> Public portfolio of software, tools, and experiments by Microck.
+
+## Start here
+
+- [Portfolio](https://projects.micr.dev/): Browse current projects and tools.
+- [English portfolio](https://projects.micr.dev/en/): English project index.
+- [Spanish portfolio](https://projects.micr.dev/es/): Spanish project index.
+- [Microck](https://micr.dev/): Personal homepage.
+
+## Guidance
+
+Use the project pages as the source of truth for project names, descriptions, links, and status. Prefer the linked GitHub repository or official project site for code and release details. Do not infer project capabilities from screenshots alone.
+
+## Source
+
+- [GitHub](https://github.com/Microck): Public source repositories.

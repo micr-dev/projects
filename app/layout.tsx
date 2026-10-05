@@ -18,12 +18,17 @@ const calSans = Cal_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://projects.micr.dev"),
-  title: "Projects",
-  description: "Project showcase portfolio",
+  title: "Projects by Microck",
+  description: "A public portfolio of software, tools, and experiments by Microck.",
+  alternates: {
+    canonical: "https://projects.micr.dev/",
+  },
+  authors: [{ name: "Microck", url: "https://micr.dev/" }],
   openGraph: {
-    title: "Projects",
-    description: "Project showcase portfolio",
-    siteName: "Projects",
+    title: "Projects by Microck",
+    description: "A public portfolio of software, tools, and experiments by Microck.",
+    url: "https://projects.micr.dev/",
+    siteName: "Projects by Microck",
     type: "website",
     images: [
       {
@@ -56,6 +61,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${calSans.variable} min-h-screen bg-background font-sans antialiased`}
       >
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Projects by Microck",
+          description: "A public portfolio of software, tools, and experiments by Microck.",
+          url: "https://projects.micr.dev/",
+          author: { "@type": "Person", name: "Microck", url: "https://micr.dev/" },
+        }) }} />
         <SmoothScroll />
         {children}
       </body>

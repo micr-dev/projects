@@ -155,9 +155,9 @@ export const softwareBatchC = {
   },
   "ravenbin-upload": {
     paragraphs: [
-      "ravenbin-upload is a Python command-line client that sends a local file to Raven Bin and prints a temporary share URL for shell workflows.",
-      "Temporary artifact sharing often means setting up a separate upload service or exposing a local file, while this wrapper keeps the one-command path and lets Raven handle encryption.",
-      "It drives Raven's current web client in headless Chromium with Playwright, stages files under the user's home directory for sandbox compatibility, selects one of six expiry values, and removes the staged copy after upload.",
+      "ravenbin-cli is a Python command-line client that uploads files to Raven Bin and downloads them from complete share URLs.",
+      "It provides short-lived file sharing without asking users to manage encryption or expose a local file server.",
+      "It runs Raven's web client in headless Chromium through Playwright, supports configurable upload expiry and download overwrite protection, and stages uploads under the user's home directory for sandbox compatibility.",
     ],
     languages: ["Python"],
   },

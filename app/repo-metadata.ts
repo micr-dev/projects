@@ -373,8 +373,8 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     isPrivate: true,
   },
   "ravenbin-upload": {
-    repo: "Microck/ravenbin-upload",
-    sourceUrl: "https://github.com/Microck/ravenbin-upload",
+    repo: "Microck/ravenbin-cli",
+    sourceUrl: "https://github.com/Microck/ravenbin-cli",
     livePreviewUrl: "https://ravenbin.com/",
     isPrivate: false,
   },

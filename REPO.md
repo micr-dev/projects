@@ -1,5 +1,6 @@
 # Repo List
 ## Software
+aesthetics-judge
 akron
 akron-discord
 akron-website

@@ -1,6 +1,14 @@
 import type { RepoDescription } from "../repo-description-types";
 
 export const softwareBatchA = {
+  "aesthetics-judge": {
+    paragraphs: [
+      "Aesthetics Judge scores whole songs with Meta's Audiobox Aesthetics model across enjoyment, usefulness, production complexity, and production quality.",
+      "Because the model runs in the browser, the source audio stays on the device rather than being uploaded to a scoring service.",
+      "The React and Vite app decodes audio to 16 kHz mono, scores ten-second windows with an int8 ONNX model in a multithreaded WebAssembly worker, and matches tracks against iTunes and Deezer with AcoustID fingerprints as a fallback.",
+    ],
+    languages: ["TypeScript", "Python", "CSS", "HTML", "SQL"],
+  },
   akron: {
     paragraphs: [
       "Akron is a practice and utility mod menu for Celeste, running inside Everest with an in-game overlay for routing, HUD visibility, capture, setup sharing, and attempt status.",

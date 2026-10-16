@@ -19,6 +19,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "aesthetics-judge": {
+    repo: "Microck/aesthetics-judge",
+    sourceUrl: "https://github.com/Microck/aesthetics-judge",
+    livePreviewUrl: "https://music.micr.dev/",
+    isPrivate: false,
+  },
   akron: {
     repo: "Microck/Akron",
     sourceUrl: "https://github.com/Microck/Akron",

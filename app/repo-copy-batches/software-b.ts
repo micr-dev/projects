@@ -65,6 +65,14 @@ export const softwareBatchB = {
     ],
     languages: ["TypeScript"],
   },
+  "omp-multi-codex": {
+    paragraphs: [
+      "OMP Multi Codex is an Oh My Pi extension that adds a separately authenticated ChatGPT Codex account under its own selectable provider ID.",
+      "It leaves OMP's built-in `openai-codex` provider and credentials unchanged while letting the same OMP setup route models through another account.",
+      "The JavaScript plugin uses browser OAuth with PKCE, refreshes tokens, and discovers the account's model catalog, with a fallback model if discovery fails.",
+    ],
+    languages: ["JavaScript"],
+  },
   "kefine-website": {
     paragraphs: [
       "Kefine-website is the Vite and React storefront for curated replica drops, upcoming pipeline statuses, and a GitHub Gist-powered CMS with a Three.js logo and sound cues.",
@@ -169,6 +177,14 @@ export const softwareBatchB = {
     ],
     languages: ["Rust"],
   },
+  raft: {
+    paragraphs: [
+      "Raft is a self-hosted CLI for persistent Linux workspaces on operator-owned Incus hosts.",
+      "It combines remote host onboarding with commands to create workspaces, run commands in them, connect over SSH, and stop them, plus file transfer, Docker, snapshots, and forks.",
+      "The Python CLI provisions and verifies Linux hosts over SSH, then manages Incus containers with capacity checks and persistent disks; its docs cover desktop access and backup recovery.",
+    ],
+    languages: ["Python", "TypeScript", "JavaScript", "Shell", "CSS"],
+  },
   solecist: {
     paragraphs: [
       "Solecist is a Discord bot that watches configured debate channels and flags likely logical fallacies as they happen, replying with compact embeds that name the fallacy, quote the claim, and explain why the reasoning looks weak.",
@@ -184,6 +200,14 @@ export const softwareBatchB = {
       "The menu exposes CLI commands, GUI toggles, rollback snapshots, and optional helper installs so each step can be audited, applied, or undone.",
     ],
     languages: ["PowerShell", "Batchfile"],
+  },
+  "semrush-cli": {
+    paragraphs: [
+      "Semrush CLI is a TypeScript command-line client for keyword, domain, backlink, and project research through an authenticated Semrush browser session.",
+      "It brings account research into shell scripts with structured JSON output and an MCP server for agent clients.",
+      "A private local Galleton browser daemon stores and uses the session; available reports and operations depend on the Semrush account's access.",
+    ],
+    languages: ["TypeScript", "MDX", "JavaScript", "CSS"],
   },
   "simple-pool": {
     paragraphs: [

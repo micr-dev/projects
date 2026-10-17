@@ -192,5 +192,13 @@ export const softwareBatchA = {
       "The Electron and React app imports a keyboard source and keymap, reads QMK layout metadata, injects a pinned QMK Community Module, runs the real QMK compiler, and saves `.hex`, `.bin`, or `.uf2` artifacts through a validated IPC boundary.",
     ],
     languages: ["TypeScript", "CSS", "C", "HTML"],
-  }
+  },
+  "keygen-bench": {
+    paragraphs: [
+      "Keygen Bench is a public benchmark that tests whether language models can compose music for FastTracker II.",
+      "Each attempt generates an XM module in a network-isolated Docker sandbox, then a fresh FT2 process renders it for consistent evaluation.",
+      "The Python runner stores each attempt's artifacts and scores its audio and structure, while the public site lets listeners play tracks and compare model rankings.",
+    ],
+    languages: ["Python", "JavaScript", "Shell", "HTML", "CSS", "Dockerfile"],
+  },
 } as const satisfies Record<string, RepoDescription>;

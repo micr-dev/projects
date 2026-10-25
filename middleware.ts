@@ -19,4 +19,5 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
+// Markdown negotiation applies only to the root, never static image requests.
+export const config = { matcher: ["/"] };

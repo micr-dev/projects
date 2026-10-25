@@ -55,3 +55,11 @@ Local follow-up review corrected responsive-image failure handling to retry the 
 After the audit above, local Chromium verification exercised the updated English and Spanish builds at 1366x900, 390x844, and 320x568. No horizontal overflow or page errors were observed. Project details opened and closed with Escape and the close button, focus returned to the selected project, Left/Right navigation worked, and browser Back/Forward kept the selected route in sync. Vercel preview access was not used for these checks. Safari and physical touch devices remain untested.
 
 Both branches were subsequently pushed and their PRs opened. Automated CodeRabbit and GitHub Codex review requests were posted; neither review had arrived at the time of this follow-up.
+
+## Vercel usage contract
+
+- Pre-render every canonical project detail route from REPO.md at build time.
+- Keep mixed-case and unknown-route handling unchanged; do not disable dynamic parameters.
+- The English root alone negotiates Markdown. Images and other routes must bypass that middleware.
+- llms.txt is deployment-static, with its existing response content and headers.
+- Verify every catalogue slug appears in the production prerender manifest.

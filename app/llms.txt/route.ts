@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 const body = `# Microck Projects
 
 A public portfolio of software, tools, and experiments by Microck.

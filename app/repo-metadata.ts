@@ -173,6 +173,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: false,
   },
+  "elevenlabs-cli": {
+    repo: "Microck/elevenlabs-cli",
+    sourceUrl: "https://github.com/Microck/elevenlabs-cli",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "elevenlabs-webui": {
     repo: "Microck/elevenlabs-webui-client",
     sourceUrl: "https://github.com/Microck/elevenlabs-webui-client",

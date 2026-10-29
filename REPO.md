@@ -22,6 +22,7 @@ codexport
 crabbox-template-boxes
 dialogue-textbox
 DXFtoIRL
+elevenlabs-cli
 elevenlabs-webui
 galleton
 gitbanana

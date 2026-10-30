@@ -7,7 +7,6 @@ export default async function HomePage() {
   return (
     <PortfolioShell
       sections={sections}
-      preloaderText="Turning concepts into working systems."
       initialSlug={null}
     />
   );

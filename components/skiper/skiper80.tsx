@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { SoundName } from "cuelume";
-import { BookOpen, CircleArrowOutUpRight, Lock, X } from "lucide-react";
+import { BookOpen, ChevronDown, CircleArrowOutUpRight, Lock, X } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   getRepoDisplayTitle,
@@ -19,6 +19,7 @@ import {
 import type { RepoDescription } from "../../app/repo-description-types";
 import type { RepoMetadata } from "../../app/repo-metadata";
 import type { RepoSection } from "../../app/repo-sections";
+import { getAdjacentProjectIndex, partitionCatalogue } from "../../app/repo-catalogue";
 import { createHoverFrameScheduler } from "./hover-frame-scheduler";
 import ProgressiveBlur from "./progressive-blur";
 import { TextShimmer } from "./text-shimmer";
@@ -168,6 +169,13 @@ function getInitialItemIndex(
 
 const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const initialItemIndex = getInitialItemIndex(sections, initialSlug);
+  const initialItems = sections.flatMap((section) => section.items);
+  const initialPreviewIndex = initialItemIndex ?? Math.max(0, initialItems.findIndex((item) => !item.metadata.archived));
+  const [showArchived, setShowArchived] = useState(
+    initialItemIndex != null && initialItems[initialItemIndex].metadata.archived === true,
+  );
+  const archiveToggleRef = useRef<HTMLButtonElement>(null);
+  const archiveNoticeRef = useRef<HTMLDialogElement>(null);
   const [isItemActive, setIsItemActive] = useState<number | null>(initialItemIndex);
   const [isClosing, setIsClosing] = useState(false);
   const [sourceTitleSnapshot, setSourceTitleSnapshot] =
@@ -189,10 +197,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const [closingImageSrc, setClosingImageSrc] = useState<string | null>(null);
   const [closingImageTarget, setClosingImageTarget] =
     useState<BoxSnapshot | null>(null);
-  const [titleCloseDone, setTitleCloseDone] = useState(false);
-  const [imageCloseDone, setImageCloseDone] = useState(false);
+  const closingProgressRef = useRef({ title: false, image: false });
   const [closingTitleScrollOffset, setClosingTitleScrollOffset] = useState(0);
-  const [, setLoadedImageVersion] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<ReadonlySet<string>>(() => new Set());
   const detailDialogRef = useRef<HTMLDialogElement | null>(null);
   const returnFocusIndexRef = useRef<number | null>(initialItemIndex);
   const isDetailOpen = isItemActive != null;
@@ -204,8 +211,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const detailImageRef = useRef<HTMLImageElement | null>(null);
   const enterAnimationTokenRef = useRef(0);
   const closingAnimationTokenRef = useRef(0);
-  const hoveredIndexRef = useRef(initialItemIndex ?? 0);
-  const sampledHoverIndexRef = useRef(initialItemIndex ?? 0);
+  const hoveredIndexRef = useRef(initialPreviewIndex);
+  const sampledHoverIndexRef = useRef(initialPreviewIndex);
   const pendingHoverIndicesRef = useRef<number[]>([]);
   const notifyHoverQueueRef = useRef<() => void>(() => {});
   const traversalDirectionRef = useRef<-1 | 0 | 1>(0);
@@ -238,7 +245,14 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     [sections],
   );
 
-  const activeIndex = isItemActive ?? initialItemIndex ?? 0;
+  const catalogue = useMemo(() => partitionCatalogue(items), [items]);
+  const currentItems = useMemo(() => catalogue.published.flatMap((section) => section.items), [catalogue]);
+  const archivedItems = useMemo(() => catalogue.archived.flatMap((section) => section.items), [catalogue]);
+  const visibleItems = useMemo(
+    () => showArchived ? [...currentItems, ...archivedItems] : currentItems,
+    [archivedItems, currentItems, showArchived],
+  );
+  const activeIndex = isItemActive ?? currentItems[0]?.index ?? 0;
   const activeItem = items[activeIndex];
   const activeCopy = activeItem?.description ?? null;
   const activeDisplayTitle = activeItem ? getRepoDisplayTitle(activeItem.title) : "";
@@ -246,10 +260,10 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const previewImageSrc =
     activeItem?.responsiveUrls[0] ?? activeItem?.image ?? "";
   const isPreviewImageLoaded =
-    previewImageSrc !== "" && loadedImagesRef.current.has(previewImageSrc);
+    previewImageSrc !== "" && loadedImages.has(previewImageSrc);
   const isActiveImageLoaded = activeItem
-    ? loadedImagesRef.current.has(activeItem.image) ||
-      activeItem.responsiveUrls.some((url) => loadedImagesRef.current.has(url))
+    ? loadedImages.has(activeItem.image) ||
+      activeItem.responsiveUrls.some((url) => loadedImages.has(url))
     : false;
 
   const markImageLoaded = useCallback(
@@ -269,13 +283,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         // leave src as-is
       }
 
-      if (!src || loadedImagesRef.current.has(src)) {
-        return;
-      }
-
+      if (!src) return;
       loadedImagesRef.current.add(src);
       if (notify) {
-        setLoadedImageVersion((version) => version + 1);
+        // Render from a snapshot; background decoding can keep warming the cache silently.
+        setLoadedImages((visible) => visible.has(src) ? visible : new Set(loadedImagesRef.current));
       }
     },
     [],
@@ -345,7 +357,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             loading="eager"
             decoding="async"
             fetchPriority={
-              item.index === hoveredIndexRef.current ? "high" : "low"
+              item.index === initialPreviewIndex ? "high" : "low"
             }
             className="pointer-events-none absolute inset-0 size-full object-cover"
             style={{ display: "none" }}
@@ -358,6 +370,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       handlePreviewImageError,
       handlePreviewImageLoad,
       items,
+      initialPreviewIndex,
       registerPreviewImage,
     ],
   );
@@ -442,33 +455,31 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       return;
     }
 
-    const movementDirection = index > sampledIndex ? 1 : -1;
+    const targetPosition = visibleItems.findIndex((item) => item.index === index);
+    const sampledPosition = visibleItems.findIndex((item) => item.index === sampledIndex);
+    if (targetPosition < 0) return;
+    const movementDirection = targetPosition > sampledPosition ? 1 : -1;
     const pendingIndices = pendingHoverIndicesRef.current;
     const reversedDirection =
       traversalDirectionRef.current !== 0 &&
       traversalDirectionRef.current !== movementDirection;
-
-    // A direction reversal invalidates previews queued for the old path.
-    if (reversedDirection) {
-      pendingIndices.length = 0;
-    }
-
-    const pathStart = reversedDirection
+    if (reversedDirection) pendingIndices.length = 0;
+    const previousIndex = reversedDirection
       ? hoveredIndexRef.current
       : pendingIndices[pendingIndices.length - 1] ?? hoveredIndexRef.current;
-    const pathDirection = index > pathStart ? 1 : -1;
-
+    const pathStart = visibleItems.findIndex((item) => item.index === previousIndex);
+    const pathDirection = targetPosition > pathStart ? 1 : -1;
     for (
-      let crossedIndex = pathStart + pathDirection;
-      pathDirection > 0 ? crossedIndex <= index : crossedIndex >= index;
-      crossedIndex += pathDirection
+      let position = pathStart + pathDirection;
+      pathDirection > 0 ? position <= targetPosition : position >= targetPosition;
+      position += pathDirection
     ) {
-      pendingIndices.push(crossedIndex);
+      pendingIndices.push(visibleItems[position].index);
     }
 
     sampledHoverIndexRef.current = index;
     traversalDirectionRef.current = movementDirection;
-  }, []);
+  }, [visibleItems]);
 
   // Returns whether another frame is needed to keep draining the queue.
   const advanceHoveredQueue = useCallback(() => {
@@ -553,7 +564,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setSourceImageSnapshot(null);
     setSourceImageSrcSnapshot(null);
     setTargetImageSnapshot(null);
-  }, []);
+  }, [setSourceTitleSnapshot, setSourceImageSnapshot, setSourceImageSrcSnapshot]);
 
   const resetClosingAnimationState = useCallback(() => {
     closingAnimationTokenRef.current += 1;
@@ -563,8 +574,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setClosingImageSource(null);
     setClosingImageSrc(null);
     setClosingImageTarget(null);
-    setTitleCloseDone(false);
-    setImageCloseDone(false);
+    closingProgressRef.current = { title: false, image: false };
     setClosingTitleScrollOffset(0);
   }, []);
 
@@ -608,6 +618,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         return;
       }
 
+      if (items[matchedIndex].metadata.archived) setShowArchived(true);
       returnFocusIndexRef.current = matchedIndex;
       detailDialogRef.current?.scrollTo({ top: 0, behavior: "instant" });
       preloadImage([items[matchedIndex].image, ...items[matchedIndex].responsiveUrls], "high");
@@ -682,11 +693,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   }, [isDetailOpen]);
 
   useLayoutEffect(() => {
-    if (isItemActive == null) {
-      setTargetTitleSnapshot(null);
-      setTargetImageSnapshot(null);
-      return;
-    }
+    if (isItemActive == null) return;
 
     const frameId = window.requestAnimationFrame(() => {
       if (!detailTitleMeasureRef.current) {
@@ -722,31 +729,14 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     return () => window.cancelAnimationFrame(frameId);
   }, [isClosing, isItemActive, activeItem?.title, activeItem?.image]);
 
-  useLayoutEffect(() => {
-    if (!isClosing) {
-      return;
-    }
-
-    const titleReady = closingTitleSource == null || titleCloseDone;
-    const imageReady = closingImageSource == null || imageCloseDone;
-
-    if (!titleReady || !imageReady) {
-      return;
-    }
-
+  const finishClosingPart = useCallback((part: "title" | "image", token: number) => {
+    if (closingAnimationTokenRef.current !== token) return;
+    closingProgressRef.current[part] = true;
+    if (!closingProgressRef.current.title || !closingProgressRef.current.image) return;
     resetClosingAnimationState();
     setIsItemActive(null);
     resetOpeningSnapshots();
-  }, [
-    closingImageTarget,
-    closingImageSource,
-    closingTitleSource,
-    imageCloseDone,
-    isClosing,
-    resetClosingAnimationState,
-    resetOpeningSnapshots,
-    titleCloseDone,
-  ]);
+  }, [resetClosingAnimationState, resetOpeningSnapshots]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -755,7 +745,6 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
     if (!isClosing) {
       closingTitleScrollOriginRef.current = window.scrollY;
-      setClosingTitleScrollOffset(0);
       return;
     }
 
@@ -787,7 +776,6 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         window.cancelAnimationFrame(frameId);
       }
 
-      setClosingTitleScrollOffset(0);
     };
   }, [isClosing]);
 
@@ -809,6 +797,13 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     }
 
     setHoveredIndexImmediately(isItemActive);
+    const returnTarget = itemTitleRefs.current.get(isItemActive);
+    if (returnTarget) {
+      const box = returnTarget.getBoundingClientRect();
+      if (box.top < 0 || box.bottom > window.innerHeight) {
+        returnTarget.scrollIntoView({ block: "center", behavior: "instant" });
+      }
+    }
 
     const currentTitleSource = detailTitleRef.current
       ? snapshotTitle(detailTitleRef.current)
@@ -836,8 +831,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     setClosingImageSource(currentImageSource);
     setClosingImageSrc(currentImageSrc);
     setClosingImageTarget(null);
-    setTitleCloseDone(currentTitleSource == null);
-    setImageCloseDone(currentImageSource == null);
+    closingProgressRef.current = { title: currentTitleSource == null, image: currentImageSource == null };
     setIsClosing(true);
     cuelumePlay("release");
     syncRoute(null);
@@ -862,10 +856,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
         return;
       }
 
-      const nextIndex = Math.min(
-        Math.max(isItemActive + direction, 0),
-        items.length - 1,
-      );
+      const nextIndex = getAdjacentProjectIndex(visibleItems, isItemActive, direction);
+      if (nextIndex == null) return;
 
       if (nextIndex === isItemActive) {
         return;
@@ -884,6 +876,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       isClosing,
       isItemActive,
       items,
+      visibleItems,
       preloadImage,
       sourceImageSnapshot,
       sourceTitleSnapshot,
@@ -961,7 +954,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     isClosing && closingTitleSource != null && closingTitleTarget != null;
   const shouldAnimateClosingImage =
     isClosing && closingImageSource != null && closingImageTarget != null;
-  const shouldShowPreviewThumbnail = isItemActive == null;
+  const shouldShowPreviewThumbnail = isItemActive == null && visibleItems.length > 0;
   const currentEnterAnimationToken = enterAnimationTokenRef.current;
   const currentClosingAnimationToken = closingAnimationTokenRef.current;
 
@@ -1029,60 +1022,90 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           </motion.div>
 
           <ul ref={projectListRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-8 lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
-            {(() => {
-              let itemCursor = 0;
+            {[false, true].map((archived) => (
+              <React.Fragment key={String(archived)}>
+                {archived && archivedItems.length > 0 ? (
+                  <li className="mt-12 border-t border-foreground/20 pt-4">
+                    <button
+                      ref={archiveToggleRef}
+                      type="button"
+                      aria-expanded={showArchived}
+                      aria-controls="archived-projects"
+                      aria-haspopup={showArchived ? undefined : "dialog"}
+                      onClick={() => {
+                        if (!showArchived) {
+                          archiveNoticeRef.current?.showModal();
+                          return;
+                        }
+                        setShowArchived(false);
+                        if (currentItems[0]) setHoveredIndexImmediately(currentItems[0].index);
+                        archiveToggleRef.current?.focus({ preventScroll: true });
+                      }}
+                      className="flex min-h-11 w-full items-center gap-3 text-left text-sm text-foreground/60 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4"
+                    >
+                      <Lock aria-hidden="true" className="size-3.5" />
+                      <span>{showArchived ? "Hide archived projects" : "Show archived projects"}</span>
+                      <span className="ml-auto tabular-nums">{archivedItems.length}</span>
+                      <ChevronDown aria-hidden="true" className={`size-4 ${showArchived ? "rotate-180" : ""}`} />
+                    </button>
+                  </li>
+                ) : null}
+                <li id={archived ? "archived-projects" : undefined} hidden={archived && !showArchived}>
+                  <ul className="flex flex-col gap-2">
+                    {(archived ? catalogue.archived : catalogue.published).map((section) => (
+                      <React.Fragment key={`${archived ? "archived" : "current"}-${section.heading}`}>
+                        <li className="mt-8 flex w-full items-center gap-3 text-xs uppercase opacity-50 first:mt-0 lg:text-sm">
+                          {section.heading}
+                          <span className="bg-foreground h-px flex-1"></span>
+                        </li>
+                        {section.items.map((item) => {
+                          const displayTitle = getRepoDisplayTitle(item.title);
 
-              return sections.map((section) => (
-              <React.Fragment key={section.heading}>
-                <li className="mt-8 flex w-full items-center gap-3 text-xs uppercase opacity-50 first:mt-0 lg:text-sm">
-                  {section.heading}
-                  <span className="bg-foreground h-px flex-1"></span>
+                          return (
+                            <li key={item.key} className="max-w-full lg:w-fit">
+                              <a
+                                href={`/${item.slug}`}
+                                ref={(element) => {
+                                  itemTitleRefs.current.set(item.index, element);
+
+                                  if (element && item.index === hoveredIndexRef.current) {
+                                    element.setAttribute("data-super-hover-active", "");
+                                  }
+                                }}
+                                data-super-hover={String(item.index)}
+                                style={{
+                                  opacity:
+                                    isClosing && isItemActive === item.index ? 0 : undefined,
+                                }}
+                                className="relative flex w-full max-w-full cursor-pointer items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight opacity-50 data-[super-hover-active]:opacity-100 [&[data-super-hover-active]_.hover-indicator]:opacity-100 lg:w-fit lg:text-4xl lg:tracking-tighter"
+                                onFocus={() => setHoveredIndexImmediately(item.index)}
+                                onPointerEnter={() => {
+                                  enqueueHoveredIndex(item.index);
+                                  notifyHoverQueueRef.current();
+                                }}
+                                onClick={(event) => {
+                                  if (
+                                    event.button !== 0 || event.metaKey || event.ctrlKey ||
+                                    event.shiftKey || event.altKey
+                                  ) return;
+                                  event.preventDefault();
+                                  cuelumePlay("press");
+                                  openItem(item.index, event.currentTarget);
+                                }}
+                              >
+                                {displayTitle}
+                                <span aria-hidden="true" className="hover-indicator bg-foreground absolute left-full ml-2.5 size-1 rounded-full opacity-0" />
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </React.Fragment>
+
+                    ))}
+                  </ul>
                 </li>
-                {section.items.map(({ title }) => {
-                  const item = items[itemCursor++];
-                  const displayTitle = getRepoDisplayTitle(title);
-
-                  return (
-                    <li key={item.key} className="max-w-full lg:w-fit">
-                      <a
-                        href={`/${item.slug}`}
-                        ref={(element) => {
-                          itemTitleRefs.current.set(item.index, element);
-
-                          if (element && item.index === hoveredIndexRef.current) {
-                            element.setAttribute("data-super-hover-active", "");
-                          }
-                        }}
-                        data-super-hover={String(item.index)}
-                        style={{
-                          opacity:
-                            isClosing && isItemActive === item.index ? 0 : undefined,
-                        }}
-                        className="relative flex w-full max-w-full cursor-pointer items-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground break-words text-[clamp(1.7rem,9vw,2.25rem)] leading-none tracking-tight opacity-50 data-[super-hover-active]:opacity-100 [&[data-super-hover-active]_.hover-indicator]:opacity-100 lg:w-fit lg:text-4xl lg:tracking-tighter"
-                        onFocus={() => setHoveredIndexImmediately(item.index)}
-                        onPointerEnter={() => {
-                          enqueueHoveredIndex(item.index);
-                          notifyHoverQueueRef.current();
-                        }}
-                        onClick={(event) => {
-                          if (
-                            event.button !== 0 || event.metaKey || event.ctrlKey ||
-                            event.shiftKey || event.altKey
-                          ) return;
-                          event.preventDefault();
-                          cuelumePlay("press");
-                          openItem(item.index, event.currentTarget);
-                        }}
-                      >
-                        {displayTitle}
-                        <span aria-hidden="true" className="hover-indicator bg-foreground absolute left-full ml-2.5 size-1 rounded-full opacity-0" />
-                      </a>
-                    </li>
-                  );
-                })}
               </React.Fragment>
-              ));
-            })()}
+            ))}
           </ul>
         </motion.div>
 
@@ -1102,14 +1125,17 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
               if (event.target === event.currentTarget) closeActiveItem();
             }}
           >
-            <button
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isClosing ? 0 : 1 }}
+              transition={{ duration: 0.15 }}
               type="button"
               aria-label="Close project"
               onClick={closeActiveItem}
               className="fixed right-[max(0.5rem,env(safe-area-inset-right))] top-[max(0.5rem,env(safe-area-inset-top))] z-40 flex size-11 items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
             >
               <X aria-hidden="true" className="size-3.5" strokeWidth={1.5} />
-            </button>
+            </motion.button>
             {/* Title copies (z-31) paint above image copies (z-30): the image path crosses the title path, and the real heading stays hidden until its copy lands. */}
             {hasPendingTitleAnimation ? (
               <motion.div
@@ -1277,7 +1303,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   ) {
                     return;
                   }
-                  setTitleCloseDone(true);
+                  finishClosingPart("title", currentClosingAnimationToken);
                 }}
               >
                 {activeDisplayTitle}
@@ -1328,7 +1354,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                   ) {
                     return;
                   }
-                  setImageCloseDone(true);
+                  finishClosingPart("image", currentClosingAnimationToken);
                 }}
               />
             ) : null}
@@ -1465,26 +1491,33 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                     </p>
                   ) : null}
 
-                  <p className="text-foreground/60 mt-4 text-xs">
-                    Languages:{" "}
-                    {activeCopy.languages.map((language, index) => (
-                      <React.Fragment key={language}>
-                        {index > 0 ? ", " : null}
-                        {index === 0 ? (
-                          <TextShimmer
-                            duration={1.05}
-                            repeatDelay={3.2}
-                            spread={1.75}
-                            className="inline-block font-semibold [--base-color:rgba(255,255,255,0.42)] [--base-gradient-color:rgba(255,255,255,0.62)]"
-                          >
-                            {language}
-                          </TextShimmer>
-                        ) : (
-                          <span>{language}</span>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </p>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-foreground/60">
+                    <p>
+                      Languages:{" "}
+                      {activeCopy.languages.map((language, index) => (
+                        <React.Fragment key={language}>
+                          {index > 0 ? ", " : null}
+                          {index === 0 ? (
+                            <TextShimmer
+                              duration={1.05}
+                              repeatDelay={3.2}
+                              spread={1.75}
+                              className="inline-block font-semibold [--base-color:rgba(255,255,255,0.42)] [--base-gradient-color:rgba(255,255,255,0.62)]"
+                            >
+                              {language}
+                            </TextShimmer>
+                          ) : (
+                            <span>{language}</span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                    {activeItem.metadata.archived ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Lock aria-hidden="true" className="size-3" /> Archived
+                      </span>
+                    ) : null}
+                  </div>
 
                   <div className="mt-10 flex flex-wrap items-center gap-2.5">
                     {activeItem.metadata.livePreviewUrl ? (
@@ -1523,6 +1556,39 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           </dialog>
         ) : null}
       </>
+      <dialog
+        ref={archiveNoticeRef}
+        aria-labelledby="archive-notice-title"
+        aria-describedby="archive-notice-description"
+        className="archive-notice fixed inset-0 m-auto w-[calc(100%_-_2rem)] max-w-lg max-h-[calc(100dvh_-_2rem)] overflow-y-auto border border-foreground/20 bg-[#121212] p-6 text-foreground backdrop:bg-black/70 sm:p-8"
+        onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            const box = event.currentTarget.getBoundingClientRect();
+            if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) {
+              event.currentTarget.close();
+            }
+          }
+        }}
+      >
+        <button type="button" aria-label="Close archive message" onClick={() => archiveNoticeRef.current?.close()} className="absolute right-2 top-2 flex size-11 items-center justify-center text-foreground/60 hover:text-foreground focus-visible:outline-2 focus-visible:outline-foreground">
+          <X aria-hidden="true" className="size-4" strokeWidth={1.5} />
+        </button>
+        <h2 id="archive-notice-title" className="font-cal-sans pr-8 text-2xl">Archived projects</h2>
+        <div id="archive-notice-description" className="mt-5 space-y-3 text-sm leading-relaxed text-foreground/70">
+          <p>I archive projects that are unmaintained, no longer work, were low effort, or that I simply prefer not to feature.</p>
+          <p>There are still some cool ones in here. Feel free to give them a try!</p>
+        </div>
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-foreground/20 pt-4 text-sm">
+          <button type="button" onClick={() => {
+            setShowArchived(true);
+            if (currentItems[0]) setHoveredIndexImmediately(currentItems[0].index);
+            archiveNoticeRef.current?.close();
+          }} className="flex min-h-11 items-center gap-2 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground">
+            Explore archived projects <ChevronDown aria-hidden="true" className="size-4" />
+          </button>
+          <button type="button" onClick={() => archiveNoticeRef.current?.close()} className="min-h-11 text-foreground/60 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground">Cancel</button>
+        </div>
+      </dialog>
     </div>
   );
 };

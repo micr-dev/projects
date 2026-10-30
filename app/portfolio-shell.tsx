@@ -15,13 +15,11 @@ const buttonSpring = { type: "spring" as const, stiffness: 260, damping: 18 };
 
 interface PortfolioShellProps {
   initialSlug?: string | null;
-  preloaderText?: string;
   sections: RepoSection[];
 }
 
 const PortfolioShell = ({
   initialSlug = null,
-  preloaderText = "Turning concepts into working systems.",
   sections,
 }: PortfolioShellProps) => {
   const [showSpanishPrompt, setShowSpanishPrompt] = useState(false);
@@ -105,7 +103,6 @@ const PortfolioShell = ({
 
   return (
     <Skiper10
-      text={preloaderText}
       preloadTiers={preloadTiers}
       onComplete={handlePreloaderComplete}
     >

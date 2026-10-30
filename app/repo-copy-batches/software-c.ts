@@ -17,6 +17,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript", "CSS", "HTML"],
   },
+  lsops: {
+    paragraphs: [
+      "lsops is a Go CLI that catalogues command-line tools available to coding agents. Each entry describes a command and can explain why and when to use it.",
+      "It separates the catalogue from availability checks without running commands when listing or detecting tools.",
+      "The catalogue is stored as JSON and added to agent context through hooks for Claude Code, Codex, Gemini, Cursor, Copilot, OpenCode and OMP. Project catalogues load only after explicit registration.",
+    ],
+    languages: ["Go", "Shell", "PowerShell", "Python"],
+  },
   squircle: {
     paragraphs: [
       "Squircle is a Next.js app that lets you drop images or GIFs, tune corner radius, shadows, outlines, and export transparent-corner files without sending anything to a server.",
@@ -227,11 +235,11 @@ export const softwareBatchC = {
   },
   "rosario": {
     paragraphs: [
-      "Rosario is a healthcare voice assistant designed to help clinics manage patient scheduling conversations.",
-      "It aims to reduce routine administrative work and make appointment coordination easier for patients and clinic staff.",
-      "Rosario is under active development as a commercial product.",
+      "Rosario is a voice receptionist for clinics that handles phone and browser calls in the caller’s language. It identifies patients, searches availability, and books, reschedules or cancels appointments.",
+      "A React console lets staff review call recordings, transcripts, tool decisions and a shared appointment calendar. Patient records and confirmed changes persist between calls.",
+      "Built for the HackSpain Prosper track with a Python and FastAPI backend, Pipecat voice pipelines, GPT-Live and a React frontend. The single-host demo stores clinic records in SQLite.",
     ],
-    languages: [],
+    languages: ["Python", "TypeScript", "CSS", "HTML", "JavaScript", "Shell"],
   },
   "wallapop-cli": {
     paragraphs: [

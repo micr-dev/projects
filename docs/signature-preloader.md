@@ -2,9 +2,9 @@
 
 ## Intro
 
-Use the blog's Microck signature outlines with Dessa's opening sequence: sequential path drawing, grey-to-white brightening, blur settling into focus, then a brief blur and fade out. End at 1780 ms. Use browser-owned Web Animations for path drawing and one bounded HTML blur/opacity layer. Do not run a JavaScript frame loop or per-glyph blur filters. This is a single intro, not a loop. Reduced motion skips the intro.
+Use the blog's Microck signature outlines with Dessa's opening sequence: sequential path drawing, grey-to-white brightening, blur settling into focus, then a brief blur and fade out. Wait 400 ms before drawing. Draw at an even pen speed over 1800 ms, hold the completed signature for 200 ms, then fade it over 400 ms. The full signature sequence ends at 2800 ms. Use browser-owned Web Animations for path drawing and one bounded HTML blur/opacity layer. Do not run a JavaScript frame loop or per-glyph blur filters. This is a single intro, not a loop. Reduced motion skips the intro.
 
-Keep the black intro separate from the existing #121212 page background. Image warming starts after the intro, but mount the catalogue only when the intro has finished. Native modal dialogs belong to the browser top layer, so mounting a direct-link project early would paint above any z-index overlay.
+Keep the black intro separate from the existing #121212 page background. Start the original two banks of ten black panels withdrawing toward the top and bottom edges as the signature starts fading, at 2400 ms. Preserve the original 420 ms duration, 140 ms initial delay, 40 ms column stagger, and easing. Keep the signature visible above the panels through its fade. Animate scaleY instead of height. Mount the catalogue and start image warming when the signature starts fading, underneath the withdrawing panels. Keep interaction and native project dialogs disabled until the last panel finishes, 920 ms after the reveal starts. Native dialogs belong to the browser top layer and would otherwise cover the reveal. Reduced motion skips both stages.
 
 ## Project close
 

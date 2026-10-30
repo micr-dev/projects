@@ -1,13 +1,16 @@
 "use client";
 
-import { MotionConfig, useReducedMotion } from "framer-motion";
-import React, { useCallback, useEffect, useId, useRef, useState } from "react";
+import { MotionConfig, motion, useReducedMotion } from "framer-motion";
+import React, { createContext, useCallback, useEffect, useId, useRef, useState } from "react";
 
 interface Skiper10Props {
   children: React.ReactNode;
   onComplete?: () => void;
   preloadTiers?: readonly (readonly string[])[];
 }
+
+// Native project dialogs must wait until the curtain has left the screen.
+export const IntroCompleteContext = createContext(true);
 
 const PRELOAD_CONCURRENCY = 8;
 const EMPTY_PRELOAD_TIERS: readonly (readonly string[])[] = [];
@@ -54,11 +57,18 @@ const Skiper10 = ({
   onComplete,
   preloadTiers = EMPTY_PRELOAD_TIERS,
 }: Skiper10Props) => {
-  const [showPreloader, setShowPreloader] = useState(true);
-  const finishIntro = useCallback(() => setShowPreloader(false), []);
+  const [phase, setPhase] = useState<"signature" | "reveal" | "complete">("signature");
+  const reducedMotion = useReducedMotion();
+  const signatureActive = phase === "signature";
+  const introComplete = phase === "complete";
+  const startReveal = useCallback(
+    () => setPhase(reducedMotion ? "complete" : "reveal"),
+    [reducedMotion],
+  );
+  const finishReveal = useCallback(() => setPhase("complete"), []);
 
   useEffect(() => {
-    if (showPreloader) return;
+    if (signatureActive) return;
     let cancelled = false;
     const preloadAllTiers = async () => {
       for (const tier of preloadTiers) {
@@ -66,17 +76,17 @@ const Skiper10 = ({
         if (cancelled) return;
       }
     };
-    // Keep image decoding out of the signature animation window.
+    // Warm images once the signature has settled and starts fading.
     void preloadAllTiers();
     return () => { cancelled = true; };
-  }, [preloadTiers, showPreloader]);
+  }, [preloadTiers, signatureActive]);
 
   useEffect(() => {
-    if (!showPreloader) onComplete?.();
-  }, [onComplete, showPreloader]);
+    if (introComplete) onComplete?.();
+  }, [onComplete, introComplete]);
 
   useEffect(() => {
-    if (!showPreloader) return;
+    if (introComplete) return;
     const { body, documentElement } = document;
     const bodyOverflow = body.style.overflow;
     const documentOverflow = documentElement.style.overflow;
@@ -86,16 +96,47 @@ const Skiper10 = ({
       body.style.overflow = bodyOverflow;
       documentElement.style.overflow = documentOverflow;
     };
-  }, [showPreloader]);
+  }, [introComplete]);
 
   return (
     <MotionConfig reducedMotion="user">
       <main className="relative min-h-screen bg-[#121212]">
-        {showPreloader ? <SignaturePreloader onComplete={finishIntro} /> : children}
+        <IntroCompleteContext value={introComplete}>
+          {!signatureActive ? <div inert={!introComplete}>{children}</div> : null}
+          {!introComplete ? <CurtainReveal revealing={!signatureActive} onComplete={finishReveal} /> : null}
+          {!introComplete ? <SignaturePreloader onReveal={startReveal} /> : null}
+        </IntroCompleteContext>
       </main>
     </MotionConfig>
   );
 };
+
+// Preserve the original split-panel exit, using compositor transforms instead of layout.
+function CurtainReveal({ revealing, onComplete }: { revealing: boolean; onComplete: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[100]" aria-hidden="true">
+      {(["top", "bottom"] as const).map((edge) => (
+        <div key={edge} className={`absolute inset-x-0 flex h-[50dvh] ${edge === "top" ? "top-0" : "bottom-0"}`}>
+          {Array.from({ length: 10 }, (_, index) => (
+            <motion.div
+              key={index}
+              className="h-full w-[10%] bg-black"
+              style={{ transformOrigin: edge }}
+              initial={{ transform: "scaleY(1)" }}
+              animate={{ transform: revealing ? "scaleY(0)" : "scaleY(1)" }}
+              transition={{
+                duration: 0.42,
+                delay: 0.14 + 0.04 * index,
+                ease: [0.455, 0.03, 0.515, 0.955],
+              }}
+              onAnimationComplete={revealing && edge === "bottom" && index === 9 ? onComplete : undefined}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // Blog signature outlines, preserved in font units to avoid a runtime font request.
 const SIGNATURE_PATHS = [
@@ -108,14 +149,14 @@ const SIGNATURE_PATHS = [
   { offset: 14656, d: "M1224 -741Q981 -741 858 -545Q790 -437 683 -199Q590 11 545 81Q490 81 463.0 84.5Q436 88 352 107Q341 104 296 43Q96 -226 -12 -414Q-29 -443 -29 -473V-483Q-29 -503 -35.5 -510.5Q-42 -518 -54 -529Q-78 -551 -92 -580Q-120 -637 -160 -637Q-175 -637 -191 -630Q-229 -612 -229 -570Q-229 -542 -213.0 -502.5Q-197 -463 -197.0 -453.0Q-197 -443 -111 -4Q-74 192 19 569Q87 845 170 1092Q335 1599 544 2004Q888 2680 1234 3041Q1495 3316 1673 3399Q1753 3440 1816 3440Q1861 3440 1898 3420Q2015 3363 2015 3163Q2015 3102 2005 3018Q1991 2903 1968 2821Q1937 2719 1874.0 2581.0Q1811 2443 1744 2331Q1630 2142 1463.5 1913.5Q1297 1685 1130 1488Q1073 1422 944 1267Q752 1039 531 827L358 660Q256 560 196 514Q142 471 134 458Q120 416 63 159Q7 -93 7 -117Q13 -117 59 -51Q102 10 167 98Q225 178 225 181Q225 187 211.0 212.0Q197 237 197 274Q197 312 211.5 341.5Q226 371 255.0 386.0Q284 401 311 401Q337 401 397 386Q580 592 738 734Q866 849 1002 937Q1315 1140 1549 1147Q1701 1147 1763 1046Q1779 1019 1779 987Q1779 950 1776 934Q1769 897 1714 814Q1682 767 1647 727Q1616 692 1553 636Q1368 471 1084 307Q887 193 735 131Q690 113 690 109Q717 57 814 -156Q914 -381 974 -474Q1054 -602 1221 -602H1242Q1352 -602 1526 -531Q1633 -489 1699.5 -441.5Q1766 -394 1863 -325Q1997 -230 2131.0 -112.0Q2265 6 2556 298Q2779 521 2791 529Q2799 534 2820 534Q2847 534 2859 526Q2886 504 2886 475Q2886 452 2870 425Q2856 405 2767.0 314.5Q2678 224 2527.5 74.0Q2377 -76 2318 -130Q1889 -524 1587 -654Q1377 -741 1224 -741ZM609 231Q643 242 662.0 249.5Q681 257 702 265Q804 308 954 392Q1260 562 1437 716Q1575 836 1626 933Q1642 964 1642 976Q1642 981 1634 988Q1611 1007 1552 1007Q1493 1007 1441 994Q1116 902 782 588Q674 483 580 384Q528 329 528 324Q528 319 536.0 308.0Q544 297 609 231ZM193 696Q202 695 478 970Q729 1219 796 1302Q878 1402 963 1502Q1198 1778 1394.0 2051.0Q1590 2324 1691 2515Q1723 2576 1762.5 2666.5Q1802 2757 1823 2818Q1874 2962 1875 3148Q1875 3231 1866 3256Q1846 3303 1813 3303Q1782 3303 1712.0 3264.5Q1642 3226 1570 3170Q1507 3119 1398.0 3010.0Q1289 2901 1227 2828Q1064 2633 909 2377Q542 1786 312 1087Q285 1006 258.0 919.0Q231 832 212.0 767.5Q193 703 193 696Z" },
 ];
 
-function SignaturePreloader({ onComplete }: { onComplete: () => void }) {
+function SignaturePreloader({ onReveal }: { onReveal: () => void }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const maskId = useId();
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (reducedMotion) {
-      onComplete();
+      onReveal();
       return;
     }
     const svg = svgRef.current;
@@ -124,36 +165,38 @@ function SignaturePreloader({ onComplete }: { onComplete: () => void }) {
     const lengths = paths.map((path) => path.getTotalLength());
     const totalLength = lengths.reduce((sum, length) => sum + length, 0);
     let consumedLength = 0;
-    // Precompute the reference's cubic pen timing once. The browser owns playback.
+    // Use an even pen speed so the first strokes do not rush ahead of the rest.
     const penAnimations = paths.map((path, index) => {
       const length = lengths[index];
       const startLength = consumedLength;
       consumedLength += length;
       const keyframes = Array.from({ length: 33 }, (_, step) => {
         const time = step / 32;
-        const progress = Math.max(0, Math.min(1, (time * 0.88 - 0.06) / 0.82));
-        const drawn = totalLength * (1 - (1 - progress) ** 3);
+        const drawn = totalLength * time;
         const localProgress = Math.max(0, Math.min(1, (drawn - startLength) / length));
         return { strokeDashoffset: String(1 - localProgress), offset: time };
       });
-      return path.animate(keyframes, { duration: 880, fill: "forwards" });
+      return path.animate(keyframes, { delay: 400, duration: 1800, fill: "forwards" });
     });
     // One small composited HTML surface replaces seven oversized SVG filter surfaces.
     const reveal = svg.parentElement!.animate([
       { opacity: 0, filter: "blur(9px)", offset: 0 },
-      { opacity: 1, filter: "blur(0.15px)", offset: 0.42 },
-      { opacity: 1, filter: "blur(0.15px)", offset: 0.76 },
+      { opacity: 0, filter: "blur(9px)", offset: 400 / 2800 },
+      { opacity: 1, filter: "blur(0.15px)", offset: 1200 / 2800 },
+      { opacity: 1, filter: "blur(0.15px)", offset: 2400 / 2800 },
       { opacity: 0, filter: "blur(9px)", offset: 1 },
-    ], { duration: 1780, fill: "forwards" });
-    void reveal.finished.then(onComplete, () => {});
+    ], { duration: 2800, fill: "forwards" });
+    // Overlap the curtain with the signature fade instead of waiting for an empty screen.
+    const revealTimer = window.setTimeout(onReveal, 2400);
     return () => {
+      window.clearTimeout(revealTimer);
       reveal.cancel();
       penAnimations.forEach((animation) => animation.cancel());
     };
-  }, [onComplete, reducedMotion]);
+  }, [onReveal, reducedMotion]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black px-6" role="status" aria-label="Microck">
+    <div className="pointer-events-none fixed inset-0 z-[101] flex items-center justify-center px-6" role="status" aria-label="Microck">
       <div className="w-[min(72vw,280px)] text-[#f5f5f5] opacity-0 will-change-[filter,opacity]">
       <svg ref={svgRef} viewBox="-300 -4786 18017 7971" className="w-full overflow-visible" aria-hidden="true">
         <defs>

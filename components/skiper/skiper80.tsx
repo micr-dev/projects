@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import type { SoundName } from "cuelume";
 import { BookOpen, ChevronDown, CircleArrowOutUpRight, Lock, X } from "lucide-react";
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   getRepoDisplayTitle,
   getRepoSlugPath,
@@ -21,6 +21,7 @@ import type { RepoMetadata } from "../../app/repo-metadata";
 import type { RepoSection } from "../../app/repo-sections";
 import { getAdjacentProjectIndex, partitionCatalogue } from "../../app/repo-catalogue";
 import { createHoverFrameScheduler } from "./hover-frame-scheduler";
+import { IntroCompleteContext } from "./skiper10";
 import ProgressiveBlur from "./progressive-blur";
 import { TextShimmer } from "./text-shimmer";
 
@@ -168,6 +169,7 @@ function getInitialItemIndex(
 }
 
 const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
+  const introComplete = useContext(IntroCompleteContext);
   const initialItemIndex = getInitialItemIndex(sections, initialSlug);
   const initialItems = sections.flatMap((section) => section.items);
   const initialPreviewIndex = initialItemIndex ?? Math.max(0, initialItems.findIndex((item) => !item.metadata.archived));
@@ -684,13 +686,14 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       });
       return () => cancelAnimationFrame(frame);
     }
+    if (!introComplete) return;
     const dialog = detailDialogRef.current;
     if (!dialog) return;
     dialog.showModal();
     return () => {
       dialog.close();
     };
-  }, [isDetailOpen]);
+  }, [isDetailOpen, introComplete]);
 
   useLayoutEffect(() => {
     if (isItemActive == null) return;

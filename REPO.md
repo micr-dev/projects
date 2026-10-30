@@ -40,6 +40,7 @@ omp-multi-codex
 kefine-website
 keyflare-qmk-tool
 keygen-bench
+lsops
 m-d/about
 m-d/ai
 m-d/blog

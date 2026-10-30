@@ -320,6 +320,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://keygen.micr.dev",
     isPrivate: false,
   },
+  lsops: {
+    repo: "Microck/lsops",
+    sourceUrl: "https://github.com/Microck/lsops",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   "m-d/micr.dev": {
     archived: true,
     repo: "micr-dev/micr.dev",

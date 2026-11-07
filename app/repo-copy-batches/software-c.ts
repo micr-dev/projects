@@ -17,6 +17,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript", "CSS", "HTML"],
   },
+  logos: {
+    paragraphs: [
+      "Logo Archive is a browsable collection of about 7,300 historical trademarks and symbols from two 1973 reference works.",
+      "Explore the marks on an infinite fisheye canvas or search the index by firm, business, designer, country and year.",
+      "The static site combines a Canvas and WebGL view with digitized catalogue credits and an agent skill for logo design.",
+    ],
+    languages: ["Python", "HTML", "JavaScript"],
+  },
   lsops: {
     paragraphs: [
       "lsops is a Go CLI that catalogues command-line tools available to coding agents. Each entry describes a command and can explain why and when to use it.",

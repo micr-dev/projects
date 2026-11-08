@@ -17,6 +17,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript", "CSS", "HTML"],
   },
+  tabmap: {
+    paragraphs: [
+      "Tabmap is a Chromium extension that groups related tabs using Codex or an OpenAI-compatible model.",
+      "Review, rename and edit groups before applying them, then classify new tabs without reprocessing the ones already checked.",
+      "It uses a Manifest V3 side panel and supports an optional Codex connector or an OpenAI-compatible API.",
+    ],
+    languages: ["TypeScript", "CSS", "HTML"],
+  },
   logos: {
     paragraphs: [
       "Logo Archive is a browsable collection of about 7,300 historical trademarks and symbols from two 1973 reference works.",

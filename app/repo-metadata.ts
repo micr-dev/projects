@@ -320,6 +320,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://keygen.micr.dev",
     isPrivate: false,
   },
+  cloudssh: {
+    repo: "Microck/cloudssh",
+    sourceUrl: "https://github.com/Microck/cloudssh",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   tabmap: {
     repo: "Microck/tabmap",
     sourceUrl: "https://github.com/Microck/tabmap",

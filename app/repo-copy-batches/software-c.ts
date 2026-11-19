@@ -17,6 +17,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript", "CSS", "HTML"],
   },
+  cloudssh: {
+    paragraphs: [
+      "cloudssh provides disposable Codex Cloud virtual machines as SSH workspaces.",
+      "Use it as a Sandbox SDK provider or a Raft location to create, connect to and destroy workspaces.",
+      "The TypeScript provider uses the workssh helper and supports reconnecting and an optional resume-only keepalive.",
+    ],
+    languages: ["TypeScript", "Python", "JavaScript"],
+  },
   tabmap: {
     paragraphs: [
       "Tabmap is a Chromium extension that groups related tabs using Codex or an OpenAI-compatible model.",

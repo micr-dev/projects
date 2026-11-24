@@ -1,22 +1,28 @@
+import { getRepoDisplayTitle, getRepoSlugPath } from "../repo-paths";
+import { getRepoSections } from "../repo-sections";
+
 export const dynamic = "force-static";
 
-const body = `# Microck Projects
+export async function GET() {
+  const sections = await getRepoSections();
+  const entries = sections.flatMap((section) =>
+    section.items.filter((item) => !item.metadata.archived).map((item) => {
+      const name = getRepoDisplayTitle(item.title);
+      const url = `https://projects.micr.dev/${getRepoSlugPath(item.title)}`;
+      return `- ${name}: ${item.description.paragraphs[0]} (${url})`;
+    }),
+  );
+  const body = [
+    "# Microck Projects",
+    "",
+    "Current projects in portfolio order. Generated from the portfolio catalogue at build time.",
+    "Use the linked project pages and public repositories for further details.",
+    "",
+    ...entries,
+    "",
+  ].join("\n");
 
-A public portfolio of software, tools, and experiments by Microck.
-
-- Portfolio: https://projects.micr.dev/
-- English: https://projects.micr.dev/en/
-- Spanish: https://projects.micr.dev/es/
-- GitHub: https://github.com/Microck
-
-Use project pages as the source of truth. Prefer linked repositories and official sites for code and release details.
-`;
-
-export function GET() {
   return new Response(body, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
-    },
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
 }

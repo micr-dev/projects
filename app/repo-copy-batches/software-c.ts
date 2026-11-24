@@ -17,6 +17,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript", "CSS", "HTML"],
   },
+  "reddit-cli": {
+    paragraphs: [
+      "reddit-cli is a read-only terminal tool for researching Reddit.",
+      "Search communities, read comment threads and explore users through the Reddit API or the Arctic Shift archive.",
+      "The Rust CLI stores fetched data in SQLite for offline search and provides JSON output for scripts and agents.",
+    ],
+    languages: ["Rust", "JavaScript", "Nix", "Shell", "Makefile"],
+  },
   cloudssh: {
     paragraphs: [
       "cloudssh provides disposable Codex Cloud virtual machines as SSH workspaces.",

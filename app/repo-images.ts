@@ -65,6 +65,7 @@ const repoImages: Record<string, string> = {
   "kefine-website": "kefine-website.webp",
   "keyflare-qmk-tool": "keyflare-qmk-tool.webp",
   "keygen-bench": "keygen-bench.webp",
+  "reddit-cli": "reddit-cli.webp",
   cloudssh: "cloudssh.webp",
   tabmap: "tabmap.webp",
   logos: "logos.webp",

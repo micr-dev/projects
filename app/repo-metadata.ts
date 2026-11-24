@@ -320,6 +320,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://keygen.micr.dev",
     isPrivate: false,
   },
+  "reddit-cli": {
+    repo: "Microck/reddit-cli",
+    sourceUrl: "https://github.com/Microck/reddit-cli",
+    livePreviewUrl: null,
+    isPrivate: false,
+  },
   cloudssh: {
     repo: "Microck/cloudssh",
     sourceUrl: "https://github.com/Microck/cloudssh",

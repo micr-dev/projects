@@ -71,6 +71,7 @@ pangram-cli
 protoncode
 raft
 ravenbin-upload
+reddit-cli
 remind-me-later
 rental-search
 revisor

@@ -12,7 +12,7 @@
 - project title hover feedback and preview images advance by one queued project per rendered frame without transition animation @spec @implemented
 
 ## images
-- portfolio list previews use the smallest responsive thumbnail while detail views request larger sources at high priority @implemented
+- portfolio list previews render the 300-pixel thumbnail immediately and upgrade the active preview to the full-quality image once loaded, and detail views progressively upgrade from LQIP and 300-pixel preview to the full-quality image @implemented
 - while the portfolio list is open, every crossed project receives one rendered frame with its decoded 300-pixel thumbnail before the queue advances @spec @implemented
 
 # projects

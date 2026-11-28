@@ -12,8 +12,6 @@ import {
 import {
   getRepoImage,
   getRepoImageResponsiveUrls,
-  getRepoImageSizes,
-  getRepoImageSrcSet,
   getRepoLqip,
 } from "../../app/repo-images";
 import type { RepoDescription } from "../../app/repo-description-types";
@@ -76,7 +74,6 @@ interface RepoItem {
   title: string;
   index: number;
   image: string;
-  imageSrcSet: string;
   responsiveUrls: string[];
   lqip: string;
   slug: string;
@@ -207,6 +204,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
   const isDetailOpen = isItemActive != null;
   const previewFrameRef = useRef<HTMLDivElement | null>(null);
   const previewImageRefs = useRef(new Map<number, HTMLImageElement>());
+  const previewFullImageRef = useRef<HTMLImageElement | null>(null);
+  const previewUpgradeTokenRef = useRef(0);
   const projectListRef = useRef<HTMLUListElement | null>(null);
   const detailTitleMeasureRef = useRef<HTMLDivElement | null>(null);
   const detailTitleRef = useRef<HTMLHeadingElement | null>(null);
@@ -240,7 +239,6 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
           ...item,
           index,
           image: getRepoImage(item.title, index),
-          imageSrcSet: getRepoImageSrcSet(item.title, index),
           responsiveUrls: getRepoImageResponsiveUrls(item.title, index),
           lqip: getRepoLqip(item.title, index),
         })),
@@ -263,9 +261,8 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     activeItem?.responsiveUrls[0] ?? activeItem?.image ?? "";
   const isPreviewImageLoaded =
     previewImageSrc !== "" && loadedImages.has(previewImageSrc);
-  const isActiveImageLoaded = activeItem
-    ? loadedImages.has(activeItem.image) ||
-      activeItem.responsiveUrls.some((url) => loadedImages.has(url))
+  const isFullImageLoaded = activeItem
+    ? loadedImages.has(activeItem.image)
     : false;
 
   const markImageLoaded = useCallback(
@@ -406,6 +403,59 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     [markImageLoaded],
   );
 
+  // Upgrade the active list preview from its instant 300w layer to the full-quality image.
+  const upgradePreviewImage = useCallback(
+    (index: number) => {
+      const item = items[index];
+      const overlay = previewFullImageRef.current;
+      if (!item || !overlay) {
+        return;
+      }
+
+      const fullSrc = item.image;
+      const token = previewUpgradeTokenRef.current + 1;
+      previewUpgradeTokenRef.current = token;
+
+      if (loadedImagesRef.current.has(fullSrc)) {
+        if (overlay.getAttribute("src") !== fullSrc) {
+          overlay.src = fullSrc;
+        }
+        overlay.style.opacity = "1";
+        return;
+      }
+
+      overlay.style.opacity = "0";
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const image = new window.Image();
+      image.decoding = "async";
+      image.fetchPriority = "high";
+      image.onload = () => {
+        void image.decode().catch(() => {}).then(() => {
+          markImageLoaded(fullSrc, index === hoveredIndexRef.current);
+          if (
+            previewUpgradeTokenRef.current !== token ||
+            hoveredIndexRef.current !== index
+          ) {
+            return;
+          }
+          if (overlay.getAttribute("src") !== fullSrc) {
+            overlay.src = fullSrc;
+          }
+          overlay.style.opacity = "1";
+        });
+      };
+      image.src = fullSrc;
+    },
+    [items, markImageLoaded],
+  );
+
+  useEffect(() => {
+    upgradePreviewImage(hoveredIndexRef.current);
+  }, [upgradePreviewImage]);
+
   const selectHoveredIndex = useCallback(
     (index: number, playSound = false) => {
       if (hoveredIndexRef.current === index) {
@@ -433,12 +483,13 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       }
 
       hoveredIndexRef.current = index;
+      upgradePreviewImage(index);
 
       if (playSound) {
         maybePlayHover();
       }
     },
-    [],
+    [upgradePreviewImage],
   );
 
   const setHoveredIndexImmediately = useCallback(
@@ -623,7 +674,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       if (items[matchedIndex].metadata.archived) setShowArchived(true);
       returnFocusIndexRef.current = matchedIndex;
       detailDialogRef.current?.scrollTo({ top: 0, behavior: "instant" });
-      preloadImage([items[matchedIndex].image, ...items[matchedIndex].responsiveUrls], "high");
+      preloadImage(items[matchedIndex].image, "high");
       setHoveredIndexImmediately(matchedIndex);
       setIsItemActive(matchedIndex);
     },
@@ -644,22 +695,21 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
       returnFocusIndexRef.current = itemIndex;
       const item = items[itemIndex];
-      preloadImage([item.image, ...item.responsiveUrls.slice(1)], "high");
+      preloadImage(item.image, "high");
       enterAnimationTokenRef.current += 1;
       setSourceTitleSnapshot(snapshotTitle(titleElement));
       setTargetTitleSnapshot(null);
 
       const previewImage = previewImageRefs.current.get(itemIndex);
       if (previewFrameRef.current?.getBoundingClientRect().width && previewImage) {
-        const isItemImageLoaded =
-          loadedImagesRef.current.has(item.image) ||
-          item.responsiveUrls.some((url) => loadedImagesRef.current.has(url));
-        setSourceImageSnapshot(snapshotBox(previewFrameRef.current));
-        setSourceImageSrcSnapshot(
-          isItemImageLoaded
+        const previewSrc = item.responsiveUrls[0] ?? item.image;
+        const snapshotSrc = loadedImagesRef.current.has(item.image)
+          ? item.image
+          : loadedImagesRef.current.has(previewSrc)
             ? previewImage.currentSrc || previewImage.src
-            : item.lqip,
-        );
+            : item.lqip;
+        setSourceImageSnapshot(snapshotBox(previewFrameRef.current));
+        setSourceImageSrcSnapshot(snapshotSrc);
       }
 
       setTargetImageSnapshot(null);
@@ -697,6 +747,9 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
 
   useLayoutEffect(() => {
     if (isItemActive == null) return;
+    if (detailImageRef.current?.complete && detailImageRef.current.naturalWidth > 0) {
+      markImageLoaded(detailImageRef.current);
+    }
 
     const frameId = window.requestAnimationFrame(() => {
       if (!detailTitleMeasureRef.current) {
@@ -710,7 +763,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     });
 
     return () => window.cancelAnimationFrame(frameId);
-  }, [isItemActive, activeItem?.title, activeItem?.image]);
+  }, [isItemActive, activeItem?.title, activeItem?.image, markImageLoaded]);
 
   useLayoutEffect(() => {
     if (!isClosing || isItemActive == null) {
@@ -816,9 +869,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       ? snapshotBox(detailImageRef.current)
       : null;
     const currentImageSrc = detailImageRef.current
-      ? isActiveImageLoaded
-        ? detailImageRef.current.currentSrc || detailImageRef.current.src
-        : activeItem.lqip
+      ? loadedImagesRef.current.has(activeItem.image)
+        ? activeItem.image
+        : previewImageSrc !== "" && loadedImagesRef.current.has(previewImageSrc)
+          ? previewImageSrc
+          : activeItem.lqip
       : null;
 
     if (!currentTitleSource && !currentImageSource) {
@@ -839,10 +894,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
     cuelumePlay("release");
     syncRoute(null);
   }, [
+    activeItem.image,
     activeItem.lqip,
-    isActiveImageLoaded,
     isClosing,
     isItemActive,
+    previewImageSrc,
     resetOpeningSnapshots,
     setHoveredIndexImmediately,
     syncRoute,
@@ -867,7 +923,7 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
       }
 
       const nextItem = items[nextIndex];
-      preloadImage([nextItem.image, ...nextItem.responsiveUrls], "high");
+      preloadImage(nextItem.image, "high");
       setHoveredIndexImmediately(nextIndex);
       returnFocusIndexRef.current = nextIndex;
       detailDialogRef.current?.scrollTo({ top: 0, behavior: "instant" });
@@ -1022,6 +1078,15 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
             className="hidden lg:block fixed left-1/2 top-20 z-20 aspect-video w-[min(calc(100vw-2rem),22rem)] -translate-x-1/2 overflow-hidden border border-foreground/10 lg:left-[15%] lg:top-[10%] lg:h-50 lg:w-[22.222rem]"
           >
             {previewImageLayers}
+            <img
+              ref={previewFullImageRef}
+              data-preview-full-image=""
+              aria-hidden="true"
+              alt=""
+              decoding="async"
+              className="pointer-events-none absolute inset-0 size-full object-cover"
+              style={{ opacity: 0 }}
+            />
           </motion.div>
 
           <ul ref={projectListRef} className="mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col gap-2 pb-[18vh] pt-8 lg:ml-auto lg:mr-[10%] lg:w-fit lg:max-w-none lg:pb-[20vh] lg:pt-[42vh]">
@@ -1398,9 +1463,23 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       height: "100%",
                       visibility:
                         hasPendingImageAnimation || isClosing ? "hidden" : "visible",
-                      opacity: isActiveImageLoaded ? 0 : 1,
+                      opacity: isPreviewImageLoaded || isFullImageLoaded ? 0 : 1,
                     }}
                   />
+
+                  {previewImageSrc !== "" && previewImageSrc !== activeItem.image ? (
+                    <img
+                      aria-hidden="true"
+                      alt=""
+                      src={previewImageSrc}
+                      className="absolute inset-0 h-full w-full rounded-[25px] object-cover"
+                      style={{
+                        visibility:
+                          hasPendingImageAnimation || isClosing ? "hidden" : "visible",
+                        opacity: isPreviewImageLoaded && !isFullImageLoaded ? 1 : 0,
+                      }}
+                    />
+                  ) : null}
 
                   <motion.img
                     ref={detailImageRef}
@@ -1414,13 +1493,11 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                       borderRadius: "25px",
                       visibility:
                         hasPendingImageAnimation || isClosing ? "hidden" : "visible",
-                      opacity: isActiveImageLoaded ? 1 : 0,
+                      opacity: isFullImageLoaded ? 1 : 0,
                     }}
                     src={activeItem.image}
-                    srcSet={activeItem.imageSrcSet}
-                    sizes={getRepoImageSizes()}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="relative h-full w-full object-cover"
                     onLoad={(event) => markImageLoaded(event.currentTarget)}
                     onError={(event) => {
                       const image = event.currentTarget;
@@ -1429,10 +1506,15 @@ const Skiper80 = ({ sections, initialSlug }: Skiper80Props) => {
                         image.currentSrc || image.src,
                         window.location.href,
                       ).pathname;
-                      image.removeAttribute("srcset");
-                      image.src = failedPath === activeItem.image
-                        ? activeItem.lqip
-                        : activeItem.image;
+                      if (
+                        failedPath === activeItem.image &&
+                        previewImageSrc !== "" &&
+                        previewImageSrc !== activeItem.image
+                      ) {
+                        image.src = previewImageSrc;
+                        return;
+                      }
+                      image.src = activeItem.lqip;
                     }}
                   />
                 </div>

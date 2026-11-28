@@ -172,25 +172,24 @@ export function getRepoImageResponsiveUrls(title: string, index: number) {
   );
 }
 
-/** Returns unique responsive thumbnail URLs grouped from smallest to largest. */
+/** Returns unique thumbnail URLs grouped from 300w preview tier to full-quality images. */
 export function getRepoImagePreloadTiers(titles: readonly string[]) {
-  const urlsByWidth = new Map<number, Set<string>>(
-    WIDTHS.map((width) => [width, new Set<string>()]),
-  );
+  const previewTier = new Set<string>();
+  const fullTier = new Set<string>();
 
   titles.forEach((title, index) => {
-    for (const url of getRepoImageResponsiveUrls(title, index)) {
-      const width = WIDTHS.find((candidate) =>
-        url.endsWith(`-${candidate}w.webp`),
-      );
+    const previewUrl = getRepoImageResponsiveUrls(title, index)[0];
+    const fullUrl = getRepoImage(title, index);
 
-      if (width != null) {
-        urlsByWidth.get(width)?.add(url);
-      }
+    if (previewUrl) {
+      previewTier.add(previewUrl);
+    }
+    if (fullUrl && fullUrl !== previewUrl) {
+      fullTier.add(fullUrl);
     }
   });
 
-  return WIDTHS.map((width) => [...(urlsByWidth.get(width) ?? [])]);
+  return [[...previewTier], [...fullTier]];
 }
 
 export function getRepoImage(title: string, index: number) {

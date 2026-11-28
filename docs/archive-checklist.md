@@ -75,7 +75,7 @@ Names that differ between the catalogues are shown together. This change does no
 - [ ] `pangram-cli`
 - [x] `protoncode`
 - [ ] `raft`
-- [ ] `ravenbin-upload`
+- [ ] `ravenbin-cli`
 - [x] `remind-me-later`
 - [x] `rental-search`
 - [x] `revisor`

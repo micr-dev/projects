@@ -102,3 +102,8 @@ body:has(.archive-notice[open]) {
   overflow: hidden !important;
   overscroll-behavior: none;
 }
+
+/* Native modal dialogs sit above all ordinary stacking contexts. */
+body:has(dialog:modal) .spanish-prompt {
+  visibility: hidden;
+}

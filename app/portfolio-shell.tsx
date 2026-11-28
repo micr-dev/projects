@@ -111,7 +111,7 @@ const PortfolioShell = ({
         <AnimatePresence>
           {showSpanishPrompt ? (
             <motion.div
-              className="pointer-events-none fixed inset-0 z-[110] flex items-end justify-center px-4 pb-6"
+              className="spanish-prompt pointer-events-none fixed inset-0 z-[110] flex items-end justify-center px-4 pb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

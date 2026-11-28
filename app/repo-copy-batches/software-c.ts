@@ -17,6 +17,14 @@ export const softwareBatchC = {
     ],
     languages: ["JavaScript", "CSS", "HTML"],
   },
+  "vinted-cli": {
+    paragraphs: [
+      "vinted-cli is an unofficial terminal client for Vinted.",
+      "Search the catalogue, watch searches and listings, and message sellers from your account.",
+      "The Go CLI imports browser cookies and outputs JSON by default for scripts and agents.",
+    ],
+    languages: ["Go"],
+  },
   "reddit-cli": {
     paragraphs: [
       "reddit-cli is a read-only terminal tool for researching Reddit.",
@@ -209,7 +217,7 @@ export const softwareBatchC = {
     ],
     languages: ["Python"],
   },
-  "ravenbin-upload": {
+  "ravenbin-cli": {
     paragraphs: [
       "ravenbin-cli is a Python command-line client that uploads files to Raven Bin and downloads them from complete share URLs.",
       "It provides short-lived file sharing without asking users to manage encryption or expose a local file server.",

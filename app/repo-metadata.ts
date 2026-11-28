@@ -320,6 +320,12 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: "https://keygen.micr.dev",
     isPrivate: false,
   },
+  "vinted-cli": {
+    repo: "Microck/vinted-cli",
+    sourceUrl: "https://github.com/Microck/vinted-cli",
+    livePreviewUrl: "https://vinted.micr.dev/docs",
+    isPrivate: false,
+  },
   "reddit-cli": {
     repo: "Microck/reddit-cli",
     sourceUrl: "https://github.com/Microck/reddit-cli",
@@ -468,7 +474,7 @@ export const repoMetadata: Record<string, RepoMetadata> = {
     livePreviewUrl: null,
     isPrivate: true,
   },
-  "ravenbin-upload": {
+  "ravenbin-cli": {
     repo: "Microck/ravenbin-cli",
     sourceUrl: "https://github.com/Microck/ravenbin-cli",
     livePreviewUrl: "https://ravenbin.com/",
